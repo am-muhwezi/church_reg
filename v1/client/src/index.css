@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background-color: #f6f6f6;
+    color: #2d2f2f;
+  }
+
+  ::selection {
+    background-color: #fca21e;
+    color: #2e1900;
+  }
+}
+
+@layer components {
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: 1;
+  }
+
+  .material-symbols-outlined.filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  /* Sacred Feature Card: amber top-border */
+  .sacred-card {
+    @apply bg-surface-container-lowest rounded-md shadow-ambient relative overflow-hidden;
+    border-top: 4px solid #fca21e;
+  }
+
+  /* Input: no-border default style */
+  .field-input {
+    @apply w-full px-4 py-3.5 bg-surface-container-highest rounded-md
+           border-none outline-none text-on-surface placeholder:text-outline/60
+           focus:ring-2 focus:ring-primary/30 focus:bg-white
+           transition-all text-sm font-medium;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply bg-primary-container text-on-primary-fixed font-bold rounded-md
+           px-6 py-3.5 active:scale-[0.98] transition-all
+           hover:shadow-lg hover:shadow-primary-container/20;
+  }
+
+  /* Secondary button (ghost) */
+  .btn-secondary {
+    @apply bg-transparent text-primary font-bold rounded-md
+           px-6 py-3.5 active:scale-[0.98] transition-all
+           border border-primary-container/30 hover:bg-primary-container/5;
+  }
+
+  /* Tertiary button (text) */
+  .btn-tertiary {
+    @apply bg-transparent text-primary font-bold
+           px-4 py-2 hover:underline transition-all;
+  }
+
+  /* Live pulse indicator */
+  .live-dot {
+    @apply inline-block w-2 h-2 rounded-full bg-error-container;
+    animation: pulse-red 2s infinite;
+  }
+
+  /* Section label */
+  .section-label {
+    @apply text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary;
+  }
+
+  /* Nav item active */
+  .nav-active {
+    @apply bg-primary-container/10 text-primary font-bold;
+  }
+
+  /* Nav item idle */
+  .nav-idle {
+    @apply text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors;
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fade-up 0.4s ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out both;
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249,86,48,0.6); }
+  70%       { box-shadow: 0 0 0 8px rgba(249,86,48,0); }
+}
