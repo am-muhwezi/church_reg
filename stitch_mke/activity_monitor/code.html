@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#5b4b00",
+              "tertiary-fixed-dim": "#efc900",
+              "outline-variant": "#acadad",
+              "background": "#f6f6f6",
+              "on-secondary-fixed": "#35404c",
+              "on-primary-container": "#4d2e00",
+              "tertiary-fixed": "#ffd709",
+              "on-background": "#2d2f2f",
+              "surface-variant": "#dbdddd",
+              "error-container": "#f95630",
+              "surface-tint": "#835000",
+              "surface-container-high": "#e1e3e3",
+              "secondary-fixed-dim": "#cad5e4",
+              "primary-dim": "#724600",
+              "error": "#b02500",
+              "primary-container": "#fca21e",
+              "surface-dim": "#d2d5d5",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary": "#fff2cd",
+              "secondary-dim": "#46515d",
+              "secondary-container": "#d8e4f3",
+              "surface": "#f6f6f6",
+              "primary-fixed-dim": "#ec9508",
+              "on-tertiary-fixed": "#453900",
+              "surface-container-highest": "#dbdddd",
+              "on-primary": "#fff0e4",
+              "on-secondary": "#ebf3ff",
+              "secondary": "#515d69",
+              "on-primary-fixed": "#2e1900",
+              "on-secondary-container": "#48535f",
+              "on-surface-variant": "#5a5c5c",
+              "on-error": "#ffefec",
+              "secondary-fixed": "#d8e4f3",
+              "on-primary-fixed-variant": "#593500",
+              "inverse-primary": "#fca21e",
+              "primary-fixed": "#fca21e",
+              "inverse-surface": "#0c0f0f",
+              "outline": "#757777",
+              "on-surface": "#2d2f2f",
+              "on-secondary-fixed-variant": "#515d69",
+              "surface-bright": "#f6f6f6",
+              "on-tertiary-fixed-variant": "#665500",
+              "tertiary-dim": "#5e4e00",
+              "surface-container-low": "#f0f1f1",
+              "primary": "#835000",
+              "tertiary-container": "#ffd709",
+              "surface-container": "#e7e8e8",
+              "error-dim": "#b92902",
+              "tertiary": "#6c5a00",
+              "on-error-container": "#520c00",
+              "inverse-on-surface": "#9c9d9d"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-[#f6f6f6] dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16">
+<div class="flex items-center gap-4">
+<button class="text-[#515d69] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors p-2 rounded-lg">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-xl font-extrabold text-[#2d2f2f] dark:text-white font-manrope font-bold tracking-tight">Manifest Kenya</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-sm font-bold text-[#835000] dark:text-amber-500">Activity Monitor</span>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden border border-outline-variant/20">
+<img alt="Admin Profile" data-alt="Professional profile avatar of the administrator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXN2eGBjFnEB5MUscK0TlwcwsbjsC1yPSozJPVAgxdWZNbErbh53vR2R62X-EfaT6BlSkf0VP25l0FiNeAytRK8h8rZnMVX5OHnw3xEWklhSy6peHow5SVtb4UyzncJxsjM2XRtGWvZK46uyBJpY4Uz0u6XYhurZjavq9MW5sJrg9RSaEA3QormPURvCXRi36xWzq9soxrwiFMBfkjG0D-cheZTi-uD4J0J95eI_yAoj6Nyg2wMY7aVrno2JIIckGFAXtk8sLf1Js"/>
+</div>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden md:flex flex-col gap-y-4 p-6 bg-[#ffffff] dark:bg-gray-900 rounded-r-lg h-[calc(100vh-64px)] w-72 fixed shadow-2xl shadow-gray-500/10 z-40">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<p class="font-manrope font-black text-[#2d2f2f] text-sm">Admin Portal</p>
+<p class="text-xs text-secondary">Manifest Kenya</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 p-3 text-[#515d69] hover:bg-gray-50 hover:translate-x-1 duration-300 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">person_celebrate</span>
+<span>Evangelists</span>
+</a>
+<a class="flex items-center gap-3 p-3 bg-[#fca21e] text-[#2e1900] font-bold rounded-md hover:translate-x-1 duration-300 transition-all font-manrope text-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-[#515d69] hover:bg-gray-50 hover:translate-x-1 duration-300 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Teams</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-[#515d69] hover:bg-gray-50 hover:translate-x-1 duration-300 transition-all font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-gray-100">
+<p class="text-[10px] text-secondary/50 font-bold tracking-widest uppercase">v1.0.2</p>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 md:ml-72 p-6 md:p-12 lg:p-16 bg-surface">
+<!-- Header Section -->
+<div class="max-w-7xl mx-auto">
+<header class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Performance Tracking</span>
+<h2 class="text-4xl md:text-5xl font-black text-on-surface tracking-tighter leading-none mb-4">Activity Monitor</h2>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full border-2 border-primary-container p-0.5">
+<img alt="Evangelist" class="rounded-full" data-alt="Avatar of the selected evangelist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqSLurpaiYI3dOApzgruG-Aj8GuNOBLod0F8oq_Dq_tinLafafp3wEBdLKyvHdtWwujlgCUpQjSfoT-UKHiiBRtBellNEbNCoSiu1mq-HnYwgQg0TQo0rBkaA9lA_nFA_i_eoqmvJJ75BLp36KZ9d5HR6ynloyw0qW8qCut5xTcEg9pUDEygRfBizxOB_Fkwv8_NXtMvm3Rw8-znOHxE3XwdzEFzP82pf62ECpiwrfb2BByxr0CFbo54NbzxVx6dyy5bdA3WQdtTk"/>
+</div>
+<div>
+<p class="font-bold text-lg leading-tight">Samuel Mwangi</p>
+<p class="text-sm text-secondary font-medium">Central Nairobi District</p>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-3 bg-surface-container-lowest text-primary font-bold border border-outline-variant/15 rounded-md hover:bg-surface-container-low transition-all">
+                                Export PDF
+                            </button>
+<button class="px-6 py-3 bg-primary-container text-on-primary-fixed font-bold rounded-md shadow-lg shadow-primary-container/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                Assign New Task
+                            </button>
+</div>
+</div>
+</header>
+<!-- Bento Grid Metrics -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+<!-- Metric Card 1: Souls Saved -->
+<div class="relative overflow-hidden bg-surface-container-lowest p-8 rounded-xl border-t-4 border-primary-container group">
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
+<span class="material-symbols-outlined text-9xl">auto_awesome</span>
+</div>
+<p class="text-xs font-bold uppercase tracking-widest text-secondary mb-4">Total Souls Saved</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-5xl font-black text-on-surface">142</h3>
+<span class="text-primary font-bold text-sm">+12%</span>
+</div>
+<p class="text-sm text-secondary/70 mt-4 leading-relaxed">Top 5% performer this month across all districts.</p>
+</div>
+<!-- Metric Card 2: Reached -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border-t-4 border-secondary group">
+<p class="text-xs font-bold uppercase tracking-widest text-secondary mb-4">Total Reached</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-5xl font-black text-on-surface">894</h3>
+<span class="text-primary font-bold text-sm">+42</span>
+</div>
+<div class="mt-6 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-3/4"></div>
+</div>
+<p class="text-sm text-secondary/70 mt-4">Progress towards monthly reach goal of 1,200.</p>
+</div>
+<!-- Metric Card 3: Pending -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border-t-4 border-tertiary-fixed group">
+<p class="text-xs font-bold uppercase tracking-widest text-secondary mb-4">Pending Follow-ups</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-5xl font-black text-on-surface">27</h3>
+<span class="text-error font-bold text-sm">Critical</span>
+</div>
+<div class="mt-6 flex -space-x-2">
+<img alt="User" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest" data-alt="Avatar of a contact person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpNdROmFPbTjTAtO5XDSol-s91JHJ_kwdRNjh1vldkbf9fKibHZ2a0lwffTwFTWhIjJRRU8uidKTk7xtF01yltxbSoHztU1cptCa6rjm13QjXbJ2rG1sW0oAlS4Bud7iDQz1O56vQOmlpHVGp7mu5zzwTBGs-XyhLtqtf6SMa3oPM3bY11dMqC2rE13Oyow4ATsp4JH41AsfbfhabNlw6PgI08vMNXGNm_MyeRipBibHDE014Nsv0i5JeM_nn3Bp-bxX2lxzDKDk0"/>
+<img alt="User" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest" data-alt="Avatar of a contact person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-Bn1rxU1ehOWppwdk86mOxOfKc6ICb3Wod0hLxQnNFhYnUOhMf19qdMi-im01TWWqdlBCaK4yb0QpKO_UDGrz1EgFLs7ddzb3nAvZ2asX942so8_boUegwbzAi5cATsD1vwQmRCwg0OjRcuikCn0S809tf5oek31e7jVNGCxTDo3JPwgOyWZJu09qkxUCJD2cbziZINyaKyRZlA0wQAqUvzaawF8BaezsUKxMShAuHclH9G_zm_FOlVCMaoJ8sUu3rrIwLCX-RTs"/>
+<img alt="User" class="w-8 h-8 rounded-full border-2 border-surface-container-lowest" data-alt="Avatar of a contact person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD63SIbrnw3h9vqqETVPJn8LBJ2xDr4xMXOjeKs1TK0E8jhwm1lYAH1h3zBjit5uQXoaAWH11rB0xc52yWxsGPFhc6IxaG1RVHZo5Zs4p9hi2f5rYc_o_c6jv6laludwzf1V80uMKw38NQjnb5Vz93Bv3qWxHtqK-bCqbYSkRbCKLMA1ICN7qf8cwdnVpnlu6gHXtsqoFqKPrTeOGpBir2mNUFHlytjlYnLbyOHn03_pNo1OsWRNbvbVGLrfdnseJr-1PCbBueA_AE"/>
+<div class="w-8 h-8 rounded-full bg-surface-container border-2 border-surface-container-lowest flex items-center justify-center text-[10px] font-bold">+24</div>
+</div>
+<p class="text-sm text-secondary/70 mt-4">Needs immediate intervention from district lead.</p>
+</div>
+</section>
+<!-- Chronological Feed -->
+<section class="max-w-4xl">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-2xl font-black text-on-surface tracking-tight">Recent Activity Feed</h3>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="w-2 h-2 rounded-full bg-outline-variant/30"></span>
+</div>
+</div>
+<div class="space-y-0 relative">
+<!-- Timeline Line -->
+<div class="absolute left-6 top-0 bottom-0 w-px bg-outline-variant/20"></div>
+<!-- Activity Item 1 -->
+<div class="relative pl-16 pb-12 group">
+<div class="absolute left-4 top-2 w-4 h-4 rounded-full bg-primary-container border-4 border-surface ring-2 ring-primary-container/20 group-hover:scale-125 transition-transform duration-300"></div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold uppercase tracking-tighter bg-secondary-container px-2 py-1 rounded text-on-secondary-container">Soul Saved</span>
+<span class="text-xs text-secondary/60">2 hours ago</span>
+</div>
+<h4 class="font-bold text-on-surface mb-2">Outreach at Mathare Community Center</h4>
+<p class="text-sm text-secondary leading-relaxed">Conducted a group prayer session. One individual, David O., committed to the follow-up program and joined the local cell group.</p>
+<div class="mt-4 flex gap-4 text-[10px] font-bold text-primary uppercase tracking-widest">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">location_on</span> Nairobi</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">attachment</span> 2 Photos</span>
+</div>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="relative pl-16 pb-12 group">
+<div class="absolute left-4 top-2 w-4 h-4 rounded-full bg-tertiary-fixed border-4 border-surface ring-2 ring-tertiary-fixed/20 group-hover:scale-125 transition-transform duration-300"></div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold uppercase tracking-tighter bg-surface-container px-2 py-1 rounded text-on-surface-variant">Follow-up Logged</span>
+<span class="text-xs text-secondary/60">Yesterday, 4:15 PM</span>
+</div>
+<h4 class="font-bold text-on-surface mb-2">Home Visitation: The Kamau Family</h4>
+<p class="text-sm text-secondary leading-relaxed">Second visit to the residence. Discussed scripture foundation. Family requested additional Bibles for the children.</p>
+<div class="mt-4 p-3 bg-surface-container-low rounded-md border-l-2 border-primary">
+<p class="text-[11px] italic text-on-surface-variant">"They are opening up more to the message. Need to bring children's study materials next week."</p>
+</div>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="relative pl-16 group">
+<div class="absolute left-4 top-2 w-4 h-4 rounded-full bg-secondary border-4 border-surface ring-2 ring-secondary/20 group-hover:scale-125 transition-transform duration-300"></div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold uppercase tracking-tighter bg-surface-container px-2 py-1 rounded text-on-surface-variant">Public Reach</span>
+<span class="text-xs text-secondary/60">Oct 24, 2023</span>
+</div>
+<h4 class="font-bold text-on-surface mb-2">Street Evangelism: CBD Junction</h4>
+<p class="text-sm text-secondary leading-relaxed">Distributed 150 flyers and engaged in 15 personal conversations. 3 contacts added for digital follow-up.</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-12 py-4 border-2 border-dashed border-outline-variant/30 text-secondary font-bold text-sm rounded-xl hover:bg-surface-container transition-colors">
+                        View Older Activity
+                    </button>
+</section>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-[#ffffff] dark:bg-gray-950 rounded-t-xl border-t border-gray-100 dark:border-gray-800 shadow-[0_-4px_20px_0_rgba(81,93,105,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#515d69] dark:text-gray-400 active:scale-90 transition-transform hover:text-[#835000]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#fca21e] text-[#2e1900] rounded-xl px-4 py-1.5 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pulse_alert</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#515d69] dark:text-gray-400 active:scale-90 transition-transform hover:text-[#835000]" href="#">
+<span class="material-symbols-outlined">group_add</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest">Users</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#515d69] dark:text-gray-400 active:scale-90 transition-transform hover:text-[#835000]" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-manrope text-[10px] uppercase tracking-widest">Logs</span>
+</a>
+</nav>
+</body></html>

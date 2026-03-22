@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#d8e4f3",
+              "on-primary": "#fff0e4",
+              "surface-dim": "#d2d5d5",
+              "inverse-surface": "#0c0f0f",
+              "surface": "#f6f6f6",
+              "on-error-container": "#520c00",
+              "primary-fixed-dim": "#ec9508",
+              "on-secondary-fixed": "#35404c",
+              "surface-container-high": "#e1e3e3",
+              "on-tertiary": "#fff2cd",
+              "tertiary-dim": "#5e4e00",
+              "on-secondary-container": "#48535f",
+              "secondary-dim": "#46515d",
+              "surface-variant": "#dbdddd",
+              "on-secondary": "#ebf3ff",
+              "error-dim": "#b92902",
+              "error": "#b02500",
+              "background": "#f6f6f6",
+              "on-surface": "#2d2f2f",
+              "outline": "#757777",
+              "on-primary-fixed": "#2e1900",
+              "tertiary-fixed-dim": "#efc900",
+              "on-tertiary-container": "#5b4b00",
+              "primary": "#835000",
+              "on-secondary-fixed-variant": "#515d69",
+              "on-error": "#ffefec",
+              "on-background": "#2d2f2f",
+              "on-surface-variant": "#5a5c5c",
+              "on-tertiary-fixed": "#453900",
+              "secondary-container": "#d8e4f3",
+              "tertiary": "#6c5a00",
+              "primary-fixed": "#fca21e",
+              "surface-container-low": "#f0f1f1",
+              "inverse-on-surface": "#9c9d9d",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed": "#ffd709",
+              "secondary-fixed-dim": "#cad5e4",
+              "surface-bright": "#f6f6f6",
+              "on-primary-container": "#4d2e00",
+              "on-tertiary-fixed-variant": "#665500",
+              "secondary": "#515d69",
+              "tertiary-container": "#ffd709",
+              "primary-dim": "#724600",
+              "inverse-primary": "#fca21e",
+              "outline-variant": "#acadad",
+              "surface-container-highest": "#dbdddd",
+              "surface-container": "#e7e8e8",
+              "on-primary-fixed-variant": "#593500",
+              "surface-tint": "#835000",
+              "primary-container": "#fca21e",
+              "error-container": "#f95630"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f6f6f6;
+        }
+        .tap-highlight-transparent {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f6f6f6] dark:bg-slate-900/80 backdrop-blur-md flex justify-between items-center px-6 h-16 w-full border-none">
+<div class="flex items-center gap-4">
+<button class="text-[#835000] dark:text-[#fca21e] hover:bg-[#f0f1f1] dark:hover:bg-slate-800 transition-colors active:scale-95 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="text-xl font-extrabold text-[#2d2f2f] dark:text-[#f6f6f6] font-['Manrope'] tracking-tight">Outreach Journal</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest">
+<img alt="Evangelist Profile" class="w-full h-full object-cover" data-alt="Headshot of a smiling male evangelist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-1kuCboeSh5JvqBUHsrP72aNYEU7MTU-NJUAeCvAvS_M196wDWJt9xTHBs0b9qJNSG9I1GoqhxvjvAXtbI0WH9UgMVRDQuP6ZCnWNUCJyBnOuJmxPcgu_L-Ab1A3__EuMPebfv9mNLGTu_s2_o_4ew-89Pr4N210q_gc5Hz1SLMiFVovdxpADwet7lnhOsC9Cw-4KkQoVEwK6MKUrlUGctVD2qKyqPOcII2RHv12EH1oFwHpHxh_n8_x5g9xf9aDBUJBJuzIOs-E"/>
+</div>
+</div>
+</header>
+<main class="mt-20 px-6 max-w-2xl mx-auto space-y-10">
+<!-- Welcome / Location Context Section -->
+<section class="space-y-2">
+<p class="text-[10px] font-semibold uppercase tracking-wider text-primary">Nairobi Central District</p>
+<h2 class="text-3xl font-extrabold text-on-surface tracking-tight leading-tight">New Field Entry</h2>
+<p class="text-secondary text-sm">Documenting the harvest in the streets of Kenya.</p>
+</section>
+<!-- Form Container -->
+<form class="space-y-8">
+<!-- Person Identity Section -->
+<div class="space-y-6">
+<div class="grid grid-cols-1 gap-6">
+<!-- Name Input -->
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-4 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant text-on-surface font-medium" placeholder="Enter contact name" type="text"/>
+</div>
+</div>
+<!-- Phone/WhatsApp -->
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">WhatsApp / Phone</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-4 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant text-on-surface font-medium" placeholder="+254..." type="tel"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Segmented Selection: Salvation Status -->
+<div class="space-y-3">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Salvation Status</label>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-primary-container bg-primary-container text-on-primary-fixed transition-all shadow-md" type="button">
+<span class="material-symbols-outlined mb-2 text-3xl" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-bold text-sm">New Believer</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-outline-variant/15 bg-surface-container-lowest text-on-surface-variant hover:border-primary/30 transition-all" type="button">
+<span class="material-symbols-outlined mb-2 text-3xl" data-icon="history_edu">history_edu</span>
+<span class="font-bold text-sm">Re-dedication</span>
+</button>
+</div>
+</div>
+<!-- Selection: Student Status -->
+<div class="space-y-3">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Is this person a student?</label>
+<div class="flex gap-2 p-1.5 bg-surface-container-highest rounded-full w-fit">
+<button class="px-8 py-2.5 rounded-full text-sm font-bold bg-primary-container text-on-primary-fixed shadow-sm" type="button">Yes</button>
+<button class="px-8 py-2.5 rounded-full text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">No</button>
+</div>
+</div>
+<!-- Notes Asymmetric Layout -->
+<div class="space-y-2">
+<div class="flex justify-between items-end mb-1">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Prayer Request &amp; Notes</label>
+<span class="text-[10px] text-primary font-bold">Speech-to-text <span class="material-symbols-outlined align-middle text-sm" data-icon="mic">mic</span></span>
+</div>
+<textarea class="w-full bg-surface-container-highest border-none rounded-lg p-5 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant text-on-surface font-medium resize-none" placeholder="Briefly describe the encounter and any specific prayer needs..." rows="4"></textarea>
+</div>
+<!-- Submit Action -->
+<div class="pt-6">
+<button class="w-full h-16 bg-primary-container text-on-primary-fixed rounded-lg font-extrabold text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-lg" type="submit">
+<span>Submit Entry</span>
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+<p class="text-center mt-6 text-on-surface-variant text-xs flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="cloud_done">cloud_done</span>
+                    Data will sync automatically when online
+                </p>
+</div>
+</form>
+<!-- Outreach History Preview (Bento Style) -->
+<section class="space-y-6 pt-10 border-t border-outline-variant/10">
+<h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Recent Encounters</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-6 rounded-xl border-t-4 border-primary-container shadow-sm flex flex-col justify-between aspect-video">
+<div>
+<p class="text-primary font-black text-xs uppercase mb-1">Central Park</p>
+<h4 class="text-xl font-bold text-on-surface">Moses K.</h4>
+</div>
+<div class="flex items-center gap-2 mt-4">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded">STUDENT</span>
+<span class="bg-tertiary-container/20 text-tertiary text-[10px] font-bold px-2 py-1 rounded">PRAYER REQ</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl shadow-sm flex flex-col justify-between aspect-video">
+<div>
+<p class="text-secondary font-black text-xs uppercase mb-1">Railway Stn</p>
+<h4 class="text-xl font-bold text-on-surface">Faith Wambui</h4>
+</div>
+<div class="flex items-center gap-2 mt-4">
+<span class="bg-primary-container text-on-primary-fixed text-[10px] font-black px-2 py-1 rounded uppercase">New Believer</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-2 pb-safe bg-[#ffffff] dark:bg-slate-900 border-t border-[#f0f1f1] dark:border-slate-800 shadow-[0_-4px_20px_rgba(81,93,105,0.04)] rounded-t-lg">
+<a class="flex flex-col items-center justify-center text-[#515d69] dark:text-slate-400 px-4 py-1 hover:text-[#835000] dark:hover:text-[#fca21e] tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#515d69] dark:text-slate-400 px-4 py-1 hover:text-[#835000] dark:hover:text-[#fca21e] tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="group">group</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Teams</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2e1900] bg-[#fca21e] rounded-md px-4 py-1 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Outreach</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#515d69] dark:text-slate-400 px-4 py-1 hover:text-[#835000] dark:hover:text-[#fca21e] tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Settings</span>
+</a>
+</nav>
+</body></html>

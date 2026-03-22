@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#d8e4f3",
+              "on-primary": "#fff0e4",
+              "surface-dim": "#d2d5d5",
+              "inverse-surface": "#0c0f0f",
+              "surface": "#f6f6f6",
+              "on-error-container": "#520c00",
+              "primary-fixed-dim": "#ec9508",
+              "on-secondary-fixed": "#35404c",
+              "surface-container-high": "#e1e3e3",
+              "on-tertiary": "#fff2cd",
+              "tertiary-dim": "#5e4e00",
+              "on-secondary-container": "#48535f",
+              "secondary-dim": "#46515d",
+              "surface-variant": "#dbdddd",
+              "on-secondary": "#ebf3ff",
+              "error-dim": "#b92902",
+              "error": "#b02500",
+              "background": "#f6f6f6",
+              "on-surface": "#2d2f2f",
+              "outline": "#757777",
+              "on-primary-fixed": "#2e1900",
+              "tertiary-fixed-dim": "#efc900",
+              "on-tertiary-container": "#5b4b00",
+              "primary": "#835000",
+              "on-secondary-fixed-variant": "#515d69",
+              "on-error": "#ffefec",
+              "on-background": "#2d2f2f",
+              "on-surface-variant": "#5a5c5c",
+              "on-tertiary-fixed": "#453900",
+              "secondary-container": "#d8e4f3",
+              "tertiary": "#6c5a00",
+              "primary-fixed": "#fca21e",
+              "surface-container-low": "#f0f1f1",
+              "inverse-on-surface": "#9c9d9d",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed": "#ffd709",
+              "secondary-fixed-dim": "#cad5e4",
+              "surface-bright": "#f6f6f6",
+              "on-primary-container": "#4d2e00",
+              "on-tertiary-fixed-variant": "#665500",
+              "secondary": "#515d69",
+              "tertiary-container": "#ffd709",
+              "primary-dim": "#724600",
+              "inverse-primary": "#fca21e",
+              "outline-variant": "#acadad",
+              "surface-container-highest": "#dbdddd",
+              "surface-container": "#e7e8e8",
+              "on-primary-fixed-variant": "#593500",
+              "surface-tint": "#835000",
+              "primary-container": "#fca21e",
+              "error-container": "#f95630"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f6f6f6; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .sacred-card-border { border-top: 4px solid #fca21e; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f6f6f6] dark:bg-slate-900/80 backdrop-blur-md flex justify-between items-center px-6 h-16 w-full border-none shadow-none">
+<div class="flex items-center gap-4">
+<button class="text-[#835000] dark:text-[#fca21e] active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-['Manrope'] font-bold tracking-tight text-xl font-extrabold text-[#2d2f2f] dark:text-[#f6f6f6]">Manifest Kenya</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8 font-['Manrope'] text-sm font-semibold uppercase tracking-wider">
+<a class="text-[#835000] dark:text-[#fca21e]" href="#">Overview</a>
+<a class="text-[#515d69] dark:text-slate-400 hover:bg-[#f0f1f1] transition-colors px-2 py-1" href="#">Config</a>
+<a class="text-[#515d69] dark:text-slate-400 hover:bg-[#f0f1f1] transition-colors px-2 py-1" href="#">Exports</a>
+<a class="text-[#515d69] dark:text-slate-400 hover:bg-[#f0f1f1] transition-colors px-2 py-1" href="#">Logs</a>
+</nav>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary-container">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="User avatar of a lead evangelist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn3fuf7Y0gufAsVHVD7g5bSnXED1CHj-fFLgjrzJRsr5hOZ-u4-qN6S4b3H9B5eBxRFhClHvyQVk_MiH-t5F0ljE3uLWA9JQq6Vw3Bd_Oig2ut0UChdPiCQopOGXg4sPAmk6mqKmsyZM1deUQ5nV-AnbG2LmP8_2UzXpKxcbvvPU-0OqmKzLOwnU5ZlyUG8sHWPk5Gw2gDwUgLzsWUzzUvawL9DHnPwhCOAS8EczMimTFJZ4pic28_Nlug21gVBLzIpnL3zfbNfu4"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 md:px-12 max-w-7xl mx-auto mb-12">
+<!-- Dashboard Header Section -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<p class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Institutional Oversight</p>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface">Admin Authority</h2>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 bg-surface-container-highest text-primary font-bold text-sm rounded-md transition-all active:scale-95">
+                        Download Audit
+                    </button>
+<button class="px-6 py-2.5 bg-primary-container text-on-primary-fixed font-bold text-sm rounded-md shadow-sm transition-all active:scale-95">
+                        System Sync
+                    </button>
+</div>
+</div>
+</section>
+<!-- Architecture Cards (Bento Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+<div class="md:col-span-2 bg-surface-container-lowest p-10 sacred-card-border shadow-sm flex flex-col justify-between min-h-[240px]">
+<div>
+<span class="material-symbols-outlined text-primary mb-4 text-3xl" data-icon="analytics">analytics</span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-secondary mb-1">Global Reach</h3>
+<p class="text-5xl font-black text-on-surface">84.2k</p>
+</div>
+<p class="text-xs text-outline font-medium mt-4">+12.4% From Last Mission Cycle</p>
+</div>
+<div class="bg-surface-container-lowest p-8 flex flex-col items-center justify-center text-center shadow-sm">
+<span class="material-symbols-outlined text-primary-container text-4xl mb-3" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<p class="text-sm font-bold uppercase tracking-tighter text-secondary">Active Teams</p>
+<p class="text-3xl font-bold text-on-surface mt-1">1,248</p>
+</div>
+<div class="bg-surface-container-lowest p-8 flex flex-col items-center justify-center text-center shadow-sm">
+<span class="material-symbols-outlined text-primary-container text-4xl mb-3" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<p class="text-sm font-bold uppercase tracking-tighter text-secondary">Campaigns</p>
+<p class="text-3xl font-bold text-on-surface mt-1">42</p>
+</div>
+</section>
+<!-- Mission Clusters & Infrastructure Controls -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Infrastructure Controls (Side Column) -->
+<aside class="lg:col-span-1 space-y-8">
+<div>
+<h4 class="text-xs font-black uppercase tracking-[0.2em] text-outline mb-6">Infrastructure Controls</h4>
+<div class="space-y-1">
+<button class="w-full flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container text-primary font-bold rounded-md transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span>Core Node Config</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low text-secondary font-medium rounded-md transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span>Command Protocol</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low text-secondary font-medium rounded-md transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="ios_share">ios_share</span>
+<span>Data Export Portal</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Strategic Summary Card -->
+<div class="bg-primary p-8 rounded-lg text-on-primary shadow-lg overflow-hidden relative">
+<div class="relative z-10">
+<h4 class="text-lg font-bold mb-2">Quarterly Mission Strategy</h4>
+<p class="text-sm opacity-80 mb-6">Expansion focus: Western Rift Valley &amp; Border Districts.</p>
+<button class="w-full py-3 bg-primary-container text-on-primary-fixed font-bold rounded-md uppercase tracking-widest text-xs">Review Protocol</button>
+</div>
+<!-- Abstract Background Graphic -->
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl"></div>
+</div>
+</aside>
+<!-- Data Table: Mission Clusters -->
+<div class="lg:col-span-2">
+<div class="flex items-center justify-between mb-6">
+<h4 class="text-xs font-black uppercase tracking-[0.2em] text-outline">Mission Clusters Status</h4>
+<span class="text-xs font-bold text-primary">Live Updates</span>
+</div>
+<div class="bg-surface-container-lowest shadow-sm overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-secondary text-[10px] font-bold uppercase tracking-wider">
+<th class="px-6 py-4">Cluster Designation</th>
+<th class="px-6 py-4">Lead Authority</th>
+<th class="px-6 py-4">Resource Load</th>
+<th class="px-6 py-4 text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5 font-bold text-on-surface">Nairobi Central</td>
+<td class="px-6 py-5 text-sm text-secondary">Evangelist John</td>
+<td class="px-6 py-5 text-sm">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[85%]"></div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-container/10 text-primary font-black text-[10px] tracking-tighter uppercase rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                                        ACTIVE
+                                    </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5 font-bold text-on-surface">Mombasa Coast</td>
+<td class="px-6 py-5 text-sm text-secondary">Director Sarah</td>
+<td class="px-6 py-5 text-sm">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[42%]"></div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-container/10 text-primary font-black text-[10px] tracking-tighter uppercase rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                                        ACTIVE
+                                    </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5 font-bold text-on-surface">Kisumu West</td>
+<td class="px-6 py-5 text-sm text-secondary">Coordinator Mike</td>
+<td class="px-6 py-5 text-sm">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[94%]"></div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-container/10 text-primary font-black text-[10px] tracking-tighter uppercase rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                                        ACTIVE
+                                    </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5 font-bold text-on-surface">Eldoret North</td>
+<td class="px-6 py-5 text-sm text-secondary">Admin Grace</td>
+<td class="px-6 py-5 text-sm">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-surface-container-highest h-full w-[15%]"></div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container text-outline font-black text-[10px] tracking-tighter uppercase rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                                        DORMANT
+                                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-6 p-6 bg-surface-container-low border-l-4 border-primary-container">
+<p class="text-sm font-medium text-secondary italic">"Precise administration is the foundation of spiritual expansion." — Institutional Guideline 01</p>
+</div>
+</div>
+</div>
+</main>
+<!-- NavigationDrawer (Mobile Placeholder Logic) -->
+<div class="md:hidden fixed inset-y-0 left-0 z-[60] flex flex-col p-6 h-full w-80 bg-[#f6f6f6] dark:bg-slate-950 shadow-2xl rounded-r-lg -translate-x-full">
+<div class="flex items-center gap-4 pb-8 mb-8 border-b border-[#dbdddd]">
+<img alt="User Avatar" class="w-12 h-12 rounded-full border-2 border-primary-container" data-alt="User avatar for mobile drawer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIG-2fTQUh5n1f3K-IrLh-NEAB4LdaaTXN9lQ3iomyufkQ-dbz0ENWZumvbYK3pO2bbZlnhTUn41EOOJI0GDchDdYRJArA2DJve_Jw0EpopL-Nte7CE12XRLE8rpcjG3WsXJ2e-_7-8VbzfY_bNxTmTSxIHbx_ukDIQ2psuPLZRG_rtBSUpp5NdIO7Vrh1Vf6sAmDdVFeyDNejnX4YJGx8sp73-2h9GESJ9I4usn5xiHgvn-ciGMtnZvOv9X_k4LGB7383Cjtqv80"/>
+<div>
+<h5 class="font-bold text-[#835000]">Evangelist John</h5>
+<p class="text-xs text-outline">Lead Evangelist</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-4 p-4 text-[#835000] font-bold bg-[#f0f1f1] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span>Mission Strategy</span>
+</a>
+<a class="flex items-center gap-4 p-4 text-[#2d2f2f] hover:bg-[#e7e8e8] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Field Reports</span>
+</a>
+<a class="flex items-center gap-4 p-4 text-[#2d2f2f] hover:bg-[#e7e8e8] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="volunteer_activism">volunteer_activism</span>
+<span>Community Outreach</span>
+</a>
+</nav>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-2 pb-safe bg-[#ffffff] dark:bg-slate-900 border-t border-[#f0f1f1] shadow-[0_-4px_20px_rgba(81,93,105,0.04)] rounded-t-lg">
+<button class="flex flex-col items-center justify-center text-[#2e1900] bg-[#fca21e] rounded-md px-4 py-1">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Overview</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#515d69] dark:text-slate-400 px-4 py-1 hover:text-[#835000]">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Config</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#515d69] dark:text-slate-400 px-4 py-1 hover:text-[#835000]">
+<span class="material-symbols-outlined" data-icon="ios_share">ios_share</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Exports</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#515d69] dark:text-slate-400 px-4 py-1 hover:text-[#835000]">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-wider">Logs</span>
+</button>
+</nav>
+</body></html>

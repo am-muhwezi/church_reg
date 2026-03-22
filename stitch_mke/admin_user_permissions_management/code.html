@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manifest Kenya | System Administration</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-container": "#d8e4f3",
+                        "on-surface": "#2d2f2f",
+                        "on-tertiary": "#fff2cd",
+                        "error-container": "#f95630",
+                        "primary-container": "#fca21e",
+                        "primary-dim": "#724600",
+                        "on-primary": "#fff0e4",
+                        "on-tertiary-fixed": "#453900",
+                        "surface": "#f6f6f6",
+                        "secondary-fixed-dim": "#cad5e4",
+                        "on-primary-fixed-variant": "#593500",
+                        "inverse-surface": "#0c0f0f",
+                        "inverse-primary": "#fca21e",
+                        "tertiary": "#6c5a00",
+                        "primary-fixed-dim": "#ec9508",
+                        "tertiary-dim": "#5e4e00",
+                        "on-surface-variant": "#5a5c5c",
+                        "on-secondary-fixed-variant": "#515d69",
+                        "on-secondary": "#ebf3ff",
+                        "secondary-fixed": "#d8e4f3",
+                        "outline-variant": "#acadad",
+                        "on-background": "#2d2f2f",
+                        "secondary-dim": "#46515d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f0f1f1",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-error": "#ffefec",
+                        "primary-fixed": "#fca21e",
+                        "error-dim": "#b92902",
+                        "tertiary-container": "#ffd709",
+                        "surface-tint": "#835000",
+                        "tertiary-fixed": "#ffd709",
+                        "primary": "#835000",
+                        "inverse-on-surface": "#9c9d9d",
+                        "secondary": "#515d69",
+                        "on-primary-fixed": "#2e1900",
+                        "on-primary-container": "#4d2e00",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "surface-dim": "#d2d5d5",
+                        "outline": "#757777",
+                        "background": "#f6f6f6",
+                        "surface-variant": "#dbdddd",
+                        "surface-container-high": "#e1e3e3",
+                        "surface-bright": "#f6f6f6",
+                        "on-secondary-container": "#48535f",
+                        "surface-container-highest": "#dbdddd",
+                        "on-error-container": "#520c00",
+                        "error": "#b02500",
+                        "surface-container": "#e7e8e8",
+                        "on-secondary-fixed": "#35404c",
+                        "tertiary-fixed-dim": "#efc900"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-72 flex flex-col fixed left-0 top-0 bg-slate-50 dark:bg-slate-900/50 tonal-layering border-r-0 z-40">
+<div class="flex flex-col gap-y-2 p-6 h-full">
+<div class="mb-10 flex items-center gap-3">
+<img alt="Manifest Kenya Logo" class="h-10 w-10 object-contain" data-alt="Manifest Kenya professional ministry logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsR8EAvUEhWsFZkKUNuY02Zli2l2Sc8qdRKZ1QlTBRSBXx71v_KEXZ5Y9WzoCFBYU7Zo5EjVdmqeMvTmqgWKSZxBhQ5JauLkxE30rTVAEp9QoYZwtSgbuGrL9qL_JlcGazyDF7bkooTOSzr3wYFEhXkHn7QoCCG6e6R0ppX-vcsE-yWdzGPXKvAsnzxjp3gxpmPXLLIewDxQIyJaJ3dFEEcjToJIopuTajILF-QHci-1xt7Jy_uyhf_f092EhqjRiBCrIgqrKwbeQ"/>
+<div>
+<h2 class="text-lg font-bold text-slate-800 dark:text-slate-200 tracking-tight leading-none">Administration</h2>
+<p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-1">Sacred Precision System</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 ease-in-out font-semibold text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 ease-in-out font-semibold text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Member Registry</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 ease-in-out font-semibold text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">how_to_reg</span>
+<span>Service Check-in</span>
+</a>
+<a class="flex items-center gap-3 bg-white dark:bg-slate-800 text-amber-900 dark:text-amber-400 shadow-sm rounded-lg py-3 px-4 transition-all duration-200 ease-in-out font-semibold text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span>Permissions</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-800 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 ease-in-out font-semibold text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-amber-700 dark:hover:text-amber-300 transition-all duration-200 ease-in-out font-semibold text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</div>
+</aside>
+<main class="ml-72 min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 sticky z-30 no-border shadow-[0_4px_20px_-4px_rgba(81,93,105,0.04)]">
+<div class="flex items-center justify-between px-10 h-20 w-full max-w-full font-manrope antialiased tracking-tight">
+<h1 class="text-xl font-extrabold tracking-tighter text-amber-900 dark:text-amber-500">Sacred Ministry Admin</h1>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="bg-surface-container-highest border-none rounded-md py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/40 w-64 transition-all" placeholder="Search members..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-slate-600 dark:text-slate-400">
+<button class="hover:text-amber-600 dark:hover:text-amber-300 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="hover:text-amber-600 dark:hover:text-amber-300 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container overflow-hidden">
+<img alt="Administrator Profile" class="h-full w-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjKsoEQcgAL56hxa2sL7mUO4p_Smi79CZVncznuB61eaywspFZyhNwTlRu_69kI5rSNR_Hotk-FzRzqBfHX0OKfPJmU_8Yj_kh3-BRyPFR9Xz2glWfshnoNM0olznh_GNg9zIbpAssPVSUd1hARdTD8l54y691bLHYL-Vk-zATDuPffC8W1hPXPwBFUfBeCXige9BbiSkgMyYD1I7KGtImtvffWVNpawi_VJxDqxBz7VVNIpx8MWHS5vqLLEmBz9RFBV9P-kLo4OU"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class="p-10 space-y-12">
+<!-- Header Section -->
+<section class="flex justify-between items-end">
+<div class="space-y-2">
+<span class="text-[10px] uppercase tracking-[0.3em] font-extrabold text-primary">System Access</span>
+<h2 class="text-4xl font-extrabold text-on-surface tracking-tight">Administrative Registry</h2>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 border border-outline-variant/30 text-primary font-bold rounded-md hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export Logs
+                    </button>
+<button class="px-6 py-3 bg-primary-container text-on-primary-fixed font-bold rounded-md hover:opacity-90 transition-all flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-lg">person_add</span>
+                        New Registration
+                    </button>
+</div>
+</section>
+<!-- Main Layout Grid (Asymmetric Bento) -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Admin List Section (Left Column) -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<div class="bg-surface-container-lowest rounded-md p-8 shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-lg font-bold text-on-surface">Active Administrators</h3>
+<span class="text-xs font-semibold text-on-surface-variant bg-surface-container px-3 py-1 rounded-full">Total: 12 Admins</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-container">
+<th class="pb-4 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Admin Profile</th>
+<th class="pb-4 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Role</th>
+<th class="pb-4 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Permissions</th>
+<th class="pb-4 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container/50">
+<tr class="group hover:bg-surface-container/30 transition-colors">
+<td class="py-5">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="Felix" class="w-full h-full" data-alt="Avatar of Felix administrator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8rx-dQedav8bA6y_G6kTt8bDmFOycn-TPO5OmrM7Q8BXJqHtPDZVoWTfzkMNrcKcbDZRsJfxoCrPx8lkcrFKg9UJCAG74699BuxeTBoUQXAExmCkldTH3G8OkPVkfxSkYEUO53zOLHMhpRXCCZP-pfiqJOzRsJ0Ws7fZ_R_y5A6Wkd6hNzjJ2jkAaMqGvKGjeP3yM7rxEiQ1ITy5TFzsUCKm4rvFm-_JiHgokRnmDfPRuSMbEqXv-XbezAh0SwI3jdIOAYuPmlDg"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Felix Omoke</p>
+<p class="text-xs text-on-surface-variant">felix.o@manifest.ky</p>
+</div>
+</div>
+</td>
+<td class="py-5">
+<span class="text-xs font-bold py-1 px-3 bg-amber-50 text-amber-800 rounded-sm border border-amber-100">Super Admin</span>
+</td>
+<td class="py-5">
+<div class="flex gap-1 flex-wrap">
+<span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Full Access</span>
+</div>
+</td>
+<td class="py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container/30 transition-colors">
+<td class="py-5">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="Sarah" class="w-full h-full" data-alt="Avatar of Sarah administrator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLLvRRjvW25SVwbl1Qz_ixlptENsH8dAmeIun8Xlbnv4aJBifxNZE-NXVZMKuDPPJBlSwJO1bo3aWFCYuTVzeFXzCjJfa9HcfOZwRiZm5TS1rhNEQvqiqGmc17bYMT9TupIa6c9KPQvzi5BqPH0bot1r4OtDvbyJkudv468nxEnoSer8vp7gcPwx7NySDa4rQmDy4pMXXgK-J_PmHRkm5Eq6So-xDuQpJcEXmm8YxbioLVsxtu2383pd2e5NHVpK144Xpt0-YnTEw"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Sarah Wangari</p>
+<p class="text-xs text-on-surface-variant">sarah.w@manifest.ky</p>
+</div>
+</div>
+</td>
+<td class="py-5">
+<span class="text-xs font-bold py-1 px-3 bg-slate-50 text-slate-700 rounded-sm border border-slate-200">Moderator</span>
+</td>
+<td class="py-5">
+<div class="flex gap-1 flex-wrap max-w-[200px]">
+<span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">View Reports</span>
+<span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Member Mgmt</span>
+</div>
+</td>
+<td class="py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container/30 transition-colors">
+<td class="py-5">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="John" class="w-full h-full" data-alt="Avatar of John administrator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9PSy1xm6xANWKRt6Lm3zfEoyqRKip6n3vi1eGx6k68vWPTUFmloWs-Ym3us7CfJBn-Q-G1cOZ3Ap14qUyuY1mnmoybtl-IwXbwBfSUglCCTLuiIYYSyQrMCNQfvCnEtjWgJ1BAYpEE1wuxm8tJ1BNDXWRqWw0k9d-Utm3xVu5v75FSG2chLXIJ48z1xfpZhgc6wUPNNZwl0BCMJD3wQhF7VbyoX5Ktlwy5xG5zPARXjIfYX6apQu5Guqq3ZM_tn9wOCQS4ANSmTM"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">John Mutua</p>
+<p class="text-xs text-on-surface-variant">john.m@manifest.ky</p>
+</div>
+</div>
+</td>
+<td class="py-5">
+<span class="text-xs font-bold py-1 px-3 bg-slate-50 text-slate-700 rounded-sm border border-slate-200">Registry Clerk</span>
+</td>
+<td class="py-5">
+<div class="flex gap-1 flex-wrap">
+<span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Register Members</span>
+</div>
+</td>
+<td class="py-5 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Create Form Section (Right Column) -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Sacred Feature Card Style Form -->
+<div class="bg-surface-container-lowest rounded-md shadow-sm border-t-4 border-primary-container">
+<div class="p-8">
+<h3 class="text-xl font-extrabold text-on-surface tracking-tight mb-2">Create New Admin</h3>
+<p class="text-sm text-on-surface-variant mb-8">Grant system access to new ministry personnel.</p>
+<form class="space-y-6">
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-widest font-extrabold text-on-surface-variant">Full Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-md py-3 px-4 focus:ring-2 focus:ring-primary/40 text-sm" placeholder="e.g. David Kiprono" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-widest font-extrabold text-on-surface-variant">Email Address</label>
+<input class="w-full bg-surface-container-highest border-none rounded-md py-3 px-4 focus:ring-2 focus:ring-primary/40 text-sm" placeholder="email@manifest.ky" type="email"/>
+</div>
+<div class="space-y-3">
+<label class="text-[10px] uppercase tracking-widest font-extrabold text-on-surface-variant">Permissions Access</label>
+<div class="grid grid-cols-1 gap-3">
+<label class="flex items-center gap-3 p-3 bg-surface-container/50 rounded-md cursor-pointer hover:bg-surface-container transition-colors">
+<input class="rounded text-primary focus:ring-primary border-none bg-surface-variant" type="checkbox"/>
+<span class="text-sm font-semibold">View Reports</span>
+</label>
+<label class="flex items-center gap-3 p-3 bg-surface-container/50 rounded-md cursor-pointer hover:bg-surface-container transition-colors">
+<input class="rounded text-primary focus:ring-primary border-none bg-surface-variant" type="checkbox"/>
+<span class="text-sm font-semibold">Register Members</span>
+</label>
+<label class="flex items-center gap-3 p-3 bg-surface-container/50 rounded-md cursor-pointer hover:bg-surface-container transition-colors">
+<input class="rounded text-primary focus:ring-primary border-none bg-surface-variant" type="checkbox"/>
+<span class="text-sm font-semibold">Manage Permissions</span>
+</label>
+<label class="flex items-center gap-3 p-3 bg-surface-container/50 rounded-md cursor-pointer hover:bg-surface-container transition-colors">
+<input class="rounded text-primary focus:ring-primary border-none bg-surface-variant" type="checkbox"/>
+<span class="text-sm font-semibold">Financial Oversight</span>
+</label>
+</div>
+</div>
+<button class="w-full py-4 bg-primary-container text-on-primary-fixed font-extrabold rounded-md shadow-[0_4px_12px_rgba(252,162,30,0.2)] hover:shadow-[0_6px_16px_rgba(252,162,30,0.3)] transition-all uppercase tracking-widest text-xs mt-4" type="submit">
+                                    Confirm Registration
+                                </button>
+</form>
+</div>
+</div>
+<!-- Informational Stat Card -->
+<div class="bg-primary text-on-primary p-8 rounded-md relative overflow-hidden">
+<div class="relative z-10 space-y-4">
+<span class="material-symbols-outlined text-4xl opacity-50">security</span>
+<h4 class="text-xl font-bold leading-tight">Security Audit Recommended</h4>
+<p class="text-sm opacity-80 leading-relaxed">System logs indicate 4 pending permission changes that require your immediate approval.</p>
+<a class="inline-block pt-2 text-primary-container font-bold hover:underline decoration-2 underline-offset-4 transition-all" href="#">Review Audit Logs →</a>
+</div>
+<!-- Abstract Background Detail -->
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary-container opacity-10 rounded-full blur-3xl"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Service Check-in | Manifest Kenya</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-container": "#d8e4f3",
+                        "on-surface": "#2d2f2f",
+                        "on-tertiary": "#fff2cd",
+                        "error-container": "#f95630",
+                        "primary-container": "#fca21e",
+                        "primary-dim": "#724600",
+                        "on-primary": "#fff0e4",
+                        "on-tertiary-fixed": "#453900",
+                        "surface": "#f6f6f6",
+                        "secondary-fixed-dim": "#cad5e4",
+                        "on-primary-fixed-variant": "#593500",
+                        "inverse-surface": "#0c0f0f",
+                        "inverse-primary": "#fca21e",
+                        "tertiary": "#6c5a00",
+                        "primary-fixed-dim": "#ec9508",
+                        "tertiary-dim": "#5e4e00",
+                        "on-surface-variant": "#5a5c5c",
+                        "on-secondary-fixed-variant": "#515d69",
+                        "on-secondary": "#ebf3ff",
+                        "secondary-fixed": "#d8e4f3",
+                        "outline-variant": "#acadad",
+                        "on-background": "#2d2f2f",
+                        "secondary-dim": "#46515d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f0f1f1",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-error": "#ffefec",
+                        "primary-fixed": "#fca21e",
+                        "error-dim": "#b92902",
+                        "tertiary-container": "#ffd709",
+                        "surface-tint": "#835000",
+                        "tertiary-fixed": "#ffd709",
+                        "primary": "#835000",
+                        "inverse-on-surface": "#9c9d9d",
+                        "secondary": "#515d69",
+                        "on-primary-fixed": "#2e1900",
+                        "on-primary-container": "#4d2e00",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "surface-dim": "#d2d5d5",
+                        "outline": "#757777",
+                        "background": "#f6f6f6",
+                        "surface-variant": "#dbdddd",
+                        "surface-container-high": "#e1e3e3",
+                        "surface-bright": "#f6f6f6",
+                        "on-secondary-container": "#48535f",
+                        "surface-container-highest": "#dbdddd",
+                        "on-error-container": "#520c00",
+                        "error": "#b02500",
+                        "surface-container": "#e7e8e8",
+                        "on-secondary-fixed": "#35404c",
+                        "tertiary-fixed-dim": "#efc900"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        .live-pulse {
+            position: relative;
+        }
+        .live-pulse::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #f95630;
+            border-radius: 50%;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 0 0 rgba(249, 86, 48, 0.7);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: translateY(-50%) scale(0.95); box-shadow: 0 0 0 0 rgba(249, 86, 48, 0.7); }
+            70% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 10px rgba(249, 86, 48, 0); }
+            100% { transform: translateY(-50%) scale(0.95); box-shadow: 0 0 0 0 rgba(249, 86, 48, 0); }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-white/80 backdrop-blur-xl font-manrope antialiased tracking-tight docked full-width top-0 sticky z-50 no-border shadow-[0_4px_20px_-4px_rgba(81,93,105,0.04)]">
+<div class="flex items-center justify-between px-10 h-20 w-full max-w-full">
+<div class="flex items-center gap-4">
+<img alt="Manifest Kenya Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgCA5RYjs84BtIMGab-f5_Uyo1iTKLLtijwG09N4gghPkzGm1rvzp-yrzxRax99hRuB_psnMRCQscawAkNOH-nBsHMyx2y5VWSXUkdaAuBFt6HmCtnjaI709L0TthZvuFlcg6JNThbeIX2CyRa4xVTp7MWIX0kTMHIRO5vkfbBfZ67v4ckb1CltDiyWhehszYsEDFzPY-wujG5Fn2Sk2MwtOhEutE9ppXtdTLk0RVYOlU5PKEc8WC3_qBZ-2Z8mml4A1DkOhC5N48"/>
+<div class="flex flex-col">
+<span class="text-lg font-extrabold tracking-tighter text-amber-900 uppercase leading-none">Manifest Kenya</span>
+<span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Phaneroo Ministries</span>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex items-center gap-6">
+<a class="text-slate-600 font-medium hover:text-amber-600 transition-colors" href="#">Dashboard</a>
+<a class="text-slate-600 font-medium hover:text-amber-600 transition-colors" href="#">Member Registry</a>
+<a class="text-amber-700 font-bold border-b-2 border-amber-500" href="#">Service Check-in</a>
+</nav>
+<div class="flex items-center gap-4 ml-4">
+<div class="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full">
+<span class="live-pulse text-xs font-bold text-red-600 ml-3">LIVE SERVICE</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary-container/20">
+<img alt="Administrator Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5Mc5udFYvkk7efq0Z-KdGqKGuqK4AN9NjmiWTHBTUJ_DhNR3O6fkdks5GZQN337B4zd3agXh_n-11-e3Vx2pnKhia6-Uk6VFdkON3K8B-TvdFZZI0G5OqTBFzYUZGaSpxhtd_sp5fnwX7oZRsaUfaoZRmIMN-UgBJz7DqGdmGCaljNzwPBxQbivekEKG5inwGCkhZz33CcGDtWU9qi881QZE6opwFVBY5KTC-auEbuqSp5ytfsx018AWumZJgMirD71qQcsfdtu4"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class="flex">
+<!-- SideNavBar - Simplified for focus -->
+<aside class="hidden lg:flex h-[calc(100vh-5rem)] w-72 flex-col fixed left-0 top-20 bg-white border-r border-slate-100 font-manrope text-sm font-semibold tracking-wide">
+<div class="flex flex-col gap-y-2 p-6 h-full">
+<nav class="flex flex-col gap-1">
+<a class="text-slate-500 py-3 px-4 hover:bg-slate-50 hover:text-amber-700 transition-all flex items-center gap-3 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Dashboard
+                    </a>
+<a class="text-slate-500 py-3 px-4 hover:bg-slate-50 hover:text-amber-700 transition-all flex items-center gap-3 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span> Member Registry
+                    </a>
+<a class="bg-primary-container/10 text-primary-dim py-3 px-4 flex items-center gap-3 rounded-lg" href="#">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="how_to_reg">how_to_reg</span> Service Check-in
+                    </a>
+</nav>
+<div class="mt-8 p-4 bg-orange-50 rounded-xl border border-orange-100">
+<h4 class="text-xs font-bold text-amber-800 uppercase mb-2">Current Activity</h4>
+<div class="flex items-center justify-between text-xs text-amber-900 mb-1">
+<span>Checked-in</span>
+<span class="font-bold">412</span>
+</div>
+<div class="w-full bg-white/50 rounded-full h-1.5">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-slate-100">
+<a class="text-slate-500 py-3 px-4 hover:bg-slate-50 transition-all flex items-center gap-3 rounded-lg text-error" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span> Log Out
+                    </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-72 min-h-[calc(100vh-5rem)] p-8 lg:p-16">
+<div class="max-w-4xl mx-auto">
+<!-- Live Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-red-600 text-[10px] font-black text-white rounded tracking-[0.2em] uppercase">Live</span>
+<span class="text-xs font-bold uppercase tracking-widest text-primary">Sunday Service • May 14, 2024</span>
+</div>
+<h1 class="text-5xl lg:text-6xl font-extrabold text-on-surface tracking-tighter">Fast-Track <br/><span class="text-primary-container">Check-in</span></h1>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4">
+<div class="bg-amber-100 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="timer">timer</span>
+</div>
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Avg. Wait Time</p>
+<p class="text-lg font-extrabold text-slate-800">Under 30s</p>
+</div>
+</div>
+</div>
+<!-- Primary Focus: Search Interface -->
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary-container to-amber-500 rounded-2xl blur opacity-10 group-focus-within:opacity-25 transition duration-1000"></div>
+<div class="relative bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-slate-100">
+<form class="space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-3">
+<label class="text-xs font-black uppercase tracking-[0.15em] text-slate-400 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span> First Name
+                                    </label>
+<input class="w-full bg-slate-50 border-2 border-transparent focus:border-primary-container/30 focus:bg-white rounded-xl p-5 text-xl font-bold transition-all outline-none" placeholder="e.g. Samuel" type="text"/>
+</div>
+<div class="space-y-3">
+<label class="text-xs font-black uppercase tracking-[0.15em] text-slate-400 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="badge">badge</span> Last Name
+                                    </label>
+<input class="w-full bg-slate-50 border-2 border-transparent focus:border-primary-container/30 focus:bg-white rounded-xl p-5 text-xl font-bold transition-all outline-none" placeholder="e.g. Mwangi" type="text"/>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-fixed py-6 px-10 rounded-xl text-2xl font-black tracking-tight hover:shadow-lg hover:shadow-primary-container/20 active:scale-[0.98] transition-all flex items-center justify-center gap-4" type="button">
+<span class="material-symbols-outlined text-3xl" data-icon="fingerprint">fingerprint</span>
+                                VERIFY &amp; CHECK-IN
+                            </button>
+</form>
+</div>
+</div>
+<!-- Integrated Flow: Member Not Found / Register -->
+<div class="mt-12 overflow-hidden bg-white rounded-2xl border border-slate-100 shadow-sm">
+<div class="flex flex-col md:flex-row">
+<div class="md:w-1/3 bg-slate-50 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-slate-100">
+<div class="w-16 h-16 bg-white flex items-center justify-center rounded-full shadow-inner mb-4">
+<span class="material-symbols-outlined text-slate-300 text-3xl" data-icon="person_search">person_search</span>
+</div>
+<h3 class="font-bold text-slate-400 text-sm uppercase tracking-widest">First time here?</h3>
+</div>
+<div class="flex-1 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="text-center md:text-left">
+<h2 class="text-2xl font-bold text-on-surface">Join the Manifest Kenya Family</h2>
+<p class="text-slate-500 text-sm">Can't find your name? Register in seconds to complete your check-in.</p>
+</div>
+<button class="whitespace-nowrap bg-primary-container/10 text-primary-dim py-4 px-8 rounded-xl font-black text-sm uppercase tracking-wider hover:bg-primary-container/20 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-xl" data-icon="add_circle">add_circle</span>
+                                Register Now
+                            </button>
+</div>
+</div>
+</div>
+<!-- Footer Stats -->
+<div class="mt-16 pt-12 border-t border-slate-100 flex flex-wrap justify-center gap-12 text-center opacity-60">
+<div>
+<p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Today's Attendance</p>
+<p class="text-2xl font-black text-slate-800">412</p>
+</div>
+<div class="hidden sm:block w-px h-12 bg-slate-200"></div>
+<div>
+<p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Live Locations</p>
+<p class="text-2xl font-black text-slate-800">Main Sanctuary</p>
+</div>
+<div class="hidden sm:block w-px h-12 bg-slate-200"></div>
+<div>
+<p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Status</p>
+<p class="text-2xl font-black text-green-600 flex items-center gap-2">
+<span class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>
+                            Active
+                        </p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manifest Kenya - Secure Login</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Manrope Font -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#d8e4f3",
+              "on-primary": "#fff0e4",
+              "surface-dim": "#d2d5d5",
+              "inverse-surface": "#0c0f0f",
+              "surface": "#f6f6f6",
+              "on-error-container": "#520c00",
+              "primary-fixed-dim": "#ec9508",
+              "on-secondary-fixed": "#35404c",
+              "surface-container-high": "#e1e3e3",
+              "on-tertiary": "#fff2cd",
+              "tertiary-dim": "#5e4e00",
+              "on-secondary-container": "#48535f",
+              "secondary-dim": "#46515d",
+              "surface-variant": "#dbdddd",
+              "on-secondary": "#ebf3ff",
+              "error-dim": "#b92902",
+              "error": "#b02500",
+              "background": "#f6f6f6",
+              "on-surface": "#2d2f2f",
+              "outline": "#757777",
+              "on-primary-fixed": "#2e1900",
+              "tertiary-fixed-dim": "#efc900",
+              "on-tertiary-container": "#5b4b00",
+              "primary": "#835000",
+              "on-secondary-fixed-variant": "#515d69",
+              "on-error": "#ffefec",
+              "on-background": "#2d2f2f",
+              "on-surface-variant": "#5a5c5c",
+              "on-tertiary-fixed": "#453900",
+              "secondary-container": "#d8e4f3",
+              "tertiary": "#6c5a00",
+              "primary-fixed": "#fca21e",
+              "surface-container-low": "#f0f1f1",
+              "inverse-on-surface": "#9c9d9d",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed": "#ffd709",
+              "secondary-fixed-dim": "#cad5e4",
+              "surface-bright": "#f6f6f6",
+              "on-primary-container": "#4d2e00",
+              "on-tertiary-fixed-variant": "#665500",
+              "secondary": "#515d69",
+              "tertiary-container": "#ffd709",
+              "primary-dim": "#724600",
+              "inverse-primary": "#fca21e",
+              "outline-variant": "#acadad",
+              "surface-container-highest": "#dbdddd",
+              "surface-container": "#e7e8e8",
+              "on-primary-fixed-variant": "#593500",
+              "surface-tint": "#835000",
+              "primary-container": "#fca21e",
+              "error-container": "#f95630"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Suppression: Not rendered for Transactional Login Flow per Rule -->
+<main class="flex-grow flex items-center justify-center px-6 py-12 relative overflow-hidden">
+<!-- Subtle Ambient Background Element (Illuminated Manuscript feel) -->
+<div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-secondary-container/10 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="w-full max-w-md relative z-10">
+<!-- Brand Anchor / Logo Cluster -->
+<div class="flex flex-col items-center mb-12">
+<div class="w-16 h-16 bg-primary-container rounded-lg flex items-center justify-center mb-6 shadow-[0_8px_30px_rgba(252,162,30,0.2)] transition-transform active:scale-95">
+<span class="material-symbols-outlined text-on-primary-fixed text-4xl" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h1 class="text-3xl font-extrabold tracking-tighter text-on-surface mb-2">Manifest Kenya</h1>
+<p class="text-sm font-semibold uppercase tracking-[0.2em] text-on-secondary-fixed-variant">Ecclesiastical Management</p>
+</div>
+<!-- Sacred Feature Card / Login Form -->
+<div class="bg-surface-container-lowest p-10 rounded-lg shadow-[0_32px_64px_rgba(81,93,105,0.04)] border-t-4 border-primary-container">
+<div class="mb-8">
+<h2 class="text-2xl font-bold text-on-surface tracking-tight mb-2">Secure Access</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed">Please authenticate with your ministry credentials to continue your mission strategy.</p>
+</div>
+<form class="space-y-6">
+<!-- Email Input -->
+<div class="space-y-2">
+<label class="block text-[10px] font-extrabold uppercase tracking-widest text-on-secondary-fixed-variant ml-1">Work Email</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-lg group-focus-within:text-primary transition-colors" data-icon="mail">mail</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-surface-container-highest border-none rounded-md text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" placeholder="evangelist@manifest.ke" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<div class="flex justify-between items-center ml-1">
+<label class="block text-[10px] font-extrabold uppercase tracking-widest text-on-secondary-fixed-variant">Security Key</label>
+<a class="text-[10px] font-bold text-primary hover:underline transition-all" href="#">RECOVER ACCESS</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-lg group-focus-within:text-primary transition-colors" data-icon="lock">lock</span>
+</div>
+<input class="block w-full pl-11 pr-12 py-4 bg-surface-container-highest border-none rounded-md text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" placeholder="••••••••••••" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-4 flex flex-col gap-4">
+<button class="w-full bg-primary-container text-on-primary-fixed font-bold py-4 rounded-md shadow-md hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+<span class="tracking-[0.1em]">LOG IN</span>
+<span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<div class="relative flex items-center py-4">
+<div class="flex-grow border-t border-outline-variant/30"></div>
+<span class="flex-shrink mx-4 text-[10px] font-bold text-outline uppercase tracking-widest">or continue with</span>
+<div class="flex-grow border-t border-outline-variant/30"></div>
+</div>
+<button class="w-full bg-surface-container-low text-on-surface font-semibold py-3 px-4 rounded-md flex items-center justify-center gap-3 border border-outline-variant/15 hover:bg-surface-container-high transition-colors" type="button">
+<img alt="" class="w-5 h-5" data-alt="Google G Logo Icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwi12e1zpTWiBOawyc_IItN1ySRUnsF2o6kzyAvkNGvX1WP_cowEnfP3_d6pGE1uOa2b651XuKdF8stTwq2PPoATrQ17AQ-0ettvksPwytGV2Cni-ENcCSiwEogpgQYBMlD08fL9wQSp59GYwYptyLe3N-igLmJflJ8nE_OvFoTIe4nDoWm1Hug8iil5muMYDyO7uEpvOiAukcnPVyn3KW3Oh3esr-tLPLi5CnNM3_Ep4RS06hfsntHbnTMvBoNG2iuqaxGFsP4fg"/>
+<span class="text-sm">Ministry Google Workspace</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footer Meta -->
+<div class="mt-12 text-center">
+<p class="text-[11px] font-medium text-on-secondary-fixed-variant leading-relaxed">
+                    © 2024 Manifest Kenya Outreach.<br/>
+                    Protected by end-to-end ecclesiastical encryption.
+                </p>
+<div class="mt-6 flex justify-center gap-6">
+<a class="text-[10px] font-bold text-outline hover:text-primary transition-colors tracking-widest uppercase" href="#">Privacy Pact</a>
+<a class="text-[10px] font-bold text-outline hover:text-primary transition-colors tracking-widest uppercase" href="#">System Terms</a>
+<a class="text-[10px] font-bold text-outline hover:text-primary transition-colors tracking-widest uppercase" href="#">Support</a>
+</div>
+</div>
+</div>
+</main>
+<!-- Shell Suppression: BottomNavBar & SideNav are excluded for transactional login screen -->
+</body></html>

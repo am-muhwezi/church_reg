@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#d2d5d5",
+                        "on-secondary-fixed": "#35404c",
+                        "on-tertiary": "#fff2cd",
+                        "inverse-primary": "#fca21e",
+                        "background": "#f6f6f6",
+                        "tertiary": "#6c5a00",
+                        "on-secondary-fixed-variant": "#515d69",
+                        "surface-container-highest": "#dbdddd",
+                        "tertiary-fixed": "#ffd709",
+                        "on-primary-fixed": "#2e1900",
+                        "outline-variant": "#acadad",
+                        "on-error-container": "#520c00",
+                        "surface-bright": "#f6f6f6",
+                        "on-surface": "#2d2f2f",
+                        "surface": "#f6f6f6",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#ffd709",
+                        "inverse-on-surface": "#9c9d9d",
+                        "on-secondary-container": "#48535f",
+                        "tertiary-dim": "#5e4e00",
+                        "secondary-dim": "#46515d",
+                        "inverse-surface": "#0c0f0f",
+                        "surface-container-high": "#e1e3e3",
+                        "on-tertiary-fixed": "#453900",
+                        "surface-container": "#e7e8e8",
+                        "on-primary-fixed-variant": "#593500",
+                        "primary-fixed": "#fca21e",
+                        "on-primary-container": "#4d2e00",
+                        "secondary-fixed": "#d8e4f3",
+                        "secondary-container": "#d8e4f3",
+                        "surface-tint": "#835000",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-secondary": "#ebf3ff",
+                        "primary-container": "#fca21e",
+                        "outline": "#757777",
+                        "tertiary-fixed-dim": "#efc900",
+                        "on-primary": "#fff0e4",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "on-background": "#2d2f2f",
+                        "primary-dim": "#724600",
+                        "primary": "#835000",
+                        "surface-variant": "#dbdddd",
+                        "error": "#b02500",
+                        "secondary": "#515d69",
+                        "on-error": "#ffefec",
+                        "surface-container-low": "#f0f1f1",
+                        "on-surface-variant": "#5a5c5c",
+                        "error-dim": "#b92902",
+                        "error-container": "#f95630",
+                        "secondary-fixed-dim": "#cad5e4",
+                        "primary-fixed-dim": "#ec9508"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sacred-shadow {
+            box-shadow: 0 32px 64px -12px rgba(81, 93, 105, 0.04);
+        }
+        .tonal-transition {
+            transition: background-color 0.3s ease;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar Navigation Shell -->
+<header class="fixed top-0 w-full z-50 bg-[#f6f6f6]/80 backdrop-blur-md shadow-sm">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<img alt="Manifest Kenya Logo" class="h-10 w-auto" data-alt="Manifest Kenya logo in amber and black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn1MCdRUJtE0IDzXdtBpHGnvBusrdylJTfPXJb8YWcHynW4vqr1EMAPiEuwPuWMPqQ_Vu7HWvST8rx3Sg4r_kBcVNk0cN10r9nsTiqRwTeHf7QAYiwbqzp42YvjakTf1o8dtC_BWlWJ0k-Yv8KD7Do4Nn7sWpbjJL4KTUteW8wsOB8oIa_YnGA-9O5hXVhkILCSzHvhq6SJhHj4TSD_5A-t-TLcWTPPm1lHE6s7pEopsU-EehafxOhSFPveQ33-lQ7YDKlDjGPPMA"/>
+<span class="font-headline font-extrabold text-xl tracking-tighter text-primary">Manifest Kenya</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-primary font-bold border-b-2 border-primary-container font-medium hover:text-primary-container transition-colors duration-300" href="#">Home</a>
+<a class="text-secondary font-medium hover:text-primary-container transition-colors duration-300" href="#">Our Mission</a>
+<a class="text-secondary font-medium hover:text-primary-container transition-colors duration-300" href="#">Impact</a>
+<a class="px-6 py-2 bg-primary-container text-on-primary-fixed font-bold rounded shadow-sm hover:opacity-90 transition-opacity" href="#">Login</a>
+</nav>
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main>
+<!-- Hero Section: The Illuminated Manuscript -->
+<section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-surface">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent z-10"></div>
+<img alt="Hero Background" class="w-full h-full object-cover opacity-20 grayscale scale-105" data-alt="Modern architectural structure with dramatic lighting and space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc4ZWeVOUM9F7HBE_M0fGICQSv57g_BXxDO03UY3PuTO2diLjlHf0fYVvh5wUCfv82fz2hs5-yZB8vrouv3rddnt8cTt8vrGo-IzJuUVKbOom7pNU7h8TRGRhOPnGcyd1HCW9R-lJ6OuqdNWo7TLKm4v7d9RZtPEA-WrDL1u4MO1kdlYX0_Eun0S8zCJZF96iqVNn81XAq3XnHbZzvRRez1qQpOqWkxNjtnBrGLGGWXkNjyWTnBo-t66HuwyP8FiyGAplhR51imc8"/>
+</div>
+<div class="relative z-20 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-8">
+<span class="inline-block py-1 px-3 bg-primary-container/20 text-primary font-bold text-xs uppercase tracking-widest mb-6 rounded">The Great Commission</span>
+<h1 class="font-headline text-6xl md:text-8xl font-extrabold tracking-tight text-on-surface mb-8 leading-[0.9]">
+                        Make <span class="text-primary">Manifest</span>
+</h1>
+<p class="text-xl md:text-2xl text-secondary max-w-2xl font-light leading-relaxed mb-10">
+                        Bridging spiritual expansion with outreach precision. Deploy enterprise-grade tools to accelerate the harvest across Kenya and beyond.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="px-10 py-5 bg-primary-container text-on-primary-fixed font-extrabold rounded-lg sacred-shadow hover:scale-[1.02] active:scale-95 transition-all text-lg">
+                            Join the Mission
+                        </button>
+<button class="px-10 py-5 border-2 border-outline-variant/30 text-primary font-bold rounded-lg hover:bg-surface-container transition-all text-lg">
+                            View Impact Report
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 1: Our Mission (Sacred Feature) -->
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+<div class="space-y-8">
+<h2 class="font-headline text-4xl font-bold tracking-tight text-on-surface border-l-4 border-primary-container pl-6">Our Mission</h2>
+<div class="space-y-6 text-lg text-secondary leading-relaxed">
+<p>Manifest Kenya is an extension of <span class="font-bold text-on-surface">Phaneroo Ministries International</span>, driven by the mandate to make manifest the glory of God in every sphere of influence.</p>
+<p>Under the spiritual oversight of <span class="font-bold text-primary">Apostle Grace Lubega</span>, we are committed to the transformation of lives through the undiluted Word of God and strategic outreach operations that leave no soul behind.</p>
+</div>
+</div>
+<div class="relative aspect-square bg-surface-container-lowest rounded-xl overflow-hidden sacred-shadow p-2">
+<img alt="Mission Image" class="w-full h-full object-cover rounded-lg" data-alt="Apostle Grace Lubega preaching to a massive crowd in Kenya" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRPDMouKLcJn1tMybK-uLsnPDFy7Q4JRC8PCI7v-KI5E9B1pfHxYXhTLxXkBGgsrX5TkNBPL9EIi0gckKPulO4dFbFYE27XgLPHAkXtIfYxREmKSDq_oZkNEo4d0Jpn_g5En-jt1dRUChi02CQ-tmQJ9bchP4h_jiMVxiDrVrPkBrJFHpAzs1IM1QH_bNFITHjtJqhsKU1MNzKOzdXBG0G6p6nuvY4_W1iLUbSPF0sXEgH2JwUazjtX1fdtKHmm04SfV8XwZaGUd4"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: The Outreach System (Bento Grid) -->
+<section class="py-32 bg-surface">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-20">
+<h2 class="font-headline text-4xl md:text-5xl font-extrabold tracking-tighter mb-4">The Outreach System</h2>
+<p class="text-secondary max-w-xl mx-auto">Precision-engineered tools for the modern evangelist.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Data Entry Card -->
+<div class="md:col-span-2 bg-surface-container-lowest p-10 rounded-xl sacred-shadow border-t-4 border-primary-container flex flex-col justify-between group">
+<div>
+<span class="material-symbols-outlined text-4xl text-primary mb-6" style="font-variation-settings: 'FILL' 1;">dataset</span>
+<h3 class="text-2xl font-bold mb-4">Real-Time Data Entry</h3>
+<p class="text-secondary leading-relaxed max-w-md">Capture every soul won and every testimony shared directly from the field. Our offline-first architecture ensures no data is lost in remote regions.</p>
+</div>
+<div class="mt-12 h-40 bg-surface-container rounded-lg overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent"></div>
+<!-- Decorative UI element -->
+<div class="p-4 space-y-2">
+<div class="w-full h-3 bg-surface-container-highest rounded-full"></div>
+<div class="w-3/4 h-3 bg-surface-container-highest rounded-full"></div>
+<div class="w-1/2 h-3 bg-primary-container/40 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Dashboard Card -->
+<div class="bg-secondary text-surface p-10 rounded-xl sacred-shadow flex flex-col items-center text-center justify-center">
+<span class="material-symbols-outlined text-5xl text-primary-container mb-6">analytics</span>
+<h3 class="text-2xl font-bold mb-4">Command Center</h3>
+<p class="text-surface/70 leading-relaxed">Centralized dashboards for ministry leaders to track progress across multiple regions simultaneously.</p>
+<button class="mt-8 text-primary-container font-bold hover:underline">Explore Tools</button>
+</div>
+<!-- Reporting Card -->
+<div class="bg-surface-container-lowest p-10 rounded-xl sacred-shadow border-t-4 border-primary flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-4xl text-primary mb-6">description</span>
+<h3 class="text-2xl font-bold mb-4">Strategic Reporting</h3>
+<p class="text-secondary leading-relaxed">Generate automated impact reports for stakeholders, highlighting growth patterns and resource allocation needs.</p>
+</div>
+<div class="mt-8 pt-8 border-t border-outline-variant/20">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold">15+</div>
+<span class="text-sm font-medium">Report Templates</span>
+</div>
+</div>
+</div>
+<!-- Integration Card -->
+<div class="md:col-span-2 bg-gradient-to-br from-primary to-primary-dim p-10 rounded-xl sacred-shadow text-on-primary">
+<div class="flex flex-col md:flex-row gap-10 items-center">
+<div class="flex-1">
+<h3 class="text-3xl font-extrabold mb-4">Global Integration</h3>
+<p class="opacity-80 leading-relaxed mb-6">Connect your outreach data with existing church management systems. We bridge the gap between street ministry and local assembly discipleship.</p>
+<div class="flex gap-4">
+<span class="px-3 py-1 bg-white/10 rounded text-xs uppercase font-bold">API Access</span>
+<span class="px-3 py-1 bg-white/10 rounded text-xs uppercase font-bold">Cloud Sync</span>
+</div>
+</div>
+<div class="w-full md:w-1/3 flex justify-center">
+<span class="material-symbols-outlined text-8xl opacity-30">hub</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Spiritual Impact (Visual Proof) -->
+<section class="py-32 bg-surface-container-low overflow-hidden relative">
+<div class="max-w-7xl mx-auto px-6 relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-headline text-5xl font-extrabold tracking-tighter mb-8 leading-tight">Quantifying the <span class="text-primary">Spirit's Move</span></h2>
+<p class="text-xl text-secondary mb-12">While the Spirit moves beyond numbers, our stewardship requires we account for every harvest entrusted to us.</p>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-2">
+<div class="text-6xl font-extrabold text-primary tracking-tighter">1.2M+</div>
+<div class="text-sm font-bold uppercase tracking-widest text-secondary/60">Souls Saved</div>
+</div>
+<div class="space-y-2">
+<div class="text-6xl font-extrabold text-on-surface tracking-tighter">4.5M</div>
+<div class="text-sm font-bold uppercase tracking-widest text-secondary/60">People Reached</div>
+</div>
+</div>
+</div>
+<div class="relative">
+<!-- Impact Map Representation -->
+<div class="aspect-square bg-surface-container-lowest rounded-full sacred-shadow flex items-center justify-center p-8 relative">
+<img alt="Impact Map" class="w-full h-full object-cover rounded-full opacity-40 grayscale" data-alt="Abstract map of Kenya showing growth clusters" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmQJBX83OW_2-njhoZP2dQdkJu5yG_NAm_8nY8sBbeKqwAKk5jApf6416Nx-kcdKQBlbLcy6AxSOB170ACnJQHz7RSdJeTae0-_g5LPl9p4FmQsXzpmW-RGfnISY2l8UnhMOIhWRWq_UogNGMTE6wo8JsL2bOQ-93ghJ9DyzLMeyCDeMZiq3LCh3bjIMw7lyIEtX7JSibn3D6Ff9wMA8asq5uaB5qC5sioQcpwfKrvnyZ-Men3Qk4s_fssvQ5asuKhvdiBkLAv39g"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-32 h-32 bg-primary-container rounded-full flex items-center justify-center sacred-shadow border-8 border-surface animate-pulse">
+<span class="material-symbols-outlined text-4xl text-on-primary-fixed">public</span>
+</div>
+</div>
+</div>
+<!-- Floating metrics -->
+<div class="absolute top-10 right-0 bg-surface-container-lowest p-4 rounded-lg sacred-shadow border-l-4 border-primary">
+<span class="text-xs font-bold text-secondary">LIVE REACH</span>
+<div class="text-xl font-bold">+245 Today</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Trusted by the Harvest (Testimonial) -->
+<section class="py-32 bg-surface">
+<div class="max-w-4xl mx-auto px-6 text-center">
+<span class="material-symbols-outlined text-6xl text-primary/20 mb-10">format_quote</span>
+<blockquote class="font-headline text-3xl md:text-4xl font-light italic leading-relaxed text-on-surface mb-12">
+                    "Precision in administration is not merely a corporate value; it is a spiritual discipline. When we manage the harvest with excellence, we honor the One who sent us into the field."
+                </blockquote>
+<div class="flex flex-col items-center">
+<div class="w-20 h-20 rounded-full bg-surface-container-highest mb-4 overflow-hidden">
+<img alt="Leader Portrait" class="w-full h-full object-cover" data-alt="Portrait of a ministry administrative leader" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6F8NNJj9qfUiBi9MA_f4yQSpiLRVtdM6u2IquCUaQGrMUSGMHHQWYoA1Pw2Fs7dRZPfZ5UKK8AD19zfRsaOs0lSHIVX6BO3pcYP-kmS0Stl3v301deuPlCtU-mQuSIiE-wZNY-uhYmFX4kcTvPG5pcr8IwjlU96GbpKVaZ60Go2q3lqPubz-6CVYRcXUa6ROsFD5LKOlCdTJeuMK1jQ6Rgu5NrPIiLvMjRCNZ_CfkuVaj_YXb08BdZBU6kTtzpXRCgRwTMK_Uyrg"/>
+</div>
+<div class="font-bold text-on-surface text-lg">Dr. Samuel Mwangi</div>
+<div class="text-secondary text-sm uppercase tracking-widest">Director of Global Operations</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-24 bg-surface px-6">
+<div class="max-w-5xl mx-auto bg-secondary p-12 md:p-20 rounded-2xl relative overflow-hidden shadow-2xl">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 rounded-full -mr-32 -mt-32"></div>
+<div class="relative z-10 text-center">
+<h2 class="font-headline text-4xl md:text-5xl font-extrabold text-surface mb-8">Ready to Scale the Harvest?</h2>
+<p class="text-surface/70 text-lg mb-12 max-w-2xl mx-auto">Join hundreds of outreach teams across Kenya using Manifest to streamline their mission and amplify their impact.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-6">
+<button class="px-12 py-5 bg-primary-container text-on-primary-fixed font-extrabold rounded-lg hover:bg-primary-container/90 transition-all text-xl">Get Started Now</button>
+<button class="px-12 py-5 border border-surface/30 text-surface font-bold rounded-lg hover:bg-surface/10 transition-all text-xl">Book a Demo</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="bg-[#f0f1f1] w-full">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 gap-6 w-full max-w-7xl mx-auto">
+<div class="flex flex-col gap-4 items-center md:items-start">
+<div class="text-lg font-bold text-[#2d2f2f] flex items-center gap-2">
+<img alt="Manifest Logo" class="h-6 w-auto" data-alt="Small logo for footer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYX6TQnnRCSNcwXH8KXeSz8uxvVh_mUEELuIFSzOvCFTKbpxVA5TiBR1T7j8fs1KWIETMxgPBy0HRcNB1Vc1DNyXdpI5HUAkpVXJtMjCZSgYUSxQlZLJG9k8K8icGb5WcMQHW7T8482XvhVk3HW53A0bFACXAzgBDn6bwnNn37LF7h_ZMxhq3Y05gyBoOMiLJvUTaBuzXA0pSm7L1bZzE4MciSFB-6JMU7Wi_cd0ZZFlP57hd9OihRgd8yNmQIl3yce2UMqtM1uWo"/>
+                    Manifest Kenya
+                </div>
+<p class="font-['Manrope'] text-sm text-[#515d69] text-center md:text-left">© 2024 Manifest Kenya. Built for the Great Commission.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Manrope'] text-sm text-[#515d69] hover:text-[#835000] transition-opacity" href="#">Our Mission</a>
+<a class="font-['Manrope'] text-sm text-[#515d69] hover:text-[#835000] transition-opacity" href="#">Impact Report</a>
+<a class="font-['Manrope'] text-sm text-[#515d69] hover:text-[#835000] transition-opacity" href="#">Statement of Faith</a>
+<a class="font-['Manrope'] text-sm text-[#515d69] hover:text-[#835000] transition-opacity" href="#">Privacy</a>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[#835000]">public</span>
+<span class="material-symbols-outlined text-[#835000]">share</span>
+</div>
+</div>
+</footer>
+</body></html>
