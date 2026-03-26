@@ -1,14 +1,12 @@
 from advanced_alchemy.base import UUIDAuditBase
-from sqlalchemy import Mapped
+from sqlalchemy import Boolean, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Admin(UUIDAuditBase):
     __tablename__ = "admins"
 
-    # Define your admin-specific fields here, for example:
-    username: Mapped[str]  # Add appropriate column definition
-    email: Mapped[str]     # Add appropriate column definition
-    password_hash: Mapped[str]  # Add appropriate column definition
-
-    def __repr__(self):
-        return f"Admin(username='{self.username}', email='{self.email}')"
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    password_hash: Mapped[str] = mapped_column(String(200), nullable=False)
+    is_super_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

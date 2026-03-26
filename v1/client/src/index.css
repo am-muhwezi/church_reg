@@ -112,3 +112,16 @@
   0%, 100% { box-shadow: 0 0 0 0 rgba(249,86,48,0.6); }
   70%       { box-shadow: 0 0 0 8px rgba(249,86,48,0); }
 }
+
+@media print {
+  /* Hide nav, sidebar, and action buttons */
+  nav, aside, .print\:hidden { display: none !important; }
+
+  body { background: white !important; color: black !important; }
+
+  /* Ensure cards render without shadow */
+  .shadow-card { box-shadow: none !important; border: 1px solid #e0e0e0; }
+
+  /* Keep bar chart colors visible */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

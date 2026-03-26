@@ -1,10 +1,35 @@
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { MOCK_SAINTS } from '../../data/mockData'
+import { getSaint } from '../../api/saints'
+import type { SaintWithStats } from '../../api/types'
 
 export default function SaintDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const saint = MOCK_SAINTS.find((s) => s.id === id)
+  const [saint, setSaint] = useState<SaintWithStats | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (id) getSaint(id).then(setSaint).finally(() => setLoading(false))
+  }, [id])
+
+  const formatDate = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'
+
+  if (loading) {
+    return (
+      <div className="p-6 md:p-10 space-y-8">
+        <div className="h-5 w-24 bg-surface-container-high rounded animate-pulse" />
+        <div className="bg-surface-container-lowest rounded-md shadow-card p-8 flex gap-6 animate-pulse">
+          <div className="w-20 h-20 rounded-full bg-surface-container-high flex-shrink-0" />
+          <div className="flex-1 space-y-3 pt-2">
+            <div className="h-6 bg-surface-container-high rounded w-1/2" />
+            <div className="h-4 bg-surface-container-high rounded w-1/3" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!saint) {
     return (
@@ -18,15 +43,17 @@ export default function SaintDetail() {
     )
   }
 
-  const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' })
-
-  const fields: Array<{ icon: string; label: string; value: string | boolean | number }> = [
+  const fields: Array<{ icon: string; label: string; value: string }> = [
     { icon: 'mail', label: 'Email', value: saint.email },
+    { icon: 'call', label: 'Phone', value: saint.phone_number || '—' },
     { icon: 'home', label: 'Residence', value: saint.residence || '—' },
-    { icon: 'work', label: 'Occupation', value: saint.occupation || '—' },
     { icon: saint.gender ? 'man' : 'woman', label: 'Gender', value: saint.gender ? 'Male' : 'Female' },
+    { icon: 'work', label: 'Occupation', value: saint.student ? '—' : (saint.occupation || '—') },
     { icon: 'school', label: 'Student', value: saint.student ? 'Yes' : 'No' },
+    ...(saint.student ? [
+      { icon: 'account_balance', label: 'University', value: saint.university || '—' },
+      { icon: 'location_on', label: 'Institution Location', value: saint.institution_location || '—' },
+    ] : []),
     { icon: 'star', label: 'First-time visitor', value: saint.first_time ? 'Yes' : 'No' },
     { icon: 'chat', label: 'WhatsApp consent', value: saint.whatsApp_group_consent ? 'Yes' : 'No' },
     { icon: 'shield', label: 'Data sharing consent', value: saint.consent_to_share_info ? 'Yes' : 'No' },
@@ -35,7 +62,7 @@ export default function SaintDetail() {
   ]
 
   return (
-    <div className="p-6 md:p-10 animate-fade-up">
+    <div className="p-6 md:p-10">
       {/* Back */}
       <button
         onClick={() => navigate('/admin/saints')}
@@ -62,7 +89,9 @@ export default function SaintDetail() {
               </span>
             )}
           </div>
-          <p className="text-sm text-on-surface-variant mb-4">{saint.occupation}</p>
+          <p className="text-sm text-on-surface-variant mb-4">
+            {saint.student ? (saint.university || 'Student') : (saint.occupation || '—')}
+          </p>
 
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col gap-0.5">
@@ -72,7 +101,7 @@ export default function SaintDetail() {
             <div className="w-px h-10 bg-surface-container-highest self-center" />
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Last Seen</span>
-              <span className="text-sm font-bold text-on-surface">{formatDate(saint.last_seen)}</span>
+              <span className="text-sm font-bold text-on-surface">{formatDate(saint.last_seen ?? null)}</span>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../components/Logo'
+import { registerSaint, checkInSaint } from '../api/saints'
 
 type RadioGroupProps = {
   name: string
@@ -46,15 +47,19 @@ export default function Register() {
     first_name: params.get('first') ?? '',
     last_name: params.get('last') ?? '',
     email: '',
+    phone_number: '',
     gender: 'male',
     student: 'no',
     occupation: '',
     residence: '',
+    university: '',
+    institution_location: '',
     first_time: 'yes',
     whatsApp_group_consent: 'no',
     consent_to_share_info: true,
   })
   const [loading, setLoading] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [step, setStep] = useState(1)
 
   const set = (key: keyof typeof form, val: string | boolean) =>
@@ -63,9 +68,29 @@ export default function Register() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 800))
-    setLoading(false)
-    navigate(`/welcome?first=${encodeURIComponent(form.first_name)}&returning=false`)
+    setSubmitError('')
+    try {
+      const saint = await registerSaint({
+        first_name: form.first_name,
+        last_name: form.last_name,
+        email: form.email,
+        phone_number: form.phone_number || null,
+        gender: form.gender === 'male',
+        student: form.student === 'yes',
+        occupation: form.student === 'yes' ? null : (form.occupation || null),
+        residence: form.residence || null,
+        university: form.student === 'yes' ? (form.university || null) : null,
+        institution_location: form.student === 'yes' ? (form.institution_location || null) : null,
+        first_time: form.first_time === 'yes',
+        whatsApp_group_consent: form.whatsApp_group_consent === 'yes',
+        consent_to_share_info: form.consent_to_share_info,
+      })
+      await checkInSaint(saint.id)
+      navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`)
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+      setLoading(false)
+    }
   }
 
   const TOTAL_STEPS = 3
@@ -123,6 +148,11 @@ export default function Register() {
                   <input className="field-input" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => set('email', e.target.value)} required />
                 </div>
 
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Phone Number</label>
+                  <input className="field-input" type="tel" placeholder="e.g. 0712345678 or +254712345678" value={form.phone_number} onChange={(e) => set('phone_number', e.target.value)} />
+                </div>
+
                 <div className="flex flex-col gap-2">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Gender</label>
                   <RadioGroup
@@ -154,11 +184,6 @@ export default function Register() {
                   <h2 className="text-lg font-bold text-on-surface tracking-tight">Affiliation & Status</h2>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Occupation</label>
-                  <input className="field-input" placeholder="e.g. Software Engineer" value={form.occupation} onChange={(e) => set('occupation', e.target.value)} />
-                </div>
-
                 <div className="p-5 bg-surface-container-low rounded-md flex flex-col gap-3">
                   <div>
                     <h4 className="font-bold text-sm text-on-surface">Student Status</h4>
@@ -171,6 +196,39 @@ export default function Register() {
                     onChange={(v) => set('student', v)}
                   />
                 </div>
+
+                {form.student === 'yes' ? (
+                  <div className="flex flex-col gap-4 animate-fade-up">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">University / Institution</label>
+                      <input
+                        className="field-input"
+                        placeholder="e.g. University of Nairobi"
+                        value={form.university}
+                        onChange={(e) => set('university', e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Institution Location</label>
+                      <input
+                        className="field-input"
+                        placeholder="e.g. Nairobi, Westlands Campus"
+                        value={form.institution_location}
+                        onChange={(e) => set('institution_location', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1 animate-fade-up">
+                    <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Occupation</label>
+                    <input
+                      className="field-input"
+                      placeholder="e.g. Software Engineer"
+                      value={form.occupation}
+                      onChange={(e) => set('occupation', e.target.value)}
+                    />
+                  </div>
+                )}
 
                 <div className="p-5 bg-surface-container-low rounded-md flex flex-col gap-3">
                   <div>
@@ -252,6 +310,10 @@ export default function Register() {
                     </span>
                   </label>
                 </div>
+
+                {submitError && (
+                  <p className="text-xs text-error font-semibold px-1">{submitError}</p>
+                )}
 
                 <div className="flex gap-3">
                   <button type="button" className="btn-secondary flex-1 text-sm" onClick={() => setStep(2)}>

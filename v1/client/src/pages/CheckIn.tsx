@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
-import { searchSaint } from '../data/mockData'
+import { searchSaint } from '../api/saints'
 
 export default function CheckIn() {
   const navigate = useNavigate()
@@ -19,16 +19,17 @@ export default function CheckIn() {
     setError('')
     setLoading(true)
 
-    // Simulate API latency
-    await new Promise((r) => setTimeout(r, 600))
-
-    const found = searchSaint(firstName, lastName)
-    setLoading(false)
-
-    if (found) {
-      navigate(`/confirm?id=${found.id}&first=${encodeURIComponent(found.first_name)}&last=${encodeURIComponent(found.last_name)}`)
-    } else {
-      navigate(`/register?first=${encodeURIComponent(firstName.trim())}&last=${encodeURIComponent(lastName.trim())}`)
+    try {
+      const saint = await searchSaint(firstName.trim(), lastName.trim())
+      if (saint) {
+        navigate('/confirm', { state: { saint } })
+      } else {
+        navigate(`/register?first=${encodeURIComponent(firstName.trim())}&last=${encodeURIComponent(lastName.trim())}`)
+      }
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -104,20 +105,6 @@ export default function CheckIn() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1 h-px bg-surface-container-highest" />
-            <span className="text-[10px] font-bold text-outline uppercase tracking-widest">or</span>
-            <div className="flex-1 h-px bg-surface-container-highest" />
-          </div>
-
-          <button
-            onClick={() => navigate('/register')}
-            className="btn-secondary w-full flex items-center justify-center gap-2 text-sm"
-          >
-            <span className="material-symbols-outlined text-[18px]">person_add</span>
-            Register as a new member
-          </button>
         </div>
       </main>
 

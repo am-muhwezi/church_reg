@@ -1,11 +1,24 @@
+import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
+
+const REDIRECT_SECONDS = 6
 
 export default function Welcome() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const firstName = params.get('first') ?? 'Friend'
   const isReturning = params.get('returning') === 'true'
+  const [countdown, setCountdown] = useState(REDIRECT_SECONDS)
+
+  useEffect(() => {
+    if (countdown <= 0) {
+      navigate('/', { replace: true })
+      return
+    }
+    const t = setTimeout(() => setCountdown((c) => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [countdown, navigate])
 
   return (
     <div className="min-h-screen flex flex-col bg-surface">
@@ -68,14 +81,23 @@ export default function Welcome() {
             </div>
           </div>
 
-          <button
-            onClick={() => navigate('/')}
-            className="btn-tertiary text-sm w-full"
-          >
-            Register another person
-          </button>
         </div>
       </main>
+
+      {/* Redirect countdown */}
+      <div className="bg-surface-container-lowest px-6 pb-2 pt-0">
+        <div className="max-w-sm mx-auto space-y-2">
+          <div className="h-1 bg-surface-container-high rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary-container rounded-full transition-all duration-1000 ease-linear"
+              style={{ width: `${(countdown / REDIRECT_SECONDS) * 100}%` }}
+            />
+          </div>
+          <p className="text-[10px] text-outline text-center">
+            Returning to check-in in {countdown}s
+          </p>
+        </div>
+      </div>
 
       <footer className="bg-surface-container-lowest pb-8 text-center">
         <p className="text-[10px] text-outline">

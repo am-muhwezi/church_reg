@@ -1,27 +1,34 @@
 import { useState, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Logo from '../../components/Logo'
+import { loginAdmin } from '../../api/auth'
+import { useAuth } from '../../context/AuthContext'
+import { ApiError } from '../../api/client'
 
 export default function AdminLogin() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { saveAuth } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/admin'
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 800))
-    setLoading(false)
-
-    // Mock: any credentials work
-    if (email && password) {
-      navigate('/admin')
-    } else {
-      setError('Please enter your email and password.')
+    try {
+      const res = await loginAdmin(email, password)
+      saveAuth(res.access_token, res.admin_id, res.admin_name, res.admin_email, res.is_super_admin)
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(err instanceof ApiError ? err.detail : 'Login failed. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 

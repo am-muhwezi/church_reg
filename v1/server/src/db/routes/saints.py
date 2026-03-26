@@ -1,28 +1,67 @@
-from fastapi import APIRouter, Depends
+import uuid
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.schemas.saints import SaintCreate
 
-from src.services.saints_service import register_saint, welcome_saint_service
-from src.db.setup import get_session
-from src.db.repositories.dependencies.saints import get_saints_repo
-
-
-saints_router = APIRouter(
-    prefix="",
-    tags=["saints"]
+from src.db.routes.auth import require_admin
+from src.schemas.saints import SaintCreate, SaintRead
+from src.schemas.admin import SaintWithStats
+from src.schemas.attendance import CheckInCreate, CheckInResponse
+from src.services.saints_service import (
+    register_saint,
+    search_saint,
+    list_saints,
+    get_saint_with_stats,
 )
+from src.services.checkin_service import check_in_saint
+from src.db.setup import get_session
 
 
-@saints_router.post("/register")
+saints_router = APIRouter(prefix="", tags=["saints"])
+
+
+@saints_router.post("/register", status_code=status.HTTP_201_CREATED, response_model=SaintRead)
 async def register_saint_route(
-    data: SaintCreate, db: AsyncSession = Depends(get_session)
+    data: SaintCreate,
+    db: AsyncSession = Depends(get_session),
 ):
     return await register_saint(db, data)
 
-@saints_router.get("/welcome")
-async def welcome_saint(
-        first_name: str,
-        last_name: str,
-        db: AsyncSession = Depends(get_session)
+
+@saints_router.get("/search", response_model=SaintRead)
+async def search_saint_route(
+    first_name: str,
+    last_name: str,
+    db: AsyncSession = Depends(get_session),
 ):
-    return await welcome_saint_service(db, first_name, last_name)   
+    saint = await search_saint(db, first_name, last_name)
+    if saint is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Saint not found")
+    return saint
+
+
+@saints_router.get("/", response_model=list[SaintRead], dependencies=[Depends(require_admin)])
+async def list_saints_route(db: AsyncSession = Depends(get_session)):
+    return await list_saints(db)
+
+
+@saints_router.get("/{saint_id}", response_model=SaintWithStats, dependencies=[Depends(require_admin)])
+async def get_saint_route(
+    saint_id: uuid.UUID,
+    db: AsyncSession = Depends(get_session),
+):
+    result = await get_saint_with_stats(db, saint_id)
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Saint not found")
+    saint, attendance_count, last_seen = result
+    return SaintWithStats.model_validate(
+        {**saint.__dict__, "attendance_count": attendance_count, "last_seen": last_seen}
+    )
+
+
+@saints_router.post("/checkin", response_model=CheckInResponse)
+async def checkin_saint_route(
+    data: CheckInCreate,
+    db: AsyncSession = Depends(get_session),
+):
+    return await check_in_saint(db, data.saint_id)

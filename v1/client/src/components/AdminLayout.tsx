@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import Logo from './Logo'
+import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
   { icon: 'dashboard', label: 'Overview', to: '/admin' },
@@ -45,6 +46,19 @@ function BottomNavItem({ icon, label, to }: { icon: string; label: string; to: s
 
 export default function AdminLayout() {
   const navigate = useNavigate()
+  const { adminName, isSuperAdmin, clearAuth } = useAuth()
+
+  const initials = adminName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+
+  const handleLogout = () => {
+    clearAuth()
+    navigate('/admin/login', { replace: true })
+  }
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
@@ -79,8 +93,15 @@ export default function AdminLayout() {
               Live
             </span>
           </div>
-          <div className="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold text-sm border-2 border-primary-container/30">
-            PJ
+          <div className="flex items-center gap-2">
+            {isSuperAdmin && (
+              <span className="hidden md:block text-[9px] font-black uppercase tracking-widest text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full">
+                Super Admin
+              </span>
+            )}
+            <div className="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold text-sm border-2 border-primary-container/30">
+              {initials || 'AD'}
+            </div>
           </div>
         </div>
       </header>
@@ -101,7 +122,7 @@ export default function AdminLayout() {
 
           <div className="pt-4 border-t border-surface-container flex flex-col gap-0.5">
             <button
-              onClick={() => navigate('/admin/login')}
+              onClick={handleLogout}
               className="flex items-center gap-3 px-4 py-3 rounded-md text-sm font-semibold nav-idle text-error w-full text-left"
             >
               <span className="material-symbols-outlined text-[20px]">logout</span>
@@ -111,7 +132,7 @@ export default function AdminLayout() {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 md:ml-64 pb-24 md:pb-0 min-h-[calc(100vh-4rem)]">
+        <main className="flex-1 md:ml-64 pb-24 md:pb-0 min-h-[calc(100vh-4rem)] animate-fade-up">
           <Outlet />
         </main>
       </div>

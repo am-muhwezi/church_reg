@@ -249,3 +249,308 @@ You only write custom methods when you need a query that isn't covered by those 
 
 Use the auto-generated docs at `http://0.0.0.0:8000/docs` to test without Insomnia.
 FastAPI generates this from your schemas automatically — no extra setup needed.
+
+---
+
+## Admin Authentication
+
+### Overview
+
+Use **JWT (JSON Web Tokens)** with **bcrypt password hashing**. The flow:
+
+1. Admin logs in with email + password → server returns a signed JWT
+2. Client stores JWT in `localStorage`
+3. Subsequent admin requests send `Authorization: Bearer <token>`
+4. Protected routes validate the token via a FastAPI dependency
+
+---
+
+### Step 1 — Install dependencies
+
+```bash
+pip install passlib[bcrypt] python-jose[cryptography]
+```
+
+---
+
+### Step 2 — Fix the Admin model (`src/db/models/admin.py`)
+
+The model is currently missing `mapped_column` definitions. Fix it:
+
+```python
+from sqlalchemy import String
+from advanced_alchemy.base import UUIDAuditBase
+from sqlalchemy.orm import Mapped, mapped_column
+
+
+class Admin(UUIDAuditBase):
+    __tablename__ = "admins"
+
+    username: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    role: Mapped[str] = mapped_column(String(50), nullable=False, default="admin")
+```
+
+Import it in `main.py` so SQLAlchemy registers it for `create_all`:
+```python
+import src.db.models.admin  # noqa: F401
+```
+
+---
+
+### Step 3 — Add SECRET_KEY to config (`src/config.py`)
+
+```python
+class Settings(BaseSettings):
+    # ... existing fields ...
+    SECRET_KEY: str                             # generate with: openssl rand -hex 32
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 480      # 8 hours
+```
+
+---
+
+### Step 4 — Auth utilities (`src/auth/utils.py`)
+
+Create the file `src/auth/__init__.py` (empty) and `src/auth/utils.py`:
+
+```python
+from datetime import datetime, timedelta, timezone
+
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+
+from src.config import settings
+
+ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def verify_password(plain: str, hashed: str) -> bool:
+    return pwd_context.verify(plain, hashed)
+
+
+def create_access_token(data: dict) -> str:
+    payload = data.copy()
+    payload["exp"] = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
+
+
+def decode_token(token: str) -> dict:
+    """Raises JWTError if invalid or expired."""
+    return jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+```
+
+---
+
+### Step 5 — Auth schemas (`src/schemas/auth.py`)
+
+```python
+from pydantic import BaseModel
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+```
+
+---
+
+### Step 6 — Auth service (`src/services/auth_service.py`)
+
+```python
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.auth.utils import verify_password, create_access_token
+from src.db.repositories.admin_repo import AdminRepository
+from src.schemas.auth import LoginRequest, TokenResponse
+
+
+async def login(db: AsyncSession, data: LoginRequest) -> TokenResponse | None:
+    repo = AdminRepository(session=db)
+    admins = await repo.list(email=data.email)
+
+    if not admins or not verify_password(data.password, admins[0].password_hash):
+        return None  # caller raises 401
+
+    token = create_access_token({"sub": str(admins[0].id), "role": admins[0].role})
+    return TokenResponse(access_token=token)
+```
+
+---
+
+### Step 7 — Auth dependency (`src/auth/dependencies.py`)
+
+Attach this to any route that requires a logged-in admin:
+
+```python
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import JWTError
+
+from src.auth.utils import decode_token
+
+bearer_scheme = HTTPBearer()
+
+
+def get_current_admin(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+) -> dict:
+    try:
+        return decode_token(credentials.credentials)
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+```
+
+---
+
+### Step 8 — Auth router (`src/db/routes/auth.py`)
+
+```python
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.db.setup import get_session
+from src.schemas.auth import LoginRequest, TokenResponse
+from src.services.auth_service import login
+
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+@auth_router.post("/login", response_model=TokenResponse)
+async def login_route(data: LoginRequest, db: AsyncSession = Depends(get_session)):
+    result = await login(db, data)
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    return result
+```
+
+Register it in `main.py`:
+```python
+from src.db.routes.auth import auth_router
+app.include_router(auth_router)
+```
+
+---
+
+### Step 9 — Protect admin routes
+
+```python
+from src.auth.dependencies import get_current_admin
+
+@admin_router.get("/saints")
+async def list_saints(
+    db: AsyncSession = Depends(get_session),
+    admin: dict = Depends(get_current_admin),   # blocks unauthenticated requests
+):
+    ...
+```
+
+Role check example:
+```python
+if admin.get("role") != "super_admin":
+    raise HTTPException(status_code=403, detail="Insufficient permissions")
+```
+
+---
+
+### Step 10 — Seed the first admin (run once)
+
+```python
+# scripts/seed_admin.py
+import asyncio
+from src.db.setup import sqlalchemy_config
+from src.db.models.admin import Admin
+from src.db.repositories.admin_repo import AdminRepository
+from src.auth.utils import hash_password
+
+
+async def main():
+    async with sqlalchemy_config.get_session() as session:
+        repo = AdminRepository(session=session)
+        admin = Admin(
+            username="Super Admin",
+            email="admin@manifest.ke",
+            password_hash=hash_password("change-me-immediately"),
+            role="super_admin",
+        )
+        await repo.add(admin)
+
+asyncio.run(main())
+```
+
+---
+
+### Step 11 — Frontend integration
+
+In `client/src/api/client.ts`, add a helper that attaches the token:
+
+```typescript
+function authHeaders(): HeadersInit {
+  const token = localStorage.getItem('admin_token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+export async function authGet<T>(path: string, params?: Record<string, string>): Promise<T> {
+  const url = new URL(BASE_URL + path, window.location.origin)
+  if (params) Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
+  const res = await fetch(url.toString(), { headers: authHeaders() })
+  return handleResponse<T>(res)
+}
+
+export async function authPost<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(BASE_URL + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(body),
+  })
+  return handleResponse<T>(res)
+}
+```
+
+On the admin login page, after a successful `/auth/login` call:
+```typescript
+localStorage.setItem('admin_token', data.access_token)
+navigate('/admin')
+```
+
+On logout:
+```typescript
+localStorage.removeItem('admin_token')
+navigate('/admin/login')
+```
+
+Wrap all admin routes in a `<RequireAuth>` component:
+```tsx
+// src/components/RequireAuth.tsx
+import { Navigate, Outlet } from 'react-router-dom'
+
+export default function RequireAuth() {
+  const token = localStorage.getItem('admin_token')
+  return token ? <Outlet /> : <Navigate to="/admin/login" replace />
+}
+```
+
+Then in `App.tsx`:
+```tsx
+<Route element={<RequireAuth />}>
+  <Route element={<AdminLayout />}>
+    <Route path="/admin" element={<Dashboard />} />
+    <Route path="/admin/saints" element={<Saints />} />
+    {/* ... */}
+  </Route>
+</Route>
+```

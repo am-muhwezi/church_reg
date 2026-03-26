@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MOCK_STATS, MOCK_ATTENDANCE, MOCK_SAINTS } from '../../data/mockData'
+import { getAdminStats } from '../../api/saints'
+import type { AdminStats } from '../../api/types'
 
 function StatCard({
   icon,
@@ -31,15 +33,20 @@ function StatCard({
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const today = MOCK_ATTENDANCE[0]
-  const recent = MOCK_SAINTS.filter((s) => s.first_time).slice(0, 4)
-  const maxBar = Math.max(...MOCK_ATTENDANCE.map((a) => a.count))
+  const [stats, setStats] = useState<AdminStats | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getAdminStats().then(setStats).finally(() => setLoading(false))
+  }, [])
 
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })
 
+  const maxBar = stats ? Math.max(...stats.attendance_trend.map((a) => a.count), 1) : 1
+
   return (
-    <div className="p-6 md:p-10 space-y-10 animate-fade-up">
+    <div className="p-6 md:p-10 space-y-10">
       {/* Header */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -48,10 +55,7 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-3">
           <button className="btn-secondary text-sm px-4 py-2.5">Download Report</button>
-          <button
-            onClick={() => navigate('/')}
-            className="btn-primary text-sm px-4 py-2.5 flex items-center gap-2"
-          >
+          <button onClick={() => navigate('/')} className="btn-primary text-sm px-4 py-2.5 flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px]">how_to_reg</span>
             Live Check-in
           </button>
@@ -63,82 +67,96 @@ export default function Dashboard() {
         <span className="live-dot flex-shrink-0" />
         <p className="text-white/90 text-sm font-semibold">
           <span className="font-extrabold text-primary-container">Live Service</span>
-          {' '}— Sunday {formatDate(today.date)} &nbsp;|&nbsp; {today.count.toLocaleString()} checked in &nbsp;|&nbsp; {today.new_members} new today
+          {stats
+            ? ` — ${stats.today_checkins.toLocaleString()} checked in today | ${stats.new_today.length} new today`
+            : ' — Loading…'}
         </p>
       </div>
 
       {/* Stat cards */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon="groups" label="Total Registered" value={MOCK_STATS.total_registered.toLocaleString()} accent />
-        <StatCard icon="how_to_reg" label="Today's Check-ins" value={today.count.toLocaleString()} sub={`+${today.new_members} new members`} accent />
-        <StatCard icon="calendar_month" label="This Month" value={MOCK_STATS.this_month.toLocaleString()} />
-        <StatCard icon="trending_up" label="Avg Attendance" value={MOCK_STATS.avg_attendance.toLocaleString()} sub="per service" />
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-surface-container-lowest p-6 rounded-md shadow-card animate-pulse h-36" />
+          ))
+        ) : stats ? (
+          <>
+            <StatCard icon="groups" label="Total Registered" value={stats.total_registered.toLocaleString()} accent />
+            <StatCard icon="how_to_reg" label="Today's Check-ins" value={stats.today_checkins.toLocaleString()} sub={`${stats.new_today.length} new today`} accent />
+            <StatCard icon="calendar_month" label="This Month" value={stats.this_month.toLocaleString()} />
+            <StatCard icon="trending_up" label="Avg Attendance" value={stats.avg_attendance.toLocaleString()} sub="per service" />
+          </>
+        ) : null}
       </section>
 
-      {/* Attendance chart + recent new members */}
+      {/* Attendance chart + new today */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Bar chart */}
         <div className="lg:col-span-2 bg-surface-container-lowest rounded-md shadow-card p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <p className="section-label mb-0.5">Attendance Trend</p>
               <p className="text-xs text-on-surface-variant">Last 8 services</p>
             </div>
-            <button className="text-xs font-bold text-primary hover:underline">View full report</button>
+            <button className="text-xs font-bold text-primary hover:underline" onClick={() => navigate('/admin/reports')}>
+              View full report
+            </button>
           </div>
-          <div className="flex items-end gap-2 h-40">
-            {MOCK_ATTENDANCE.map((rec) => {
-              const pct = (rec.count / maxBar) * 100
-              return (
-                <div key={rec.date} className="flex-1 flex flex-col items-center gap-1.5">
-                  <span className="text-[9px] font-bold text-on-surface-variant">{rec.count}</span>
-                  <div className="w-full rounded-sm bg-surface-container-high relative overflow-hidden" style={{ height: '7rem' }}>
-                    <div
-                      className="absolute bottom-0 left-0 w-full bg-primary-container rounded-sm transition-all"
-                      style={{ height: `${pct}%` }}
-                    />
+          {loading ? (
+            <div className="h-40 animate-pulse bg-surface-container-high rounded-md" />
+          ) : stats && stats.attendance_trend.length > 0 ? (
+            <div className="flex items-end gap-2 h-40">
+              {[...stats.attendance_trend].reverse().map((rec) => {
+                const pct = (rec.count / maxBar) * 100
+                return (
+                  <div key={rec.date} className="flex-1 flex flex-col items-center gap-1.5">
+                    <span className="text-[9px] font-bold text-on-surface-variant">{rec.count}</span>
+                    <div className="w-full rounded-sm bg-surface-container-high relative overflow-hidden" style={{ height: '7rem' }}>
+                      <div className="absolute bottom-0 left-0 w-full bg-primary-container rounded-sm transition-all" style={{ height: `${pct}%` }} />
+                    </div>
+                    <span className="text-[9px] text-outline font-medium">{formatDate(rec.date)}</span>
                   </div>
-                  <span className="text-[9px] text-outline font-medium">{formatDate(rec.date)}</span>
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="h-40 flex items-center justify-center text-on-surface-variant text-sm">
+              No attendance data yet
+            </div>
+          )}
         </div>
 
-        {/* New members today */}
         <div className="bg-surface-container-lowest rounded-md shadow-card p-6">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <p className="section-label mb-0.5">New Today</p>
-              <p className="text-xs text-on-surface-variant">{today.new_members} first-time visitors</p>
+          <div className="mb-5">
+            <p className="section-label mb-0.5">New Today</p>
+            <p className="text-xs text-on-surface-variant">{stats?.new_today.length ?? 0} first-time visitors</p>
+          </div>
+          {loading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-14 animate-pulse bg-surface-container-low rounded-md" />)}
             </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            {recent.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => navigate(`/admin/saints/${s.id}`)}
-                className="flex items-center gap-3 p-3 rounded-md hover:bg-surface-container-low transition-colors text-left group"
-              >
-                <div className="w-9 h-9 rounded-full bg-primary-container/15 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
-                  {s.first_name[0]}{s.last_name[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">
-                    {s.first_name} {s.last_name}
-                  </p>
-                  <p className="text-xs text-on-surface-variant truncate">{s.occupation}</p>
-                </div>
-                <span className="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">
-                  chevron_right
-                </span>
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={() => navigate('/admin/saints')}
-            className="btn-tertiary text-xs w-full mt-4"
-          >
+          ) : stats?.new_today.length === 0 ? (
+            <p className="text-sm text-on-surface-variant text-center py-6">No new visitors today</p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {stats?.new_today.slice(0, 5).map((s) => (
+                <button key={s.id} onClick={() => navigate(`/admin/saints/${s.id}`)} className="flex items-center gap-3 p-3 rounded-md hover:bg-surface-container-low transition-colors text-left group">
+                  <div className="w-9 h-9 rounded-full bg-primary-container/15 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
+                    {s.first_name[0]}{s.last_name[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">
+                      {s.first_name} {s.last_name}
+                    </p>
+                    <p className="text-xs text-on-surface-variant truncate">
+                      {s.student ? s.university || 'Student' : s.occupation || '—'}
+                    </p>
+                  </div>
+                  <span className="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                </button>
+              ))}
+            </div>
+          )}
+          <button onClick={() => navigate('/admin/saints')} className="btn-tertiary text-xs w-full mt-4">
             View all saints →
           </button>
         </div>

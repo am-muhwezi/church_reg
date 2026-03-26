@@ -2,8 +2,8 @@ FROM ghcr.io/astral-sh/uv:debian
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-RUN uv sync --locked
+COPY pyproject.toml ./
+RUN uv sync
 
 COPY . .
 

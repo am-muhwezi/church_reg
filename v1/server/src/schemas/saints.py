@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -8,17 +9,21 @@ class SaintBase(BaseModel):
     last_name: str
     gender: bool
     email: str
+    phone_number: str | None = None
     student: bool
-    occupation: str
+    occupation: str | None = None
+    residence: str | None = None
+    university: str | None = None
+    institution_location: str | None = None
     first_time: bool
     whatsApp_group_consent: bool
     consent_to_share_info: bool
 
 
 class SaintCreate(SaintBase):
-    """Data Needed to create a New saint"""
-    first_name: str
-    last_name: str
+    """Data needed to create a new saint."""
+    pass
+
 
 class SaintRead(SaintBase):
     id: uuid.UUID
@@ -26,4 +31,3 @@ class SaintRead(SaintBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
-

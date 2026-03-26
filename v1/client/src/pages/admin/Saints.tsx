@@ -1,19 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MOCK_SAINTS, Saint } from '../../data/mockData'
+import { listSaints } from '../../api/saints'
+import type { Saint } from '../../api/types'
 
 export default function Saints() {
   const navigate = useNavigate()
+  const [saints, setSaints] = useState<Saint[]>([])
+  const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'student' | 'whatsapp' | 'new'>('all')
 
-  const filtered = MOCK_SAINTS.filter((s) => {
+  useEffect(() => {
+    listSaints().then(setSaints).finally(() => setLoading(false))
+  }, [])
+
+  const filtered = saints.filter((s) => {
     const q = query.toLowerCase()
     const matchSearch =
       !q ||
       `${s.first_name} ${s.last_name}`.toLowerCase().includes(q) ||
       s.email.toLowerCase().includes(q) ||
-      s.occupation.toLowerCase().includes(q)
+      (s.occupation ?? '').toLowerCase().includes(q) ||
+      (s.university ?? '').toLowerCase().includes(q)
 
     const matchFilter =
       filter === 'all' ||
@@ -25,13 +33,13 @@ export default function Saints() {
   })
 
   return (
-    <div className="p-6 md:p-10 animate-fade-up">
+    <div className="p-6 md:p-10">
       {/* Header */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
           <p className="section-label mb-1">Member Registry</p>
           <h1 className="text-4xl font-extrabold tracking-tight text-on-surface">Saints</h1>
-          <p className="text-sm text-on-surface-variant mt-1">{MOCK_SAINTS.length} registered members</p>
+          <p className="text-sm text-on-surface-variant mt-1">{loading ? '…' : `${saints.length} registered members`}</p>
         </div>
         <button
           onClick={() => navigate('/')}
@@ -79,7 +87,21 @@ export default function Saints() {
       </div>
 
       {/* List */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="bg-surface-container-lowest rounded-md shadow-card overflow-hidden">
+          <div className="divide-y divide-surface-container-low">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="px-6 py-4 flex items-center gap-4 animate-pulse">
+                <div className="w-10 h-10 rounded-full bg-surface-container-high flex-shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-surface-container-high rounded w-1/3" />
+                  <div className="h-2 bg-surface-container-high rounded w-1/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-20 text-center">
           <span className="material-symbols-outlined text-4xl text-outline">person_search</span>
           <p className="text-sm text-on-surface-variant font-medium">No saints found matching your search.</p>
@@ -87,11 +109,10 @@ export default function Saints() {
       ) : (
         <div className="bg-surface-container-lowest rounded-md shadow-card overflow-hidden">
           {/* Table header — desktop */}
-          <div className="hidden md:grid grid-cols-[2fr_2fr_1fr_1fr_80px] gap-4 px-6 py-3 bg-surface-container text-[10px] font-extrabold uppercase tracking-[0.15em] text-on-surface-variant">
+          <div className="hidden md:grid grid-cols-[2fr_2fr_1fr_80px] gap-4 px-6 py-3 bg-surface-container text-[10px] font-extrabold uppercase tracking-[0.15em] text-on-surface-variant">
             <span>Name</span>
             <span>Occupation / Residence</span>
             <span>Status</span>
-            <span>Services</span>
             <span />
           </div>
 
@@ -110,7 +131,7 @@ function SaintRow({ saint, onClick }: { saint: Saint; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left px-6 py-4 hover:bg-surface-container-low/60 transition-colors group flex md:grid md:grid-cols-[2fr_2fr_1fr_1fr_80px] items-center gap-4"
+      className="w-full text-left px-6 py-4 hover:bg-surface-container-low/60 transition-colors group flex md:grid md:grid-cols-[2fr_2fr_1fr_80px] items-center gap-4"
     >
       {/* Avatar + name */}
       <div className="flex items-center gap-3 min-w-0">
@@ -148,12 +169,6 @@ function SaintRow({ saint, onClick }: { saint: Saint; onClick: () => void }) {
             WA
           </span>
         )}
-      </div>
-
-      {/* Attendance */}
-      <div className="hidden md:block">
-        <span className="text-sm font-bold text-on-surface">{saint.attendance_count}</span>
-        <span className="text-xs text-on-surface-variant ml-1">sessions</span>
       </div>
 
       {/* Chevron */}
