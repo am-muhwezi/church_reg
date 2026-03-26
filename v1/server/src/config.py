@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     # First-run seed admin (optional — used only when no admins exist)
     SEED_ADMIN_NAME: str = "yahwehsdelight"
     SEED_ADMIN_EMAIL: str = "intricatesyllable@gmail.com"
-    SEED_ADMIN_PASSWORD: str = "b15a208d88c657a4cb88"
+    SEED_ADMIN_PASSWORD: str = ""
 
     class Config:
         env_file = ".env"
