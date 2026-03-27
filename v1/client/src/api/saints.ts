@@ -22,7 +22,7 @@ export async function checkInSaint(saintId: string): Promise<CheckInResponse> {
 }
 
 export async function listSaints(): Promise<Saint[]> {
-  return get<Saint[]>('/saints/')
+  return get<Saint[]>('/saints')
 }
 
 export async function getSaint(id: string): Promise<SaintWithStats> {
