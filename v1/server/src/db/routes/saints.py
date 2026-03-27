@@ -40,7 +40,7 @@ async def search_saint_route(
     return saint
 
 
-@saints_router.get("/", response_model=list[SaintRead], dependencies=[Depends(require_admin)])
+@saints_router.get("", response_model=list[SaintRead], dependencies=[Depends(require_admin)])
 async def list_saints_route(db: AsyncSession = Depends(get_session)):
     return await list_saints(db)
 
