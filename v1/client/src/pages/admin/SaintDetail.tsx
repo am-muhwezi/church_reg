@@ -44,7 +44,7 @@ export default function SaintDetail() {
   }
 
   const fields: Array<{ icon: string; label: string; value: string }> = [
-    { icon: 'mail', label: 'Email', value: saint.email },
+    { icon: 'mail', label: 'Email', value: saint.email || '—' },
     { icon: 'call', label: 'Phone', value: saint.phone_number || '—' },
     { icon: 'home', label: 'Residence', value: saint.residence || '—' },
     { icon: saint.gender ? 'man' : 'woman', label: 'Gender', value: saint.gender ? 'Male' : 'Female' },

@@ -19,7 +19,7 @@ export default function Saints() {
     const matchSearch =
       !q ||
       `${s.first_name} ${s.last_name}`.toLowerCase().includes(q) ||
-      s.email.toLowerCase().includes(q) ||
+      (s.email ?? '').toLowerCase().includes(q) ||
       (s.occupation ?? '').toLowerCase().includes(q) ||
       (s.university ?? '').toLowerCase().includes(q)
 

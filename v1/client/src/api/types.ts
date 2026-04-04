@@ -2,7 +2,7 @@ export interface Saint {
   id: string
   first_name: string
   last_name: string
-  email: string
+  email: string | null
   gender: boolean
   phone_number: string | null
   student: boolean
@@ -20,7 +20,7 @@ export interface Saint {
 export interface SaintCreate {
   first_name: string
   last_name: string
-  email: string
+  email: string | null
   gender: boolean
   phone_number: string | null
   student: boolean

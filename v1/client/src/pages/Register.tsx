@@ -70,7 +70,7 @@ export default function Register() {
         setForm({
           first_name: saint.first_name,
           last_name: saint.last_name,
-          email: saint.email,
+          email: saint.email ?? '',
           phone_number: saint.phone_number ?? '',
           gender: saint.gender ? 'male' : 'female',
           student: saint.student ? 'yes' : 'no',
