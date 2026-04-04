@@ -1,4 +1,4 @@
-import { get, post, ApiError } from './client'
+import { get, post, patch, ApiError } from './client'
 import type { Saint, SaintCreate, SaintWithStats, AdminStats, CheckInResponse, ReportData } from './types'
 
 export async function searchSaint(firstName: string, lastName: string): Promise<Saint | null> {
@@ -15,6 +15,10 @@ export async function searchSaint(firstName: string, lastName: string): Promise<
 
 export async function registerSaint(data: SaintCreate): Promise<Saint> {
   return post<Saint>('/saints/register', data)
+}
+
+export async function updateSaint(id: string, data: Partial<SaintCreate>): Promise<Saint> {
+  return patch<Saint>(`/saints/${id}`, data)
 }
 
 export async function checkInSaint(saintId: string): Promise<CheckInResponse> {

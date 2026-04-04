@@ -9,7 +9,7 @@ class Saint(UUIDAuditBase):
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
 
-    email: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    email: Mapped[str | None] = mapped_column(String(100), nullable=True, unique=True)
     phone_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
     student: Mapped[bool] = mapped_column(Boolean, nullable=False)
     gender: Mapped[bool] = mapped_column(Boolean, nullable=False)

@@ -1,7 +1,7 @@
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../components/Logo'
-import { registerSaint, checkInSaint } from '../api/saints'
+import { registerSaint, checkInSaint, updateSaint, getSaint } from '../api/saints'
 
 type RadioGroupProps = {
   name: string
@@ -42,6 +42,7 @@ export default function Register() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const isUpdate = params.get('update') === 'true'
+  const editId = params.get('id')
 
   const [form, setForm] = useState({
     first_name: params.get('first') ?? '',
@@ -60,7 +61,30 @@ export default function Register() {
   })
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [step1Error, setStep1Error] = useState('')
   const [step, setStep] = useState(1)
+
+  useEffect(() => {
+    if (isUpdate && editId) {
+      getSaint(editId).then((saint) => {
+        setForm({
+          first_name: saint.first_name,
+          last_name: saint.last_name,
+          email: saint.email,
+          phone_number: saint.phone_number ?? '',
+          gender: saint.gender ? 'male' : 'female',
+          student: saint.student ? 'yes' : 'no',
+          occupation: saint.occupation ?? '',
+          residence: saint.residence ?? '',
+          university: saint.university ?? '',
+          institution_location: saint.institution_location ?? '',
+          first_time: saint.first_time ? 'yes' : 'no',
+          whatsApp_group_consent: saint.whatsApp_group_consent ? 'yes' : 'no',
+          consent_to_share_info: saint.consent_to_share_info,
+        })
+      })
+    }
+  }, [])
 
   const set = (key: keyof typeof form, val: string | boolean) =>
     setForm((prev) => ({ ...prev, [key]: val }))
@@ -69,24 +93,30 @@ export default function Register() {
     e.preventDefault()
     setLoading(true)
     setSubmitError('')
+    const payload = {
+      first_name: form.first_name,
+      last_name: form.last_name,
+      email: form.email || null,
+      phone_number: form.phone_number || null,
+      gender: form.gender === 'male',
+      student: form.student === 'yes',
+      occupation: form.student === 'yes' ? null : (form.occupation || null),
+      residence: form.residence || null,
+      university: form.student === 'yes' ? (form.university || null) : null,
+      institution_location: form.student === 'yes' ? (form.institution_location || null) : null,
+      first_time: form.first_time === 'yes',
+      whatsApp_group_consent: form.whatsApp_group_consent === 'yes',
+      consent_to_share_info: form.consent_to_share_info,
+    }
     try {
-      const saint = await registerSaint({
-        first_name: form.first_name,
-        last_name: form.last_name,
-        email: form.email,
-        phone_number: form.phone_number || null,
-        gender: form.gender === 'male',
-        student: form.student === 'yes',
-        occupation: form.student === 'yes' ? null : (form.occupation || null),
-        residence: form.residence || null,
-        university: form.student === 'yes' ? (form.university || null) : null,
-        institution_location: form.student === 'yes' ? (form.institution_location || null) : null,
-        first_time: form.first_time === 'yes',
-        whatsApp_group_consent: form.whatsApp_group_consent === 'yes',
-        consent_to_share_info: form.consent_to_share_info,
-      })
-      await checkInSaint(saint.id)
-      navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`)
+      if (isUpdate && editId) {
+        const saint = await updateSaint(editId, payload)
+        navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=true`)
+      } else {
+        const saint = await registerSaint(payload)
+        await checkInSaint(saint.id)
+        navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`)
+      }
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
       setLoading(false)
@@ -145,7 +175,7 @@ export default function Register() {
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Email Address</label>
-                  <input className="field-input" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => set('email', e.target.value)} required />
+                  <input className="field-input" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => set('email', e.target.value)} />
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -168,7 +198,22 @@ export default function Register() {
                   <input className="field-input" placeholder="City, Town, Estate…" value={form.residence} onChange={(e) => set('residence', e.target.value)} />
                 </div>
 
-                <button type="button" className="btn-primary w-full flex items-center justify-center gap-2" onClick={() => setStep(2)}>
+                {step1Error && (
+                  <p className="text-xs text-error font-semibold px-1">{step1Error}</p>
+                )}
+
+                <button
+                  type="button"
+                  className="btn-primary w-full flex items-center justify-center gap-2"
+                  onClick={() => {
+                    if (!form.first_name.trim() || !form.last_name.trim()) {
+                      setStep1Error('First name and last name are required.')
+                      return
+                    }
+                    setStep1Error('')
+                    setStep(2)
+                  }}
+                >
                   Next <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </button>
               </section>

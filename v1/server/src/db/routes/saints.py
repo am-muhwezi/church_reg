@@ -4,17 +4,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.routes.auth import require_admin
-from src.schemas.saints import SaintCreate, SaintRead
+from src.schemas.saints import SaintCreate, SaintRead, SaintUpdate
 from src.schemas.admin import SaintWithStats
 from src.schemas.attendance import CheckInCreate, CheckInResponse
 from src.services.saints_service import (
     register_saint,
+    update_saint,
     search_saint,
     list_saints,
     get_saint_with_stats,
 )
 from src.services.checkin_service import check_in_saint
 from src.db.setup import get_session
+from advanced_alchemy.exceptions import DuplicateKeyError
 
 
 saints_router = APIRouter(prefix="", tags=["saints"])
@@ -25,7 +27,13 @@ async def register_saint_route(
     data: SaintCreate,
     db: AsyncSession = Depends(get_session),
 ):
-    return await register_saint(db, data)
+    try:
+        return await register_saint(db, data)
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="This email address is already registered.",
+        )
 
 
 @saints_router.get("/search", response_model=SaintRead)
@@ -57,6 +65,18 @@ async def get_saint_route(
     return SaintWithStats.model_validate(
         {**saint.__dict__, "attendance_count": attendance_count, "last_seen": last_seen}
     )
+
+
+@saints_router.patch("/{saint_id}", response_model=SaintRead, dependencies=[Depends(require_admin)])
+async def update_saint_route(
+    saint_id: uuid.UUID,
+    data: SaintUpdate,
+    db: AsyncSession = Depends(get_session),
+):
+    saint = await update_saint(db, saint_id, data)
+    if saint is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Saint not found")
+    return saint
 
 
 @saints_router.post("/checkin", response_model=CheckInResponse)
