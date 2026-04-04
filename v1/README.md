@@ -1,5 +1,9 @@
 # Manifest Kenya Registration Platform v2
 
+<p align="center">
+  <img src="logo.png" alt="Manifest Fellowship Kenya" width="400" />
+</p>
+
 [![Python Version](https://img.shields.io/badge/python-3.14-brightgreen.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.135-009688.svg)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18-61DAFB.svg)](https://react.dev)
