@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../components/Logo'
 import { registerSaint, checkInSaint, updateSaint, getSaint } from '../api/saints'
+import { ApiError } from '../api/client'
 
 type RadioGroupProps = {
   name: string
@@ -118,6 +119,10 @@ export default function Register() {
         navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`)
       }
     } catch (err) {
+      if (err instanceof ApiError && err.status === 409 && err.data?.saint) {
+        navigate('/confirm', { state: { saint: err.data.saint } })
+        return
+      }
       setSubmitError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
       setLoading(false)
     }

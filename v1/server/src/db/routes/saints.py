@@ -1,6 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.routes.auth import require_admin
@@ -8,6 +9,7 @@ from src.schemas.saints import SaintCreate, SaintRead, SaintUpdate
 from src.schemas.admin import SaintWithStats
 from src.schemas.attendance import CheckInCreate, CheckInResponse
 from src.services.saints_service import (
+    find_by_email_or_phone,
     register_saint,
     update_saint,
     search_saint,
@@ -27,13 +29,19 @@ async def register_saint_route(
     data: SaintCreate,
     db: AsyncSession = Depends(get_session),
 ):
-    try:
-        return await register_saint(db, data)
-    except DuplicateKeyError:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="This email address is already registered.",
+    existing = await find_by_email_or_phone(db, data.email, data.phone_number)
+    if existing:
+        detail = (
+            "This phone number is already registered."
+            if data.phone_number and existing.phone_number == data.phone_number
+            else "This email address is already registered."
         )
+        saint_data = SaintRead.model_validate(existing).model_dump(mode="json")
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content={"detail": detail, "saint": saint_data},
+        )
+    return await register_saint(db, data)
 
 
 @saints_router.get("/search", response_model=SaintRead)

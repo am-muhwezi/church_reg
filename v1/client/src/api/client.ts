@@ -2,7 +2,11 @@
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '/api'
 
 export class ApiError extends Error {
-  constructor(public status: number, public detail: string) {
+  constructor(
+    public status: number,
+    public detail: string,
+    public data?: Record<string, unknown>,
+  ) {
     super(detail)
     this.name = 'ApiError'
   }
@@ -11,7 +15,8 @@ export class ApiError extends Error {
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }))
-    throw new ApiError(res.status, body.detail ?? res.statusText)
+    const detail = typeof body.detail === 'string' ? body.detail : res.statusText
+    throw new ApiError(res.status, detail, body)
   }
   return res.json() as Promise<T>
 }

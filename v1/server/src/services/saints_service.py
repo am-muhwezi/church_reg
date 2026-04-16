@@ -1,12 +1,26 @@
 import uuid
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.schemas.saints import SaintCreate, SaintUpdate
 from src.db.repositories.saints_repo import SaintsRepository
 from src.db.models.saints import Saint
 from src.db.models.attendance import Attendance
+
+
+async def find_by_email_or_phone(
+    db: AsyncSession, email: str | None, phone: str | None
+) -> Saint | None:
+    conditions = []
+    if email:
+        conditions.append(Saint.email == email)
+    if phone:
+        conditions.append(Saint.phone_number == phone)
+    if not conditions:
+        return None
+    result = await db.execute(select(Saint).where(or_(*conditions)).limit(1))
+    return result.scalar_one_or_none()
 
 
 async def register_saint(db: AsyncSession, saint_create: SaintCreate) -> Saint:
