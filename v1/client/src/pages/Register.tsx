@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../components/Logo'
-import { registerSaint, checkInSaint, updateSaint, getSaint } from '../api/saints'
+import { registerSaint, checkInSaint, selfUpdateSaint, getSaint } from '../api/saints'
 import { ApiError } from '../api/client'
 
 type RadioGroupProps = {
@@ -111,7 +111,7 @@ export default function Register() {
     }
     try {
       if (isUpdate && editId) {
-        const saint = await updateSaint(editId, payload)
+        const saint = await selfUpdateSaint(editId, payload)
         navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=true`)
       } else {
         const saint = await registerSaint(payload)

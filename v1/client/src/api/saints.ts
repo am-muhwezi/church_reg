@@ -21,6 +21,10 @@ export async function updateSaint(id: string, data: Partial<SaintCreate>): Promi
   return patch<Saint>(`/saints/${id}`, data)
 }
 
+export async function selfUpdateSaint(id: string, data: Partial<SaintCreate>): Promise<Saint> {
+  return patch<Saint>(`/saints/${id}/self-update`, data)
+}
+
 export async function checkInSaint(saintId: string): Promise<CheckInResponse> {
   return post<CheckInResponse>('/saints/checkin', { saint_id: saintId })
 }

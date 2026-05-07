@@ -87,6 +87,18 @@ async def update_saint_route(
     return saint
 
 
+@saints_router.patch("/{saint_id}/self-update", response_model=SaintRead)
+async def self_update_saint_route(
+    saint_id: uuid.UUID,
+    data: SaintUpdate,
+    db: AsyncSession = Depends(get_session),
+):
+    saint = await update_saint(db, saint_id, data)
+    if saint is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Saint not found")
+    return saint
+
+
 @saints_router.post("/checkin", response_model=CheckInResponse)
 async def checkin_saint_route(
     data: CheckInCreate,
