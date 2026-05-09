@@ -1,16 +1,22 @@
 import uuid
 from datetime import date
 
+from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.models.attendance import Attendance
+from src.db.models.saints import Saint
 from src.db.repositories.attendance_repo import AttendanceRepository
 from src.schemas.attendance import CheckInResponse
 
 
 async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID) -> CheckInResponse:
     today = date.today()
+
+    saint_exists = await db.scalar(select(select(Saint).where(Saint.id == saint_id).exists()))
+    if not saint_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Saint not found")
 
     result = await db.execute(
         select(Attendance).where(

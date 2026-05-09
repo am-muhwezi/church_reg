@@ -1,5 +1,6 @@
 import uuid
 
+from advanced_alchemy.exceptions import NotFoundError
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -36,8 +37,9 @@ async def register_saint(db: AsyncSession, saint_create: SaintCreate) -> Saint:
 
 async def update_saint(db: AsyncSession, saint_id: uuid.UUID, data: SaintUpdate) -> Saint | None:
     repo = SaintsRepository(session=db)
-    saint = await repo.get(saint_id)
-    if saint is None:
+    try:
+        saint = await repo.get(saint_id)
+    except NotFoundError:
         return None
     for field, value in data.model_dump(exclude_unset=True).items():
         if field in ('first_name', 'last_name') and isinstance(value, str):
@@ -68,8 +70,9 @@ async def list_saints(db: AsyncSession) -> list[Saint]:
 async def get_saint_with_stats(db: AsyncSession, saint_id: uuid.UUID):
     """Returns (saint, attendance_count, last_seen) or None."""
     repo = SaintsRepository(session=db)
-    saint = await repo.get(saint_id)
-    if not saint:
+    try:
+        saint = await repo.get(saint_id)
+    except NotFoundError:
         return None
 
     result = await db.execute(
