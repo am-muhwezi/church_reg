@@ -170,12 +170,12 @@ export default function Register() {
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">First Name</label>
-                  <input className="field-input" placeholder="Samuel" value={form.first_name} onChange={(e) => set('first_name', e.target.value)} required />
+                  <input className="field-input" placeholder="John" value={form.first_name} onChange={(e) => set('first_name', e.target.value)} required />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Last Name</label>
-                  <input className="field-input" placeholder="Mwangi" value={form.last_name} onChange={(e) => set('last_name', e.target.value)} required />
+                  <input className="field-input" placeholder="Doe" value={form.last_name} onChange={(e) => set('last_name', e.target.value)} required />
                 </div>
 
                 <div className="flex flex-col gap-1">

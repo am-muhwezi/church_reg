@@ -59,7 +59,7 @@ export default function CheckIn() {
               </label>
               <input
                 className="field-input text-base"
-                placeholder="e.g. Samuel"
+                placeholder="e.g. John"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 autoFocus
@@ -73,7 +73,7 @@ export default function CheckIn() {
               </label>
               <input
                 className="field-input text-base"
-                placeholder="e.g. Mwangi"
+                placeholder="e.g. Doe"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 autoComplete="family-name"
