@@ -112,15 +112,15 @@ export default function Register() {
     try {
       if (isUpdate && editId) {
         const saint = await selfUpdateSaint(editId, payload)
-        navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=true`)
+        navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=true`, { replace: true })
       } else {
         const saint = await registerSaint(payload)
         await checkInSaint(saint.id)
-        navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`)
+        navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`, { replace: true })
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 409 && err.data?.saint) {
-        navigate('/confirm', { state: { saint: err.data.saint } })
+        navigate('/confirm', { state: { saint: err.data.saint }, replace: true })
         return
       }
       setSubmitError(err instanceof Error ? err.message : 'Registration failed. Please try again.')

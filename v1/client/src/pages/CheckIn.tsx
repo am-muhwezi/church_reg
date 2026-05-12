@@ -22,9 +22,9 @@ export default function CheckIn() {
     try {
       const saint = await searchSaint(firstName.trim(), lastName.trim())
       if (saint) {
-        navigate('/confirm', { state: { saint } })
+        navigate('/confirm', { state: { saint }, replace: true })
       } else {
-        navigate(`/register?first=${encodeURIComponent(firstName.trim())}&last=${encodeURIComponent(lastName.trim())}`)
+        navigate(`/register?first=${encodeURIComponent(firstName.trim())}&last=${encodeURIComponent(lastName.trim())}`, { replace: true })
       }
     } catch {
       setError('Something went wrong. Please try again.')

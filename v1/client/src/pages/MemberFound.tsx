@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Logo from '../components/Logo'
 import { checkInSaint } from '../api/saints'
@@ -14,6 +14,10 @@ export default function MemberFound() {
   const lastName = saint?.last_name ?? ''
   const fullName = `${firstName} ${lastName}`.trim()
 
+  useEffect(() => {
+    if (!saint) navigate('/', { replace: true })
+  }, [])
+
   const [loading, setLoading] = useState(false)
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false)
   const [error, setError] = useState('')
@@ -27,7 +31,7 @@ export default function MemberFound() {
       if (result.already_checked_in) {
         setAlreadyCheckedIn(true)
       } else {
-        navigate(`/welcome?first=${encodeURIComponent(firstName)}&returning=true`)
+        navigate(`/welcome?first=${encodeURIComponent(firstName)}&returning=true`, { replace: true })
       }
     } catch {
       setError('Check-in failed. Please try again.')
@@ -38,18 +42,11 @@ export default function MemberFound() {
 
   const handleUpdate = () => {
     if (saint) {
-      navigate(`/register?id=${saint.id}&first=${encodeURIComponent(saint.first_name)}&last=${encodeURIComponent(saint.last_name)}&update=true`)
+      navigate(`/register?id=${saint.id}&first=${encodeURIComponent(saint.first_name)}&last=${encodeURIComponent(saint.last_name)}&update=true`, { replace: true })
     }
   }
 
-  if (!saint) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-surface gap-4">
-        <p className="text-on-surface-variant text-sm">Could not load member details.</p>
-        <button onClick={() => navigate('/')} className="btn-secondary text-sm">Go back</button>
-      </div>
-    )
-  }
+  if (!saint) return null
 
   if (alreadyCheckedIn) {
     return (
@@ -72,7 +69,7 @@ export default function MemberFound() {
               </p>
             </div>
             <button
-              onClick={() => navigate(`/welcome?first=${encodeURIComponent(firstName)}&returning=true`)}
+              onClick={() => navigate(`/welcome?first=${encodeURIComponent(firstName)}&returning=true`, { replace: true })}
               className="btn-primary w-full text-base"
             >
               Continue
@@ -133,7 +130,7 @@ export default function MemberFound() {
               Update My Details
             </button>
 
-            <button onClick={() => navigate('/')} className="btn-tertiary w-full text-sm">
+            <button onClick={() => navigate('/', { replace: true })} className="btn-tertiary w-full text-sm">
               I'm not {fullName}
             </button>
           </div>
