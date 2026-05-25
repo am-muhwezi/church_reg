@@ -8,8 +8,10 @@ from src.db.models.attendance import Attendance
 from src.db.models.saints import Saint
 from src.schemas.admin import (
     AdminStats,
+    AttendanceDetail,
     AttendanceLogEntry,
     AttendanceTrend,
+    DateRangeReport,
     NewTodaySaint,
     ReportData,
 )
@@ -85,10 +87,24 @@ async def get_admin_stats(db: AsyncSession) -> AdminStats:
 
 
 async def get_report_data(
-    db: AsyncSession, period: Literal["weekly", "monthly", "all"]
+    db: AsyncSession,
+    period: Literal["weekly", "monthly", "all"] | None = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
 ) -> ReportData:
     today = date.today()
     first_of_month = today.replace(day=1)
+
+    if period is not None:
+        if period == "weekly":
+            start_date = today - timedelta(days=7)
+            end_date = today
+        elif period == "monthly":
+            start_date = first_of_month
+            end_date = today
+        else:
+            start_date = None
+            end_date = None
 
     total = await db.scalar(select(func.count()).select_from(Saint)) or 0
 
@@ -122,20 +138,19 @@ async def get_report_data(
     counts = [r.count for r in per_service.all()]
     avg_attendance = round(sum(counts) / len(counts), 1) if counts else 0.0
 
-    first_time_today = await db.scalar(
+    first_time_date = start_date if start_date and (start_date == end_date or end_date is None) else today
+    first_time_condition = [Attendance.service_date == first_time_date]
+    if start_date and end_date and start_date != end_date:
+        first_time_condition = [Attendance.service_date >= start_date, Attendance.service_date <= end_date]
+    elif start_date:
+        first_time_condition = [Attendance.service_date >= start_date]
+
+    first_time_in_range = await db.scalar(
         select(func.count())
         .select_from(Saint)
         .join(Attendance, Saint.id == Attendance.saint_id)
-        .where(and_(Attendance.service_date == today, Saint.first_time == True))  # noqa: E712
+        .where(and_(*first_time_condition, Saint.first_time == True))  # noqa: E712
     ) or 0
-
-    # Period filter for attendance log
-    if period == "weekly":
-        since = today - timedelta(days=7)
-    elif period == "monthly":
-        since = first_of_month
-    else:
-        since = None
 
     log_query = (
         select(
@@ -147,8 +162,11 @@ async def get_report_data(
         .group_by(Attendance.service_date)
         .order_by(Attendance.service_date.desc())
     )
-    if since is not None:
-        log_query = log_query.where(Attendance.service_date >= since)
+
+    if start_date is not None:
+        log_query = log_query.where(Attendance.service_date >= start_date)
+    if end_date is not None:
+        log_query = log_query.where(Attendance.service_date <= end_date)
 
     log_rows = await db.execute(log_query)
     attendance_log = [
@@ -166,6 +184,69 @@ async def get_report_data(
         female_count=total - male_count,
         student_count=student_count,
         professional_count=total - student_count,
-        first_time_today=first_time_today,
+        first_time_today=first_time_in_range,
         attendance_log=attendance_log,
     )
+
+
+async def get_attendance_details(
+    db: AsyncSession,
+    start_date: date | None = None,
+    end_date: date | None = None,
+) -> list[AttendanceDetail]:
+    query = (
+        select(
+            Saint.id,
+            Saint.first_name,
+            Saint.last_name,
+            Saint.email,
+            Saint.phone_number,
+            Saint.gender,
+            Saint.student,
+            Saint.occupation,
+            Saint.residence,
+            Saint.university,
+            Saint.institution_location,
+            Saint.first_time,
+            Saint.whatsApp_group_consent,
+            Attendance.service_date,
+        )
+        .join(Attendance, Saint.id == Attendance.saint_id)
+        .order_by(Attendance.service_date.desc(), Saint.last_name, Saint.first_name)
+    )
+
+    if start_date is not None:
+        query = query.where(Attendance.service_date >= start_date)
+    if end_date is not None:
+        query = query.where(Attendance.service_date <= end_date)
+
+    rows = await db.execute(query)
+    return [
+        AttendanceDetail(
+            id=r.id,
+            first_name=r.first_name,
+            last_name=r.last_name,
+            email=r.email,
+            phone_number=r.phone_number,
+            gender=r.gender,
+            student=r.student,
+            occupation=r.occupation,
+            residence=r.residence,
+            university=r.university,
+            institution_location=r.institution_location,
+            first_time=r.first_time,
+            whatsApp_group_consent=r.whatsApp_group_consent,
+            service_date=r.service_date,
+        )
+        for r in rows.all()
+    ]
+
+
+async def get_date_range_report(
+    db: AsyncSession,
+    start_date: date,
+    end_date: date,
+) -> DateRangeReport:
+    summary = await get_report_data(db, start_date=start_date, end_date=end_date)
+    details = await get_attendance_details(db, start_date=start_date, end_date=end_date)
+    return DateRangeReport(summary=summary, attendance_details=details)

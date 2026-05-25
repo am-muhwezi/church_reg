@@ -1,5 +1,5 @@
 import { get, post, patch, ApiError } from './client'
-import type { Saint, SaintCreate, SaintWithStats, AdminStats, CheckInResponse, ReportData } from './types'
+import type { Saint, SaintCreate, SaintWithStats, AdminStats, CheckInResponse, ReportData, DateRangeReport } from './types'
 
 export async function searchSaint(firstName: string, lastName: string): Promise<Saint | null> {
   try {
@@ -43,4 +43,12 @@ export async function getAdminStats(): Promise<AdminStats> {
 
 export async function getReportData(period: 'weekly' | 'monthly' | 'all'): Promise<ReportData> {
   return get<ReportData>('/admin/report', { period })
+}
+
+export async function getReportDataByDateRange(startDate: string, endDate: string): Promise<ReportData> {
+  return get<ReportData>('/admin/report', { start_date: startDate, end_date: endDate })
+}
+
+export async function getDetailedReport(startDate: string, endDate: string): Promise<DateRangeReport> {
+  return get<DateRangeReport>('/admin/report/details', { start_date: startDate, end_date: endDate })
 }

@@ -103,3 +103,25 @@ export interface ReportData {
   first_time_today: number
   attendance_log: AttendanceLogEntry[]
 }
+
+export interface AttendanceDetail {
+  id: string
+  first_name: string
+  last_name: string
+  email: string | null
+  phone_number: string | null
+  gender: boolean
+  student: boolean
+  occupation: string | null
+  residence: string | null
+  university: string | null
+  institution_location: string | null
+  first_time: boolean
+  whatsApp_group_consent: boolean
+  service_date: string
+}
+
+export interface DateRangeReport {
+  summary: ReportData
+  attendance_details: AttendanceDetail[]
+}

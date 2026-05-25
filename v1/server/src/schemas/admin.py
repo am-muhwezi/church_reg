@@ -52,3 +52,25 @@ class ReportData(BaseModel):
     professional_count: int
     first_time_today: int
     attendance_log: list[AttendanceLogEntry]
+
+
+class AttendanceDetail(BaseModel):
+    id: uuid.UUID
+    first_name: str
+    last_name: str
+    email: str | None
+    phone_number: str | None
+    gender: bool
+    student: bool
+    occupation: str | None
+    residence: str | None
+    university: str | None
+    institution_location: str | None
+    first_time: bool
+    whatsApp_group_consent: bool
+    service_date: date
+
+
+class DateRangeReport(BaseModel):
+    summary: ReportData
+    attendance_details: list[AttendanceDetail]
