@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 // Registration flow
 import CheckIn from './pages/CheckIn'
+import EventCheckIn from './pages/EventCheckIn'
+import EventRegister from './pages/EventRegister'
 import MemberFound from './pages/MemberFound'
 import Register from './pages/Register'
 import Welcome from './pages/Welcome'
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="/" element={<CheckIn />} />
           <Route path="/confirm" element={<MemberFound />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/event" element={<EventCheckIn />} />
+          <Route path="/event/register" element={<EventRegister />} />
           <Route path="/welcome" element={<Welcome />} />
 
           {/* --- Admin login (public) --- */}

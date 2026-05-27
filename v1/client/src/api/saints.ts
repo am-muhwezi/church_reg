@@ -1,5 +1,5 @@
 import { get, post, patch, ApiError } from './client'
-import type { Saint, SaintCreate, SaintWithStats, AdminStats, CheckInResponse, ReportData, DateRangeReport } from './types'
+import type { Saint, SaintCreate, SaintWithStats, AdminStats, CheckInResponse, ReportData, DateRangeReport, EventRegistrationCreate } from './types'
 
 export async function searchSaint(firstName: string, lastName: string): Promise<Saint | null> {
   try {
@@ -15,6 +15,10 @@ export async function searchSaint(firstName: string, lastName: string): Promise<
 
 export async function registerSaint(data: SaintCreate): Promise<Saint> {
   return post<Saint>('/saints/register', data)
+}
+
+export async function eventRegisterSaint(data: EventRegistrationCreate): Promise<Saint> {
+  return post<Saint>('/saints/event-register', data)
 }
 
 export async function updateSaint(id: string, data: Partial<SaintCreate>): Promise<Saint> {

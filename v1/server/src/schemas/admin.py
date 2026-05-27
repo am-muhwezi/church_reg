@@ -68,6 +68,7 @@ class AttendanceDetail(BaseModel):
     institution_location: str | None
     first_time: bool
     whatsApp_group_consent: bool
+    consent_to_share_info: bool
     service_date: date
 
 

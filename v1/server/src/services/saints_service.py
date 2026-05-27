@@ -4,7 +4,7 @@ from advanced_alchemy.exceptions import NotFoundError
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.saints import SaintCreate, SaintUpdate
+from src.schemas.saints import EventRegistrationCreate, SaintCreate, SaintUpdate
 from src.db.repositories.saints_repo import SaintsRepository
 from src.db.models.saints import Saint
 from src.db.models.attendance import Attendance
@@ -65,6 +65,87 @@ async def search_saint(db: AsyncSession, first_name: str, last_name: str) -> Sai
 async def list_saints(db: AsyncSession) -> list[Saint]:
     repo = SaintsRepository(session=db)
     return await repo.list()
+
+
+INSTITUTION_KEYWORDS = {"university", "college", "institute", "school", "polytechnic", "campus"}
+
+
+def _looks_like_institution(value: str) -> bool:
+    lower = value.lower()
+    return any(kw in lower for kw in INSTITUTION_KEYWORDS)
+
+
+async def _update_saint_fields(db: AsyncSession, saint: Saint, update_fields: dict) -> Saint:
+    repo = SaintsRepository(session=db)
+    for field, value in update_fields.items():
+        setattr(saint, field, value)
+    result = await repo.update(saint)
+    await db.commit()
+    return result
+
+
+async def event_register_saint(
+    db: AsyncSession, data: EventRegistrationCreate
+) -> Saint:
+    first_name = data.first_name.strip().title()
+    last_name = data.last_name.strip().title()
+    phone_number = data.phone_number.strip() if data.phone_number else None
+    student = data.student
+    institution_or_profession = data.institution_or_profession.strip().title() if data.institution_or_profession else None
+
+    occupation = None
+    university = None
+    if institution_or_profession:
+        if _looks_like_institution(institution_or_profession):
+            student = True
+            university = institution_or_profession
+        else:
+            occupation = institution_or_profession
+
+    existing = await search_saint(db, first_name, last_name)
+    if not existing:
+        existing = await find_by_email_or_phone(db, None, phone_number)
+
+    if existing:
+        update_fields = {}
+        if phone_number and phone_number != existing.phone_number:
+            update_fields["phone_number"] = phone_number
+        if student != existing.student:
+            update_fields["student"] = student
+        if university and university != existing.university:
+            update_fields["university"] = university
+        if occupation and occupation != existing.occupation:
+            update_fields["occupation"] = occupation
+        if data.first_time and not existing.first_time:
+            update_fields["first_time"] = True
+        if data.consent != existing.consent_to_share_info:
+            update_fields["consent_to_share_info"] = data.consent
+        if data.consent != existing.whatsApp_group_consent:
+            update_fields["whatsApp_group_consent"] = data.consent
+
+        if update_fields:
+            existing = await _update_saint_fields(db, existing, update_fields)
+        return existing
+
+    saint = Saint(
+        first_name=first_name,
+        last_name=last_name,
+        email=None,
+        phone_number=phone_number,
+        gender=data.gender,
+        student=student,
+        occupation=occupation,
+        residence=None,
+        university=university,
+        institution_location=None,
+        first_time=data.first_time,
+        whatsApp_group_consent=data.consent,
+        consent_to_share_info=data.consent,
+    )
+    repo = SaintsRepository(session=db)
+    result = await repo.add(saint)
+    await db.commit()
+    return result
 
 
 async def get_saint_with_stats(db: AsyncSession, saint_id: uuid.UUID):

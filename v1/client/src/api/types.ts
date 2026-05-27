@@ -17,6 +17,17 @@ export interface Saint {
   updated_at: string
 }
 
+export interface EventRegistrationCreate {
+  first_name: string
+  last_name: string
+  gender: boolean
+  phone_number: string | null
+  student: boolean
+  institution_or_profession: string | null
+  first_time: boolean
+  consent: boolean
+}
+
 export interface SaintCreate {
   first_name: string
   last_name: string
@@ -118,6 +129,7 @@ export interface AttendanceDetail {
   institution_location: string | null
   first_time: boolean
   whatsApp_group_consent: boolean
+  consent_to_share_info: boolean
   service_date: string
 }
 

@@ -13,12 +13,12 @@ export default function Welcome() {
 
   useEffect(() => {
     if (countdown <= 0) {
-      navigate('/', { replace: true })
+      navigate(params.get('redirect') ?? '/', { replace: true })
       return
     }
     const t = setTimeout(() => setCountdown((c) => c - 1), 1000)
     return () => clearTimeout(t)
-  }, [countdown, navigate])
+  }, [countdown, navigate, params])
 
   return (
     <div className="min-h-screen flex flex-col bg-surface">

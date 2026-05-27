@@ -41,6 +41,17 @@ class SaintUpdate(BaseModel):
     consent_to_share_info: bool | None = None
 
 
+class EventRegistrationCreate(BaseModel):
+    first_name: str
+    last_name: str
+    gender: bool
+    phone_number: str | None = None
+    student: bool
+    institution_or_profession: str | None = None
+    first_time: bool
+    consent: bool
+
+
 class SaintRead(SaintBase):
     id: uuid.UUID
     created_at: datetime

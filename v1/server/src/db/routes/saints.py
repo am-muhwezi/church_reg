@@ -5,10 +5,11 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.routes.auth import require_admin
-from src.schemas.saints import SaintCreate, SaintRead, SaintUpdate
+from src.schemas.saints import EventRegistrationCreate, SaintCreate, SaintRead, SaintUpdate
 from src.schemas.admin import SaintWithStats
 from src.schemas.attendance import CheckInCreate, CheckInResponse
 from src.services.saints_service import (
+    event_register_saint,
     find_by_email_or_phone,
     register_saint,
     update_saint,
@@ -18,7 +19,7 @@ from src.services.saints_service import (
 )
 from src.services.checkin_service import check_in_saint
 from src.db.setup import get_session
-from advanced_alchemy.exceptions import DuplicateKeyError
+from advanced_alchemy.exceptions import DuplicateKeyError, IntegrityError
 
 
 saints_router = APIRouter(prefix="", tags=["saints"])
@@ -42,6 +43,28 @@ async def register_saint_route(
             content={"detail": detail, "saint": saint_data},
         )
     return await register_saint(db, data)
+
+
+@saints_router.post("/event-register", status_code=status.HTTP_201_CREATED, response_model=SaintRead)
+async def event_register_saint_route(
+    data: EventRegistrationCreate,
+    db: AsyncSession = Depends(get_session),
+):
+    try:
+        saint = await event_register_saint(db, data)
+        await check_in_saint(db, saint.id)
+        return saint
+    except IntegrityError as e:
+        detail = str(e)
+        if "phone_number" in detail.lower() or "phone" in detail.lower():
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail={"field": "phone_number", "message": "This phone number is already registered or invalid."},
+            )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"message": "Registration failed. Please check your details and try again."},
+        )
 
 
 @saints_router.get("/search", response_model=SaintRead)

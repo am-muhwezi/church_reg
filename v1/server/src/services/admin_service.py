@@ -209,6 +209,7 @@ async def get_attendance_details(
             Saint.institution_location,
             Saint.first_time,
             Saint.whatsApp_group_consent,
+            Saint.consent_to_share_info,
             Attendance.service_date,
         )
         .join(Attendance, Saint.id == Attendance.saint_id)
@@ -236,6 +237,7 @@ async def get_attendance_details(
             institution_location=r.institution_location,
             first_time=r.first_time,
             whatsApp_group_consent=r.whatsApp_group_consent,
+            consent_to_share_info=r.consent_to_share_info,
             service_date=r.service_date,
         )
         for r in rows.all()
