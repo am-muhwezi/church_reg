@@ -56,7 +56,7 @@ export default function Register() {
     residence: '',
     university: '',
     institution_location: '',
-    first_time: 'yes',
+    first_time: 'no',
     whatsApp_group_consent: 'no',
     consent_to_share_info: true,
   })

@@ -54,12 +54,23 @@ async def event_register_saint_route(
         saint = await event_register_saint(db, data)
         await check_in_saint(db, saint.id)
         return saint
+    except ValueError as e:
+        msg = str(e)
+        if "phone" in msg.lower():
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail={"field": "phone_number", "message": msg},
+            )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"message": msg},
+        )
     except IntegrityError as e:
         detail = str(e)
         if "phone_number" in detail.lower() or "phone" in detail.lower():
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail={"field": "phone_number", "message": "This phone number is already registered or invalid."},
+                detail={"field": "phone_number", "message": "This phone number is already registered."},
             )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

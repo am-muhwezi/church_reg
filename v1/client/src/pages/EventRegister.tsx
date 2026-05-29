@@ -43,7 +43,7 @@ function RadioGroup({ name, options, value, onChange }: RadioGroupProps) {
 
 export default function EventRegister() {
   const navigate = useNavigate()
-  const [params] = useSearchParams()
+  const [params, setParams] = useSearchParams()
 
   const firstNameRef = useRef<HTMLInputElement>(null)
   const lastNameRef = useRef<HTMLInputElement>(null)
@@ -68,7 +68,7 @@ export default function EventRegister() {
     phone_number: '',
     student: 'yes',
     institution_or_profession: '',
-    first_time: 'yes',
+    first_time: 'no',
     consent: false,
   })
   const [loading, setLoading] = useState(false)
@@ -144,6 +144,7 @@ export default function EventRegister() {
         setError('Registration failed. Please try again.')
       }
       setLoading(false)
+      setParams({}, { replace: true })
     }
   }
 
@@ -232,7 +233,7 @@ export default function EventRegister() {
 
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">
-                {form.student === 'yes' ? 'Institution' : 'Profession'}
+                {form.student === 'yes' ? 'Institution' : 'Occupation'}
               </label>
               <input
                 ref={instOrProfRef}

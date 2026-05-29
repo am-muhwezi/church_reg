@@ -109,6 +109,9 @@ async def event_register_saint(
     if existing:
         update_fields = {}
         if phone_number and phone_number != existing.phone_number:
+            phone_owner = await find_by_email_or_phone(db, None, phone_number)
+            if phone_owner and phone_owner.id != existing.id:
+                raise ValueError("This phone number is already registered.")
             update_fields["phone_number"] = phone_number
         if student != existing.student:
             update_fields["student"] = student
@@ -126,6 +129,29 @@ async def event_register_saint(
         if update_fields:
             existing = await _update_saint_fields(db, existing, update_fields)
         return existing
+
+    if phone_number:
+        phone_owner = await find_by_email_or_phone(db, None, phone_number)
+        if phone_owner:
+            update_fields = {}
+            if first_name.title() != phone_owner.first_name or last_name.title() != phone_owner.last_name:
+                update_fields["first_name"] = first_name
+                update_fields["last_name"] = last_name
+            if student != phone_owner.student:
+                update_fields["student"] = student
+            if occupation and occupation != phone_owner.occupation:
+                update_fields["occupation"] = occupation
+            if university and university != phone_owner.university:
+                update_fields["university"] = university
+            if data.first_time and not phone_owner.first_time:
+                update_fields["first_time"] = True
+            if data.consent != phone_owner.consent_to_share_info:
+                update_fields["consent_to_share_info"] = data.consent
+            if data.consent != phone_owner.whatsApp_group_consent:
+                update_fields["whatsApp_group_consent"] = data.consent
+            if update_fields:
+                phone_owner = await _update_saint_fields(db, phone_owner, update_fields)
+            return phone_owner
 
     saint = Saint(
         first_name=first_name,

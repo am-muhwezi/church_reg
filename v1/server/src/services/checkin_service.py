@@ -1,6 +1,7 @@
 import uuid
 from datetime import date
 
+from advanced_alchemy.exceptions import IntegrityError
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -35,8 +36,16 @@ async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID) -> CheckInRespon
 
     repo = AttendanceRepository(session=db)
     attendance = Attendance(saint_id=saint_id, service_date=today)
-    await repo.add(attendance)
-    await db.commit()
+    try:
+        await repo.add(attendance)
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        return CheckInResponse(
+            saint_id=saint_id,
+            service_date=today,
+            already_checked_in=True,
+        )
 
     return CheckInResponse(
         saint_id=saint_id,
