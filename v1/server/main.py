@@ -1,7 +1,9 @@
+import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from advanced_alchemy.extensions.fastapi import AdvancedAlchemy
 
 from src.config import settings
@@ -9,6 +11,9 @@ from src.db.setup import sqlalchemy_config
 from src.db.routes.saints import saints_router
 from src.db.routes.admin import admin_router
 from src.db.routes.auth import auth_router
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
+logger = logging.getLogger(__name__)
 
 # Import models so SQLAlchemy registers them for create_all
 import src.db.models.saints  # noqa: F401
@@ -55,6 +60,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception("Unhandled exception on %s %s", request.method, request.url.path)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": {"message": f"Server error: {exc}"}},
+    )
+
 
 alchemy = AdvancedAlchemy(
     config=sqlalchemy_config,

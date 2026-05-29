@@ -123,7 +123,17 @@ export default function Register() {
         navigate('/confirm', { state: { saint: err.data.saint }, replace: true })
         return
       }
-      setSubmitError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+      if (err instanceof ApiError && err.data?.detail) {
+        const detail = err.data.detail
+        if (typeof detail === 'object' && detail !== null) {
+          const msg = (detail as Record<string, unknown>).message
+          setSubmitError(typeof msg === 'string' ? msg : JSON.stringify(detail))
+        } else {
+          setSubmitError(typeof detail === 'string' ? detail : 'Registration failed. Please try again.')
+        }
+      } else {
+        setSubmitError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+      }
       setLoading(false)
     }
   }

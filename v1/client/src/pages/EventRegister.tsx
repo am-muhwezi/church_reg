@@ -137,6 +137,9 @@ export default function EventRegister() {
           const sd = detail as { field: string; message: string }
           setFieldErrors({ [sd.field]: sd.message })
           setError(sd.message)
+        } else if (typeof detail === 'object' && detail !== null) {
+          const msg = (detail as Record<string, unknown>).message
+          setError(typeof msg === 'string' ? msg : JSON.stringify(detail))
         } else {
           setError(typeof detail === 'string' ? detail : 'Registration failed. Please try again.')
         }

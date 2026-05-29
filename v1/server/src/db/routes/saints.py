@@ -1,8 +1,11 @@
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+
+logger = logging.getLogger(__name__)
 
 from src.db.routes.auth import require_admin
 from src.schemas.saints import EventRegistrationCreate, SaintCreate, SaintRead, SaintUpdate
@@ -56,6 +59,7 @@ async def event_register_saint_route(
         return saint
     except ValueError as e:
         msg = str(e)
+        logger.warning("event-register ValueError for %s %s: %s", data.first_name, data.last_name, msg)
         if "phone" in msg.lower():
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -67,6 +71,7 @@ async def event_register_saint_route(
         )
     except IntegrityError as e:
         detail = str(e)
+        logger.error("event-register IntegrityError for %s %s: %s", data.first_name, data.last_name, detail)
         if "phone_number" in detail.lower() or "phone" in detail.lower():
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -74,7 +79,13 @@ async def event_register_saint_route(
             )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"message": "Registration failed. Please check your details and try again."},
+            detail={"message": f"Registration failed: {detail}"},
+        )
+    except Exception as e:
+        logger.exception("event-register unexpected error for %s %s: %s", data.first_name, data.last_name, e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"message": f"An unexpected error occurred: {e}"},
         )
 
 
