@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { listSaints } from '../../api/saints'
+import { listSaints, deleteSaint } from '../../api/saints'
+import { ApiError } from '../../api/client'
 import type { Saint } from '../../api/types'
 
 export default function Saints() {
@@ -11,8 +12,21 @@ export default function Saints() {
   const [filter, setFilter] = useState<'all' | 'student' | 'whatsapp' | 'new'>('all')
 
   useEffect(() => {
-    listSaints().then(setSaints).finally(() => setLoading(false))
+    listSaints()
+      .then((data) => data.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()))
+      .then(setSaints)
+      .finally(() => setLoading(false))
   }, [])
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!window.confirm(`Delete ${name}? This cannot be undone.`)) return
+    try {
+      await deleteSaint(id)
+      setSaints((prev) => prev.filter((s) => s.id !== id))
+    } catch (e) {
+      alert(e instanceof ApiError ? e.detail : 'Failed to delete member.')
+    }
+  }
 
   const filtered = saints.filter((s) => {
     const q = query.toLowerCase()
@@ -118,7 +132,7 @@ export default function Saints() {
 
           <div className="divide-y divide-surface-container-low">
             {filtered.map((saint) => (
-              <SaintRow key={saint.id} saint={saint} onClick={() => navigate(`/admin/saints/${saint.id}`)} />
+              <SaintRow key={saint.id} saint={saint} onClick={() => navigate(`/admin/saints/${saint.id}`)} onDelete={(id) => handleDelete(id, `${saint.first_name} ${saint.last_name}`)} />
             ))}
           </div>
         </div>
@@ -127,12 +141,9 @@ export default function Saints() {
   )
 }
 
-function SaintRow({ saint, onClick }: { saint: Saint; onClick: () => void }) {
+function SaintRow({ saint, onClick, onDelete }: { saint: Saint; onClick: () => void; onDelete: (id: string) => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="w-full text-left px-6 py-4 hover:bg-surface-container-low/60 transition-colors group flex md:grid md:grid-cols-[2fr_2fr_1fr_80px] items-center gap-4"
-    >
+    <div onClick={onClick} className="px-6 py-4 hover:bg-surface-container-low/60 transition-colors group flex md:grid md:grid-cols-[2fr_2fr_1fr_80px] items-center gap-4 cursor-pointer">
       {/* Avatar + name */}
       <div className="flex items-center gap-3 min-w-0">
         <div className="w-10 h-10 flex-shrink-0 rounded-full bg-primary-container/15 flex items-center justify-center text-primary font-bold text-sm">
@@ -171,12 +182,19 @@ function SaintRow({ saint, onClick }: { saint: Saint; onClick: () => void }) {
         )}
       </div>
 
-      {/* Chevron */}
-      <div className="flex justify-end ml-auto md:ml-0">
+      {/* Actions */}
+      <div className="flex justify-end ml-auto md:ml-0 gap-1">
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(saint.id) }}
+          className="p-1.5 text-outline hover:text-error transition-colors opacity-0 group-hover:opacity-100"
+          title="Delete member"
+        >
+          <span className="material-symbols-outlined text-[18px]">delete</span>
+        </button>
         <span className="material-symbols-outlined text-[16px] text-outline group-hover:text-primary transition-colors">
           chevron_right
         </span>
       </div>
-    </button>
+    </div>
   )
 }

@@ -76,6 +76,12 @@ export default function EventRegister() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   useEffect(() => {
+    if (!error) return
+    const t = setTimeout(() => setError(''), 5000)
+    return () => clearTimeout(t)
+  }, [error])
+
+  useEffect(() => {
     const first = params.get('first')
     const last = params.get('last')
     if (first || last) {
@@ -293,8 +299,14 @@ export default function EventRegister() {
               </label>
             </div>
 
-            {error && Object.keys(fieldErrors).length === 0 && (
-              <p className="text-xs text-error font-semibold px-1">{error}</p>
+            {error && (
+              <div className="flex items-start gap-3 p-4 bg-error/10 rounded-md border border-error/20 animate-fade-in">
+                <span className="material-symbols-outlined text-error text-[20px] flex-shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-error uppercase tracking-wider">Registration Error</p>
+                  <p className="text-sm text-on-surface font-semibold mt-0.5">{error}</p>
+                </div>
+              </div>
             )}
 
             <button

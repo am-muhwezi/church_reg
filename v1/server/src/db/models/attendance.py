@@ -13,7 +13,7 @@ class Attendance(UUIDAuditBase):
         UniqueConstraint("saint_id", "service_date", name="uq_saint_service_date"),
     )
 
-    saint_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("saints.id"), nullable=False)
+    saint_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("saints.id", ondelete="CASCADE"), nullable=False)
     service_date: Mapped[date] = mapped_column(Date, nullable=False)
 
     def __repr__(self):

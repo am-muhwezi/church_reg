@@ -5,8 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-logger = logging.getLogger(__name__)
-
 from src.db.routes.auth import require_admin
 from src.schemas.saints import EventRegistrationCreate, SaintCreate, SaintRead, SaintUpdate
 from src.schemas.admin import SaintWithStats
@@ -18,11 +16,27 @@ from src.services.saints_service import (
     update_saint,
     search_saint,
     list_saints,
+    delete_saint,
     get_saint_with_stats,
 )
 from src.services.checkin_service import check_in_saint
 from src.db.setup import get_session
 from advanced_alchemy.exceptions import DuplicateKeyError, IntegrityError
+
+logger = logging.getLogger(__name__)
+
+
+def _root_cause(e: Exception) -> str:
+    """Drill into exception chain to get the underlying error message."""
+    parts = []
+    seen = set()
+    while e is not None and id(e) not in seen:
+        seen.add(id(e))
+        msg = str(e)
+        if msg and msg not in parts:
+            parts.append(msg)
+        e = e.__cause__
+    return " | ".join(parts)
 
 
 saints_router = APIRouter(prefix="", tags=["saints"])
@@ -71,15 +85,16 @@ async def event_register_saint_route(
         )
     except IntegrityError as e:
         detail = str(e)
-        logger.error("event-register IntegrityError for %s %s: %s", data.first_name, data.last_name, detail)
-        if "phone_number" in detail.lower() or "phone" in detail.lower():
+        root = _root_cause(e)
+        logger.error("event-register IntegrityError for %s %s: %s", data.first_name, data.last_name, root)
+        if "phone" in root.lower():
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail={"field": "phone_number", "message": "This phone number is already registered."},
             )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"message": f"Registration failed: {detail}"},
+            detail={"message": f"Registration failed: {root}"},
         )
     except Exception as e:
         logger.exception("event-register unexpected error for %s %s: %s", data.first_name, data.last_name, e)
@@ -118,6 +133,16 @@ async def get_saint_route(
     return SaintWithStats.model_validate(
         {**saint.__dict__, "attendance_count": attendance_count, "last_seen": last_seen}
     )
+
+
+@saints_router.delete("/{saint_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_admin)])
+async def delete_saint_route(
+    saint_id: uuid.UUID,
+    db: AsyncSession = Depends(get_session),
+):
+    deleted = await delete_saint(db, saint_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Saint not found")
 
 
 @saints_router.patch("/{saint_id}", response_model=SaintRead, dependencies=[Depends(require_admin)])

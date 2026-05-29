@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
 
-const REDIRECT_SECONDS = 6
+const REDIRECT_SECONDS = 3
 
 export default function Welcome() {
   const [params] = useSearchParams()

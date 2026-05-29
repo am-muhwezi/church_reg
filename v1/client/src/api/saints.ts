@@ -1,4 +1,4 @@
-import { get, post, patch, ApiError } from './client'
+import { get, post, patch, del, ApiError } from './client'
 import type { Saint, SaintCreate, SaintWithStats, AdminStats, CheckInResponse, ReportData, DateRangeReport, EventRegistrationCreate } from './types'
 
 export async function searchSaint(firstName: string, lastName: string): Promise<Saint | null> {
@@ -35,6 +35,10 @@ export async function checkInSaint(saintId: string): Promise<CheckInResponse> {
 
 export async function listSaints(): Promise<Saint[]> {
   return get<Saint[]>('/saints')
+}
+
+export async function deleteSaint(id: string): Promise<void> {
+  return del(`/saints/${id}`)
 }
 
 export async function getSaint(id: string): Promise<SaintWithStats> {

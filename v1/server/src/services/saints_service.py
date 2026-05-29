@@ -174,6 +174,18 @@ async def event_register_saint(
     return result
 
 
+async def delete_saint(db: AsyncSession, saint_id: uuid.UUID) -> bool:
+    repo = SaintsRepository(session=db)
+    try:
+        saint = await repo.get(saint_id)
+    except NotFoundError:
+        return False
+    await db.execute(Attendance.__table__.delete().where(Attendance.saint_id == saint_id))
+    await repo.delete(saint.id)
+    await db.commit()
+    return True
+
+
 async def get_saint_with_stats(db: AsyncSession, saint_id: uuid.UUID):
     """Returns (saint, attendance_count, last_seen) or None."""
     repo = SaintsRepository(session=db)
