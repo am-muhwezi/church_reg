@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { listSaints, deleteSaint } from '../../api/saints'
 import { ApiError } from '../../api/client'
@@ -11,6 +12,10 @@ export default function Saints() {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'student' | 'whatsapp' | 'new' | 'institution'>('all')
 
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null)
+  const [deleteError, setDeleteError] = useState('')
+  const [deleting, setDeleting] = useState(false)
+
   useEffect(() => {
     listSaints()
       .then((data) => data.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()))
@@ -19,12 +24,16 @@ export default function Saints() {
   }, [])
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Delete ${name}? This cannot be undone.`)) return
+    setDeleting(true)
+    setDeleteError('')
     try {
       await deleteSaint(id)
       setSaints((prev) => prev.filter((s) => s.id !== id))
+      setDeleteTarget(null)
     } catch (e) {
-      alert(e instanceof ApiError ? e.detail : 'Failed to delete member.')
+      setDeleteError(e instanceof ApiError ? e.detail : 'Failed to delete member.')
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -134,10 +143,56 @@ export default function Saints() {
 
           <div className="divide-y divide-surface-container-low">
             {filtered.map((saint) => (
-              <SaintRow key={saint.id} saint={saint} onClick={() => navigate(`/admin/saints/${saint.id}`)} onDelete={(id) => handleDelete(id, `${saint.first_name} ${saint.last_name}`)} />
+              <SaintRow key={saint.id} saint={saint} onClick={() => navigate(`/admin/saints/${saint.id}`)} onDelete={(id) => setDeleteTarget({ id, name: `${saint.first_name} ${saint.last_name}` })} />
             ))}
           </div>
         </div>
+      )}
+      {deleteTarget && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" onClick={() => !deleting && setDeleteTarget(null)}>
+          <div className="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-sm mx-4 p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="material-symbols-outlined text-error text-2xl">warning</span>
+              <h2 className="text-lg font-bold text-on-surface">Delete member?</h2>
+            </div>
+            <p className="text-sm text-on-surface-variant mb-6">
+              Are you sure you want to delete <strong className="text-on-surface">{deleteTarget.name}</strong>?
+              This action cannot be undone.
+            </p>
+
+            {deleteError && (
+              <p className="text-xs text-error mb-4 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">error</span>
+                {deleteError}
+              </p>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="btn-secondary text-sm px-4 py-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(deleteTarget.id, deleteTarget.name)}
+                disabled={deleting}
+                className="text-sm px-4 py-2 font-bold rounded-md bg-error text-on-error active:scale-[0.98] transition-all hover:shadow-lg hover:shadow-error/20 flex items-center gap-2 disabled:opacity-50"
+              >
+                {deleting ? (
+                  <>
+                    <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Deleting…
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body,
       )}
     </div>
   )

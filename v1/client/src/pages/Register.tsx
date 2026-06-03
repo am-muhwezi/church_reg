@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, FormEvent, useRef } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import Logo from '../components/Logo'
 import { registerSaint, checkInSaint, selfUpdateSaint } from '../api/saints'
@@ -86,6 +86,8 @@ export default function Register() {
   const [submitError, setSubmitError] = useState('')
   const [step1Error, setStep1Error] = useState('')
   const [step, setStep] = useState(1)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const formRef = useRef<HTMLFormElement>(null)
 
   const set = (key: keyof typeof form, val: string | boolean) =>
     setForm((prev) => ({ ...prev, [key]: val }))
@@ -120,9 +122,24 @@ export default function Register() {
         navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`, { replace: true })
       }
     } catch (err) {
-      if (err instanceof ApiError && err.status === 409 && err.data?.saint) {
-        const msg = err.data.detail || 'This phone number or email is already registered.'
-        setSubmitError(`${msg} Please use different details or go back.`)
+      if (err instanceof ApiError && err.status === 409) {
+        const detail = (err.data?.detail ?? '') as string
+        const field = typeof err.data?.field === 'string' ? err.data.field : null
+        const fieldName = field ?? (
+          detail.toLowerCase().includes('phone')
+            ? 'phone_number'
+            : detail.toLowerCase().includes('email')
+              ? 'email'
+              : null
+        )
+        if (fieldName) {
+          setFieldErrors({ [fieldName]: detail })
+          setStep(fieldName === 'phone_number' || fieldName === 'email' ? 1 : 1)
+          scheduleFocusField(fieldName)
+          setLoading(false)
+          return
+        }
+        setSubmitError(`${detail} Please use different details or go back.`)
         setLoading(false)
         return
       }
@@ -140,6 +157,25 @@ export default function Register() {
       setLoading(false)
     }
   }
+
+  const scheduleFocusField = (name: string) => {
+    requestAnimationFrame(() => {
+      const el = formRef.current?.querySelector<HTMLElement>(`[data-field="${name}"]`)
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el?.focus()
+    })
+  }
+
+  useEffect(() => {
+    if (Object.keys(fieldErrors).length > 0) {
+      const name = Object.keys(fieldErrors)[0]
+      requestAnimationFrame(() => {
+        const el = formRef.current?.querySelector<HTMLElement>(`[data-field="${name}"]`)
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        el?.focus()
+      })
+    }
+  }, [step, fieldErrors])
 
   const TOTAL_STEPS = 3
 
@@ -168,7 +204,7 @@ export default function Register() {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 pt-6 pb-12">
+        <form ref={formRef} onSubmit={handleSubmit} className="px-6 pt-6 pb-12">
           <div className="max-w-sm mx-auto space-y-10">
 
             {/* Step 1: Identity */}
@@ -183,22 +219,26 @@ export default function Register() {
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">First Name</label>
-                  <input className="field-input" placeholder="John" value={form.first_name} onChange={(e) => set('first_name', e.target.value)} required />
+                  <input data-field="first_name" className={`field-input ${fieldErrors.first_name ? 'border-error' : ''}`} placeholder="John" value={form.first_name} onChange={(e) => { set('first_name', e.target.value); setFieldErrors((p) => ({ ...p, first_name: '' })) }} required />
+                  {fieldErrors.first_name && <p className="text-xs text-error font-semibold mt-1">{fieldErrors.first_name}</p>}
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Last Name</label>
-                  <input className="field-input" placeholder="Doe" value={form.last_name} onChange={(e) => set('last_name', e.target.value)} required />
+                  <input data-field="last_name" className={`field-input ${fieldErrors.last_name ? 'border-error' : ''}`} placeholder="Doe" value={form.last_name} onChange={(e) => { set('last_name', e.target.value); setFieldErrors((p) => ({ ...p, last_name: '' })) }} required />
+                  {fieldErrors.last_name && <p className="text-xs text-error font-semibold mt-1">{fieldErrors.last_name}</p>}
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Email Address</label>
-                  <input className="field-input" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => set('email', e.target.value)} />
+                  <input data-field="email" className={`field-input ${fieldErrors.email ? 'border-error' : ''}`} type="email" placeholder="you@example.com" value={form.email} onChange={(e) => { set('email', e.target.value); setFieldErrors((p) => ({ ...p, email: '' })) }} />
+                  {fieldErrors.email && <p className="text-xs text-error font-semibold mt-1">{fieldErrors.email}</p>}
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Phone Number</label>
-                  <input className="field-input" type="tel" placeholder="e.g. 0712345678 or +254712345678" value={form.phone_number} onChange={(e) => set('phone_number', e.target.value)} />
+                  <input data-field="phone_number" className={`field-input ${fieldErrors.phone_number ? 'border-error' : ''}`} type="tel" placeholder="e.g. 0712345678 or +254712345678" value={form.phone_number} onChange={(e) => { set('phone_number', e.target.value); setFieldErrors((p) => ({ ...p, phone_number: '' })) }} />
+                  {fieldErrors.phone_number && <p className="text-xs text-error font-semibold mt-1">{fieldErrors.phone_number}</p>}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -374,7 +414,7 @@ export default function Register() {
                   </label>
                 </div>
 
-                {submitError && (
+                {submitError && Object.keys(fieldErrors).length === 0 && (
                   <p className="text-xs text-error font-semibold px-1">{submitError}</p>
                 )}
 

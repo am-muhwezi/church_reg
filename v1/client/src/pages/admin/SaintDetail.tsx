@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getSaint, deleteSaint, updateSaint } from '../../api/saints'
 import { ApiError } from '../../api/client'
@@ -30,6 +31,8 @@ export default function SaintDetail() {
   const [saving, setSaving] = useState(false)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [editError, setEditError] = useState('')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
 
   useEffect(() => {
@@ -37,13 +40,14 @@ export default function SaintDetail() {
   }, [id])
 
   const handleDelete = async () => {
-    if (!id || !window.confirm('Are you sure you want to delete this member? This action cannot be undone.')) return
+    if (!id) return
     setDeleting(true)
+    setDeleteError('')
     try {
       await deleteSaint(id)
       navigate('/admin/saints')
     } catch (e) {
-      alert(e instanceof ApiError ? e.detail : 'Failed to delete member.')
+      setDeleteError(e instanceof ApiError ? e.detail : 'Failed to delete member.')
       setDeleting(false)
     }
   }
@@ -229,9 +233,9 @@ export default function SaintDetail() {
                 <span className="material-symbols-outlined text-[16px]">edit</span>
                 Edit
               </button>
-              <button onClick={handleDelete} disabled={deleting} className="btn-tertiary text-sm px-3 py-2 flex items-center gap-1 text-error hover:bg-error/10 transition-colors">
-                <span className="material-symbols-outlined text-[16px]">{deleting ? 'progress_activity' : 'delete'}</span>
-                {deleting ? 'Deleting…' : 'Delete'}
+              <button onClick={() => setShowDeleteConfirm(true)} className="btn-tertiary text-sm px-3 py-2 flex items-center gap-1 text-error hover:bg-error/10 transition-colors">
+                <span className="material-symbols-outlined text-[16px]">delete</span>
+                Delete
               </button>
             </>
           )}
@@ -322,6 +326,52 @@ export default function SaintDetail() {
           </div>
         )}
       </div>
+      {showDeleteConfirm && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" onClick={() => !deleting && setShowDeleteConfirm(false)}>
+          <div className="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-sm mx-4 p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="material-symbols-outlined text-error text-2xl">warning</span>
+              <h2 className="text-lg font-bold text-on-surface">Delete member?</h2>
+            </div>
+            <p className="text-sm text-on-surface-variant mb-6">
+              Are you sure you want to delete <strong className="text-on-surface">{saint.first_name} {saint.last_name}</strong>?
+              This action cannot be undone.
+            </p>
+
+            {deleteError && (
+              <p className="text-xs text-error mb-4 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">error</span>
+                {deleteError}
+              </p>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="btn-secondary text-sm px-4 py-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="text-sm px-4 py-2 font-bold rounded-md bg-error text-on-error active:scale-[0.98] transition-all hover:shadow-lg hover:shadow-error/20 flex items-center gap-2 disabled:opacity-50"
+              >
+                {deleting ? (
+                  <>
+                    <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Deleting…
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
     </div>
   )
 }

@@ -142,6 +142,10 @@ export default function AdminLayout() {
         {NAV_ITEMS.map((item) => (
           <BottomNavItem key={item.to} {...item} />
         ))}
+        <button onClick={handleLogout} className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-md text-error transition-colors">
+          <span className="material-symbols-outlined text-[22px]">logout</span>
+          <span className="text-[9px] font-bold uppercase tracking-wider">Logout</span>
+        </button>
       </nav>
     </div>
   )
