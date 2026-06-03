@@ -65,9 +65,16 @@ export default function Welcome() {
             <p className="text-sm text-on-surface-variant">Follow us on our social media platforms</p>
             <div className="flex justify-center gap-5 pt-1">
               {['Facebook', 'X', 'Instagram', 'TikTok'].map((p) => (
-                <button key={p} className="text-outline hover:text-primary transition-colors">
+                <a
+                  key={p}
+                  href={socialUrls[p]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={p}
+                  className="text-outline hover:text-primary transition-colors"
+                >
                   <SocialIcon platform={p} />
-                </button>
+                </a>
               ))}
             </div>
           </div>
@@ -106,6 +113,13 @@ export default function Welcome() {
       </footer>
     </div>
   )
+}
+
+const socialUrls: Record<string, string> = {
+  Instagram: 'https://www.instagram.com/manifest_kenya/',
+  TikTok: 'https://www.tiktok.com/@manifestkenya',
+  X: 'https://x.com/ManifestKenya',
+  Facebook: 'https://www.facebook.com/groups/manifestfellowshipkenya',
 }
 
 function SocialIcon({ platform }: { platform: string }) {

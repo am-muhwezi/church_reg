@@ -200,9 +200,16 @@ export default function EventCheckIn() {
       <footer className="bg-surface-container-lowest px-6 pb-10 flex flex-col items-center gap-4">
         <div className="flex items-center gap-6">
           {['Facebook', 'X', 'Instagram', 'TikTok'].map((platform) => (
-            <button key={platform} className="text-outline hover:text-primary transition-colors p-1">
+            <a
+              key={platform}
+              href={socialUrls[platform]}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={platform}
+              className="text-outline hover:text-primary transition-colors p-1"
+            >
               <SocialIcon platform={platform} />
-            </button>
+            </a>
           ))}
         </div>
         <p className="text-[10px] text-outline text-center leading-relaxed">
@@ -213,6 +220,13 @@ export default function EventCheckIn() {
       </footer>
     </div>
   )
+}
+
+const socialUrls: Record<string, string> = {
+  Instagram: 'https://www.instagram.com/manifest_kenya/',
+  TikTok: 'https://www.tiktok.com/@manifestkenya',
+  X: 'https://x.com/ManifestKenya',
+  Facebook: 'https://www.facebook.com/groups/manifestfellowshipkenya',
 }
 
 function SocialIcon({ platform }: { platform: string }) {
