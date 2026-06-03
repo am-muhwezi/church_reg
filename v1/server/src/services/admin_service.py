@@ -211,6 +211,7 @@ async def get_attendance_details(
             Saint.whatsApp_group_consent,
             Saint.consent_to_share_info,
             Attendance.service_date,
+            Attendance.action,
         )
         .join(Attendance, Saint.id == Attendance.saint_id)
         .order_by(Attendance.service_date.desc(), Saint.last_name, Saint.first_name)
@@ -239,6 +240,7 @@ async def get_attendance_details(
             whatsApp_group_consent=r.whatsApp_group_consent,
             consent_to_share_info=r.consent_to_share_info,
             service_date=r.service_date,
+            action=r.action,
         )
         for r in rows.all()
     ]

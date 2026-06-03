@@ -70,6 +70,7 @@ class AttendanceDetail(BaseModel):
     whatsApp_group_consent: bool
     consent_to_share_info: bool
     service_date: date
+    action: str = "confirmed"
 
 
 class DateRangeReport(BaseModel):

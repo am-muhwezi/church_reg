@@ -9,7 +9,7 @@ export default function Saints() {
   const [saints, setSaints] = useState<Saint[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState<'all' | 'student' | 'whatsapp' | 'new'>('all')
+  const [filter, setFilter] = useState<'all' | 'student' | 'whatsapp' | 'new' | 'institution'>('all')
 
   useEffect(() => {
     listSaints()
@@ -40,6 +40,7 @@ export default function Saints() {
     const matchFilter =
       filter === 'all' ||
       (filter === 'student' && s.student) ||
+      (filter === 'institution' && s.student && !!s.university) ||
       (filter === 'whatsapp' && s.whatsApp_group_consent) ||
       (filter === 'new' && s.first_time)
 
@@ -83,6 +84,7 @@ export default function Saints() {
             { key: 'all', label: 'All' },
             { key: 'new', label: 'First-time' },
             { key: 'student', label: 'Students' },
+            { key: 'institution', label: 'Institutions' },
             { key: 'whatsapp', label: 'WhatsApp' },
           ].map(({ key, label }) => (
             <button

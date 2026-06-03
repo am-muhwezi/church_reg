@@ -43,7 +43,7 @@ function RadioGroup({ name, options, value, onChange }: RadioGroupProps) {
 
 export default function EventRegister() {
   const navigate = useNavigate()
-  const [params, setParams] = useSearchParams()
+  const [params] = useSearchParams()
 
   const firstNameRef = useRef<HTMLInputElement>(null)
   const lastNameRef = useRef<HTMLInputElement>(null)
@@ -153,7 +153,6 @@ export default function EventRegister() {
         setError('Registration failed. Please try again.')
       }
       setLoading(false)
-      setParams({}, { replace: true })
     }
   }
 
@@ -286,12 +285,12 @@ export default function EventRegister() {
                 ))}
               </ul>
 
-              <label className="flex items-start gap-3 mt-5 cursor-pointer group">
+              <label className="flex items-start gap-4 mt-5 cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={form.consent}
                   onChange={(e) => set('consent', e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded accent-primary-container"
+                  className="mt-0.5 w-6 h-6 rounded accent-primary-container flex-shrink-0"
                 />
                 <span className="text-xs text-on-surface font-semibold group-hover:text-primary transition-colors">
                   I consent to Manifest Fellowship collecting and using my information as described above.

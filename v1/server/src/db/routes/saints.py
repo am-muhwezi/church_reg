@@ -174,4 +174,4 @@ async def checkin_saint_route(
     data: CheckInCreate,
     db: AsyncSession = Depends(get_session),
 ):
-    return await check_in_saint(db, data.saint_id)
+    return await check_in_saint(db, data.saint_id, action=data.action)

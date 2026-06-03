@@ -76,6 +76,7 @@ export interface CheckInResponse {
   saint_id: string
   service_date: string
   already_checked_in: boolean
+  action: string
 }
 
 export interface Admin {
@@ -131,6 +132,7 @@ export interface AttendanceDetail {
   whatsApp_group_consent: boolean
   consent_to_share_info: boolean
   service_date: string
+  action: string
 }
 
 export interface DateRangeReport {

@@ -29,8 +29,8 @@ export async function selfUpdateSaint(id: string, data: Partial<SaintCreate>): P
   return patch<Saint>(`/saints/${id}/self-update`, data)
 }
 
-export async function checkInSaint(saintId: string): Promise<CheckInResponse> {
-  return post<CheckInResponse>('/saints/checkin', { saint_id: saintId })
+export async function checkInSaint(saintId: string, action: string = 'confirmed'): Promise<CheckInResponse> {
+  return post<CheckInResponse>('/saints/checkin', { saint_id: saintId, action })
 }
 
 export async function listSaints(): Promise<Saint[]> {

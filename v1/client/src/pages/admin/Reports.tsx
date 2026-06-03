@@ -38,6 +38,16 @@ function getTodayISO(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
+type CategoryFilter = 'all' | 'first_time' | 'student' | 'whatsapp' | 'institution'
+
+const CATEGORY_FILTERS: { key: CategoryFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'first_time', label: 'First-time' },
+  { key: 'student', label: 'Students' },
+  { key: 'institution', label: 'Institutions' },
+  { key: 'whatsapp', label: 'WhatsApp' },
+]
+
 export default function Reports() {
   const [mode, setMode] = useState<Mode>('preset')
   const [period, setPeriod] = useState<Period>('all')
@@ -49,6 +59,7 @@ export default function Reports() {
   const [detailedData, setDetailedData] = useState<DateRangeReport | null>(null)
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'summary' | 'details'>('summary')
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
 
   const printRef = useRef<HTMLDivElement>(null)
 
@@ -152,7 +163,7 @@ export default function Reports() {
     })
     rows.push('')
 
-    if (detailedData && detailedData.attendance_details.length > 0) {
+    if (filteredDetails.length > 0) {
       rows.push('=== DETAILED ATTENDANCE LIST ===')
       rows.push('')
       rows.push([
@@ -170,15 +181,17 @@ export default function Reports() {
         'First Time',
         'Consent',
         'WhatsApp Member',
+        'Action',
       ].join(','))
 
-      detailedData.attendance_details.forEach((r) => {
+      filteredDetails.forEach((r) => {
+        const phone = r.phone_number ? `="${r.phone_number}"` : ''
         rows.push([
           escapeCSV(r.service_date),
           escapeCSV(r.first_name),
           escapeCSV(r.last_name),
           escapeCSV(r.gender ? 'Male' : 'Female'),
-          escapeCSV(r.phone_number),
+          phone,
           escapeCSV(r.email),
           escapeCSV(r.residence),
           escapeCSV(r.student ? 'Yes' : 'No'),
@@ -187,7 +200,11 @@ export default function Reports() {
           escapeCSV(r.occupation),
           escapeCSV(r.first_time ? 'Yes' : 'No'),
           escapeCSV(r.consent_to_share_info ? 'Yes' : 'No'),
-          escapeCSV(r.whatsApp_group_consent ? 'Yes' : 'No'),
+          escapeCSV(r.whatsApp_group_consent ? 'ToBeAddedToWhatsAppGroup' : ''),
+          escapeCSV(
+            r.action === 'new_registration' ? 'New Registration' :
+            r.action === 'updated' ? 'Updated' : 'Confirmed'
+          ),
         ].join(','))
       })
     }
@@ -230,6 +247,15 @@ export default function Reports() {
 
   const total = data ? data.total_registered : 0
   const hasDetails = detailedData && detailedData.attendance_details.length > 0
+
+  const filteredDetails = detailedData?.attendance_details.filter((p) => {
+    if (categoryFilter === 'all') return true
+    if (categoryFilter === 'first_time') return p.first_time
+    if (categoryFilter === 'student') return p.student
+    if (categoryFilter === 'institution') return p.student && !!p.university
+    if (categoryFilter === 'whatsapp') return p.whatsApp_group_consent
+    return true
+  }) || []
 
   return (
     <div className="p-6 md:p-10 space-y-10 print:p-4 print:space-y-6" ref={printRef}>
@@ -394,8 +420,25 @@ export default function Reports() {
               Attendance List — {getPeriodLabel()}
             </p>
             <span className="text-xs text-on-surface-variant font-medium">
-              {detailedData.attendance_details.length} attendee{detailedData.attendance_details.length !== 1 ? 's' : ''}
+              {filteredDetails.length} attendee{filteredDetails.length !== 1 ? 's' : ''}
             </span>
+          </div>
+
+          {/* Category filter for detail view */}
+          <div className="px-6 py-3 bg-surface-container/50 flex flex-wrap gap-2 border-b border-surface-container-low">
+            {CATEGORY_FILTERS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setCategoryFilter(key)}
+                className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-colors ${
+                  categoryFilter === key
+                    ? 'bg-primary-container text-on-primary-fixed shadow-sm'
+                    : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           {loading ? (
@@ -422,10 +465,11 @@ export default function Reports() {
                     <th className="text-left px-4 py-3">Residence</th>
                     <th className="text-left px-4 py-3">New</th>
                     <th className="text-left px-4 py-3">WA</th>
+                    <th className="text-left px-4 py-3">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-surface-container-low">
-                  {detailedData.attendance_details.map((person) => (
+                  {filteredDetails.map((person) => (
                     <DetailRowDesktop key={`${person.id}-${person.service_date}`} person={person} />
                   ))}
                 </tbody>
@@ -433,7 +477,7 @@ export default function Reports() {
 
               {/* Mobile card view */}
               <div className="md:hidden divide-y divide-surface-container-low">
-                {detailedData.attendance_details.map((person) => (
+                {filteredDetails.map((person) => (
                   <DetailRowMobile key={`${person.id}-${person.service_date}`} person={person} />
                 ))}
               </div>
@@ -617,6 +661,10 @@ export default function Reports() {
 }
 
 function DetailRowDesktop({ person }: { person: AttendanceDetail }) {
+  const actionLabel =
+    person.action === 'new_registration' ? 'New Registration' :
+    person.action === 'updated' ? 'Updated' : 'Confirmed'
+
   return (
     <tr className="hover:bg-surface-container-low/50 transition-colors">
       <td className="px-4 py-3">
@@ -657,11 +705,26 @@ function DetailRowDesktop({ person }: { person: AttendanceDetail }) {
           </span>
         )}
       </td>
+      <td className="px-4 py-3">
+        <span className={`px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded ${
+          person.action === 'new_registration'
+            ? 'bg-tertiary-container/40 text-tertiary'
+            : person.action === 'updated'
+            ? 'bg-secondary-container/40 text-secondary'
+            : 'bg-primary-container/20 text-primary'
+        }`}>
+          {actionLabel}
+        </span>
+      </td>
     </tr>
   )
 }
 
 function DetailRowMobile({ person }: { person: AttendanceDetail }) {
+  const actionLabel =
+    person.action === 'new_registration' ? 'New Registration' :
+    person.action === 'updated' ? 'Updated' : 'Confirmed'
+
   return (
     <div className="px-4 py-4">
       <div className="flex items-start gap-3">
@@ -688,6 +751,17 @@ function DetailRowMobile({ person }: { person: AttendanceDetail }) {
                 WA
               </span>
             )}
+          </div>
+          <div className="mt-1 flex items-center gap-2 flex-wrap">
+            <span className={`px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded ${
+              person.action === 'new_registration'
+                ? 'bg-tertiary-container/40 text-tertiary'
+                : person.action === 'updated'
+                ? 'bg-secondary-container/40 text-secondary'
+                : 'bg-primary-container/20 text-primary'
+            }`}>
+              {actionLabel}
+            </span>
           </div>
           <div className="mt-1 grid gap-1 text-xs text-on-surface-variant">
             {person.email && <p>Email: {person.email}</p>}

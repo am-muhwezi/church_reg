@@ -27,7 +27,7 @@ export default function MemberFound() {
     setLoading(true)
     setError('')
     try {
-      const result = await checkInSaint(saint.id)
+      const result = await checkInSaint(saint.id, 'confirmed')
       if (result.already_checked_in) {
         setAlreadyCheckedIn(true)
       } else {
@@ -42,7 +42,7 @@ export default function MemberFound() {
 
   const handleUpdate = () => {
     if (saint) {
-      navigate(`/register?id=${saint.id}&first=${encodeURIComponent(saint.first_name)}&last=${encodeURIComponent(saint.last_name)}&update=true`, { replace: true })
+      navigate(`/register?id=${saint.id}&update=true`, { state: { saint }, replace: true })
     }
   }
 

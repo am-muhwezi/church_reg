@@ -1,8 +1,9 @@
 import { useState, useEffect, FormEvent } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import Logo from '../components/Logo'
-import { registerSaint, checkInSaint, selfUpdateSaint, getSaint } from '../api/saints'
+import { registerSaint, checkInSaint, selfUpdateSaint } from '../api/saints'
 import { ApiError } from '../api/client'
+import type { Saint } from '../api/types'
 
 type RadioGroupProps = {
   name: string
@@ -41,51 +42,50 @@ function RadioGroup({ name, options, value, onChange }: RadioGroupProps) {
 
 export default function Register() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [params] = useSearchParams()
   const isUpdate = params.get('update') === 'true'
   const editId = params.get('id')
+  const saintFromState: Saint | undefined = location.state?.saint
 
-  const [form, setForm] = useState({
-    first_name: params.get('first') ?? '',
-    last_name: params.get('last') ?? '',
-    email: '',
-    phone_number: '',
-    gender: 'male',
-    student: 'no',
-    occupation: '',
-    residence: '',
-    university: '',
-    institution_location: '',
-    first_time: 'no',
-    whatsApp_group_consent: 'no',
-    consent_to_share_info: true,
+  const [form, setForm] = useState(() => {
+    if (saintFromState) {
+      return {
+        first_name: saintFromState.first_name,
+        last_name: saintFromState.last_name,
+        email: saintFromState.email ?? '',
+        phone_number: saintFromState.phone_number ?? '',
+        gender: saintFromState.gender ? 'male' : 'female',
+        student: saintFromState.student ? 'yes' : 'no',
+        occupation: saintFromState.occupation ?? '',
+        residence: saintFromState.residence ?? '',
+        university: saintFromState.university ?? '',
+        institution_location: saintFromState.institution_location ?? '',
+        first_time: saintFromState.first_time ? 'yes' : 'no',
+        whatsApp_group_consent: saintFromState.whatsApp_group_consent ? 'yes' : 'no',
+        consent_to_share_info: saintFromState.consent_to_share_info,
+      }
+    }
+    return {
+      first_name: params.get('first') ?? '',
+      last_name: params.get('last') ?? '',
+      email: '',
+      phone_number: '',
+      gender: 'male',
+      student: 'no',
+      occupation: '',
+      residence: '',
+      university: '',
+      institution_location: '',
+      first_time: 'no',
+      whatsApp_group_consent: 'no',
+      consent_to_share_info: true,
+    }
   })
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [step1Error, setStep1Error] = useState('')
   const [step, setStep] = useState(1)
-
-  useEffect(() => {
-    if (isUpdate && editId) {
-      getSaint(editId).then((saint) => {
-        setForm({
-          first_name: saint.first_name,
-          last_name: saint.last_name,
-          email: saint.email ?? '',
-          phone_number: saint.phone_number ?? '',
-          gender: saint.gender ? 'male' : 'female',
-          student: saint.student ? 'yes' : 'no',
-          occupation: saint.occupation ?? '',
-          residence: saint.residence ?? '',
-          university: saint.university ?? '',
-          institution_location: saint.institution_location ?? '',
-          first_time: saint.first_time ? 'yes' : 'no',
-          whatsApp_group_consent: saint.whatsApp_group_consent ? 'yes' : 'no',
-          consent_to_share_info: saint.consent_to_share_info,
-        })
-      })
-    }
-  }, [])
 
   const set = (key: keyof typeof form, val: string | boolean) =>
     setForm((prev) => ({ ...prev, [key]: val }))
@@ -112,15 +112,18 @@ export default function Register() {
     try {
       if (isUpdate && editId) {
         const saint = await selfUpdateSaint(editId, payload)
+        await checkInSaint(saint.id, 'updated')
         navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=true`, { replace: true })
       } else {
         const saint = await registerSaint(payload)
-        await checkInSaint(saint.id)
+        await checkInSaint(saint.id, 'new_registration')
         navigate(`/welcome?first=${encodeURIComponent(saint.first_name)}&returning=false`, { replace: true })
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 409 && err.data?.saint) {
-        navigate('/confirm', { state: { saint: err.data.saint }, replace: true })
+        const msg = err.data.detail || 'This phone number or email is already registered.'
+        setSubmitError(`${msg} Please use different details or go back.`)
+        setLoading(false)
         return
       }
       if (err instanceof ApiError && err.data?.detail) {
@@ -358,12 +361,12 @@ export default function Register() {
                     ))}
                   </ul>
 
-                  <label className="flex items-start gap-3 mt-5 cursor-pointer group">
+                  <label className="flex items-start gap-4 mt-5 cursor-pointer group">
                     <input
                       type="checkbox"
                       checked={form.consent_to_share_info}
                       onChange={(e) => set('consent_to_share_info', e.target.checked)}
-                      className="mt-0.5 w-4 h-4 rounded accent-primary-container"
+                      className="mt-0.5 w-6 h-6 rounded accent-primary-container flex-shrink-0"
                     />
                     <span className="text-xs text-on-surface font-semibold group-hover:text-primary transition-colors">
                       I consent to Manifest Fellowship collecting and using my information as described above.

@@ -12,7 +12,7 @@ from src.db.repositories.attendance_repo import AttendanceRepository
 from src.schemas.attendance import CheckInResponse
 
 
-async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID) -> CheckInResponse:
+async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID, action: str = "confirmed") -> CheckInResponse:
     today = date.today()
 
     saint_exists = await db.scalar(select(select(Saint).where(Saint.id == saint_id).exists()))
@@ -32,10 +32,11 @@ async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID) -> CheckInRespon
             saint_id=saint_id,
             service_date=today,
             already_checked_in=True,
+            action=existing.action,
         )
 
     repo = AttendanceRepository(session=db)
-    attendance = Attendance(saint_id=saint_id, service_date=today)
+    attendance = Attendance(saint_id=saint_id, service_date=today, action=action)
     try:
         await repo.add(attendance)
         await db.commit()
@@ -45,10 +46,12 @@ async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID) -> CheckInRespon
             saint_id=saint_id,
             service_date=today,
             already_checked_in=True,
+            action=action,
         )
 
     return CheckInResponse(
         saint_id=saint_id,
         service_date=today,
         already_checked_in=False,
+        action=action,
     )
