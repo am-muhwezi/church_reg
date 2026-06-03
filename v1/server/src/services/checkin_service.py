@@ -39,6 +39,10 @@ async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID, action: str = "c
     attendance = Attendance(saint_id=saint_id, service_date=today, action=action)
     try:
         await repo.add(attendance)
+        saint = await db.get(Saint, saint_id)
+        if saint and saint.first_time:
+            saint.first_time = False
+            db.add(saint)
         await db.commit()
     except IntegrityError:
         await db.rollback()

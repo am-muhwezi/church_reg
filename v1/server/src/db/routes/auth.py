@@ -5,7 +5,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.setup import get_session
-from src.schemas.auth import AdminCreate, AdminRead, LoginRequest, TokenResponse
+from src.schemas.auth import AdminCreate, AdminRead, LoginRequest, RefreshTokenRequest, TokenResponse
 from src.services.auth_service import (
     admin_count,
     create_admin,
@@ -13,6 +13,7 @@ from src.services.auth_service import (
     get_admin_from_token,
     list_admins,
     login,
+    refresh_access_token,
 )
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -51,6 +52,14 @@ async def setup_route(data: AdminCreate, db: AsyncSession = Depends(get_session)
     data.is_super_admin = True
     admin = await create_admin(db, data)
     return await login(db, admin.email, data.password)
+
+
+@auth_router.post("/refresh", response_model=TokenResponse)
+async def refresh_route(data: RefreshTokenRequest, db: AsyncSession = Depends(get_session)):
+    result = await refresh_access_token(data.access_token, db)
+    if not result:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid or expired token")
+    return result
 
 
 @auth_router.get("/me", response_model=AdminRead)

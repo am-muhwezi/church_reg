@@ -45,6 +45,25 @@ async def login(db: AsyncSession, email: str, password: str) -> Optional[TokenRe
     )
 
 
+async def refresh_access_token(token: str, db: AsyncSession) -> Optional[TokenResponse]:
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        admin_id = uuid.UUID(payload["sub"])
+    except (JWTError, KeyError, ValueError):
+        return None
+    result = await db.execute(select(Admin).where(Admin.id == admin_id))
+    admin = result.scalar_one_or_none()
+    if not admin:
+        return None
+    return TokenResponse(
+        access_token=_create_token(admin),
+        admin_id=str(admin.id),
+        admin_name=admin.name,
+        admin_email=admin.email,
+        is_super_admin=admin.is_super_admin,
+    )
+
+
 async def get_admin_from_token(token: str, db: AsyncSession) -> Optional[Admin]:
     try:
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])

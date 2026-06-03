@@ -3,6 +3,7 @@ from typing import Literal
 
 from sqlalchemy import and_, case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased
 
 from src.db.models.attendance import Attendance
 from src.db.models.saints import Saint
@@ -54,13 +55,19 @@ async def get_admin_stats(db: AsyncSession) -> AdminStats:
         for r in trend_rows.all()
     ]
 
+    first_attendance_only = (
+        select(Attendance.saint_id)
+        .group_by(Attendance.saint_id)
+        .having(func.count() == 1)
+    ).subquery()
+
     new_today_rows = await db.execute(
         select(Saint)
         .join(Attendance, Saint.id == Attendance.saint_id)
         .where(
             and_(
                 Attendance.service_date == today,
-                Saint.first_time == True,  # noqa: E712
+                Saint.id.in_(select(first_attendance_only.c.saint_id)),
             )
         )
     )
@@ -138,27 +145,42 @@ async def get_report_data(
     counts = [r.count for r in per_service.all()]
     avg_attendance = round(sum(counts) / len(counts), 1) if counts else 0.0
 
-    first_time_date = start_date if start_date and (start_date == end_date or end_date is None) else today
-    first_time_condition = [Attendance.service_date == first_time_date]
-    if start_date and end_date and start_date != end_date:
-        first_time_condition = [Attendance.service_date >= start_date, Attendance.service_date <= end_date]
-    elif start_date:
-        first_time_condition = [Attendance.service_date >= start_date]
+    first_attendance = (
+        select(Attendance.saint_id, func.min(Attendance.service_date).label("first_date"))
+        .group_by(Attendance.saint_id)
+    ).subquery()
 
-    first_time_in_range = await db.scalar(
-        select(func.count())
-        .select_from(Saint)
-        .join(Attendance, Saint.id == Attendance.saint_id)
-        .where(and_(*first_time_condition, Saint.first_time == True))  # noqa: E712
-    ) or 0
+    first_time_query = select(func.count()).select_from(first_attendance)
+    if start_date is not None:
+        first_time_query = first_time_query.where(first_attendance.c.first_date >= start_date)
+    if end_date is not None:
+        first_time_query = first_time_query.where(first_attendance.c.first_date <= end_date)
+
+    first_time_in_range = await db.scalar(first_time_query) or 0
+
+    first_attendance_date = (
+        select(
+            Attendance.saint_id,
+            func.min(Attendance.service_date).label("first_date")
+        )
+        .group_by(Attendance.saint_id)
+    ).subquery()
 
     log_query = (
         select(
             Attendance.service_date,
             func.count().label("count"),
-            func.sum(case((Saint.first_time == True, 1), else_=0)).label("new_visitors"),  # noqa: E712
+            func.sum(
+                case(
+                    (Attendance.service_date == first_attendance_date.c.first_date, 1),
+                    else_=0,
+                )
+            ).label("new_visitors"),
         )
-        .join(Saint, Attendance.saint_id == Saint.id)
+        .outerjoin(
+            first_attendance_date,
+            Attendance.saint_id == first_attendance_date.c.saint_id,
+        )
         .group_by(Attendance.service_date)
         .order_by(Attendance.service_date.desc())
     )
@@ -194,6 +216,19 @@ async def get_attendance_details(
     start_date: date | None = None,
     end_date: date | None = None,
 ) -> list[AttendanceDetail]:
+    a2 = aliased(Attendance)
+    first_time_expr = (
+        ~select(a2.id)
+        .where(
+            and_(
+                a2.saint_id == Saint.id,
+                a2.service_date < Attendance.service_date,
+            )
+        )
+        .correlate(Saint, Attendance)
+        .exists()
+    ).label("_first_time")
+
     query = (
         select(
             Saint.id,
@@ -207,11 +242,11 @@ async def get_attendance_details(
             Saint.residence,
             Saint.university,
             Saint.institution_location,
-            Saint.first_time,
             Saint.whatsApp_group_consent,
             Saint.consent_to_share_info,
             Attendance.service_date,
             Attendance.action,
+            first_time_expr,
         )
         .join(Attendance, Saint.id == Attendance.saint_id)
         .order_by(Attendance.service_date.desc(), Saint.last_name, Saint.first_name)
@@ -236,7 +271,7 @@ async def get_attendance_details(
             residence=r.residence,
             university=r.university,
             institution_location=r.institution_location,
-            first_time=r.first_time,
+            first_time=r._first_time,
             whatsApp_group_consent=r.whatsApp_group_consent,
             consent_to_share_info=r.consent_to_share_info,
             service_date=r.service_date,
