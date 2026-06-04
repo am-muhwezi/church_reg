@@ -167,8 +167,9 @@ export default function Register() {
   }
 
   useEffect(() => {
-    if (Object.keys(fieldErrors).length > 0) {
-      const name = Object.keys(fieldErrors)[0]
+    const errorEntry = Object.entries(fieldErrors).find(([, v]) => v)
+    if (errorEntry) {
+      const [name] = errorEntry
       requestAnimationFrame(() => {
         const el = formRef.current?.querySelector<HTMLElement>(`[data-field="${name}"]`)
         el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
