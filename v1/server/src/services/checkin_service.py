@@ -3,7 +3,7 @@ from datetime import date
 
 from advanced_alchemy.exceptions import IntegrityError
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.models.attendance import Attendance
@@ -41,8 +41,12 @@ async def check_in_saint(db: AsyncSession, saint_id: uuid.UUID, action: str = "c
         await repo.add(attendance)
         saint = await db.get(Saint, saint_id)
         if saint and saint.first_time:
-            saint.first_time = False
-            db.add(saint)
+            total = await db.scalar(
+                select(func.count()).select_from(Attendance).where(Attendance.saint_id == saint_id)
+            ) or 0
+            if total >= 2:
+                saint.first_time = False
+                db.add(saint)
         await db.commit()
     except IntegrityError:
         await db.rollback()
