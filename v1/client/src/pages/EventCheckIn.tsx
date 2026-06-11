@@ -30,7 +30,7 @@ export default function EventCheckIn() {
         setSaint(found)
         setState('confirm')
       } else {
-        navigate(`/event/register?first=${encodeURIComponent(firstName.trim())}&last=${encodeURIComponent(lastName.trim())}`, { replace: true })
+        navigate(`/event/register?first=${encodeURIComponent(firstName.trim())}&last=${encodeURIComponent(lastName.trim())}`)
       }
     } catch {
       setError('Something went wrong. Please try again.')
@@ -105,7 +105,7 @@ export default function EventCheckIn() {
                 )}
               </button>
               <button
-                onClick={() => navigate(`/event/register?first=${encodeURIComponent(saint.first_name)}&last=${encodeURIComponent(saint.last_name)}`, { replace: true })}
+                onClick={() => navigate(`/event/register?first=${encodeURIComponent(saint.first_name)}&last=${encodeURIComponent(saint.last_name)}`)}
                 className="btn-secondary w-full text-sm flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">edit</span>

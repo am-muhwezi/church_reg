@@ -42,7 +42,7 @@ export default function MemberFound() {
 
   const handleUpdate = () => {
     if (saint) {
-      navigate(`/register?id=${saint.id}&update=true`, { state: { saint }, replace: true })
+      navigate(`/register?id=${saint.id}&update=true`, { state: { saint } })
     }
   }
 
@@ -130,7 +130,7 @@ export default function MemberFound() {
               Update My Details
             </button>
 
-            <button onClick={() => navigate('/', { replace: true })} className="btn-tertiary w-full text-sm">
+            <button onClick={() => navigate('/')} className="btn-tertiary w-full text-sm">
               I'm not {fullName}
             </button>
           </div>
