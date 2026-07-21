@@ -123,22 +123,12 @@ export default function Register() {
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
-        const detail = (err.data?.detail ?? '') as string
-        const field = typeof err.data?.field === 'string' ? err.data.field : null
-        const fieldName = field ?? (
-          detail.toLowerCase().includes('phone')
-            ? 'phone_number'
-            : detail.toLowerCase().includes('email')
-              ? 'email'
-              : null
-        )
-        if (fieldName) {
-          setFieldErrors({ [fieldName]: detail })
-          setStep(fieldName === 'phone_number' || fieldName === 'email' ? 1 : 1)
-          scheduleFocusField(fieldName)
-          setLoading(false)
+        const existingSaint = err.data?.saint as Saint | undefined
+        if (existingSaint) {
+          navigate('/confirm', { state: { saint: existingSaint }, replace: true })
           return
         }
+        const detail = (err.data?.detail ?? '') as string
         setSubmitError(`${detail} Please use different details or go back.`)
         setLoading(false)
         return
@@ -156,14 +146,6 @@ export default function Register() {
       }
       setLoading(false)
     }
-  }
-
-  const scheduleFocusField = (name: string) => {
-    requestAnimationFrame(() => {
-      const el = formRef.current?.querySelector<HTMLElement>(`[data-field="${name}"]`)
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      el?.focus()
-    })
   }
 
   useEffect(() => {
