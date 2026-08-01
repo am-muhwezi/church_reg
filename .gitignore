@@ -3,6 +3,7 @@ dist/
 .DS_Store
 *.local
 server/public
+server/tests/
 __pycache__/
 *.pyc
 .coverage
