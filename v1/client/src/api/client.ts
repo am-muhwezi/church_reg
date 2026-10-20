@@ -137,3 +137,15 @@ export async function del(path: string): Promise<void> {
     throw new ApiError(res.status, body.detail ?? res.statusText)
   }
 }
+
+export async function put(path: string, body: unknown): Promise<void> {
+  const res = await fetchWithRefresh(BASE_URL + path, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({ detail: res.statusText }))
+    throw new ApiError(res.status, typeof data.detail === 'string' ? data.detail : res.statusText, data)
+  }
+}
