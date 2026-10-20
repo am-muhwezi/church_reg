@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { icon: 'group', label: 'Saints', to: '/admin/saints' },
   { icon: 'how_to_reg', label: 'Check-in', to: '/admin/checkin' },
   { icon: 'bar_chart', label: 'Reports', to: '/admin/reports' },
+  { icon: 'summarize', label: 'Service Reports', to: '/admin/service-reports' },
   { icon: 'admin_panel_settings', label: 'Admins', to: '/admin/settings' },
 ]
 
@@ -33,7 +34,7 @@ function BottomNavItem({ icon, label, to }: { icon: string; label: string; to: s
       to={to}
       end={to === '/admin'}
       className={({ isActive }) =>
-        `flex flex-col items-center gap-0.5 px-3 py-2 rounded-md transition-colors ${
+        `flex flex-col items-center gap-0.5 px-1.5 py-2 rounded-md transition-colors ${
           isActive ? 'text-primary' : 'text-on-surface-variant'
         }`
       }
@@ -142,7 +143,7 @@ export default function AdminLayout() {
         {NAV_ITEMS.map((item) => (
           <BottomNavItem key={item.to} {...item} />
         ))}
-        <button onClick={handleLogout} className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-md text-error transition-colors">
+        <button onClick={handleLogout} className="flex flex-col items-center gap-0.5 px-1.5 py-2 rounded-md text-error transition-colors">
           <span className="material-symbols-outlined text-[22px]">logout</span>
           <span className="text-[9px] font-bold uppercase tracking-wider">Logout</span>
         </button>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { listAdmins, createAdmin, deleteAdmin } from '../../api/auth'
 import { ApiError } from '../../api/client'
+import { assignCenter, listAssignments, listCenters } from '../../api/serviceReports'
+import type { Center } from '../../api/serviceReports'
 import type { Admin } from '../../api/types'
 import { useAuth } from '../../context/AuthContext'
 
@@ -13,10 +15,37 @@ export default function AdminSettings() {
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState('')
   const [error, setError] = useState('')
+  const [centers, setCenters] = useState<Center[]>([])
+  const [centerOf, setCenterOf] = useState<Record<string, string>>({})
 
   useEffect(() => {
     listAdmins().then(setAdmins).finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (!isSuperAdmin) return
+    Promise.all([listCenters(), listAssignments()])
+      .then(([cs, links]) => {
+        setCenters(cs)
+        setCenterOf(Object.fromEntries(links.map((l) => [l.admin_id, l.center_id])))
+      })
+      .catch(() => undefined)
+  }, [isSuperAdmin])
+
+  const handleAssign = async (adminId: string, centerId: string) => {
+    try {
+      await assignCenter(adminId, centerId || null)
+      setCenterOf((prev) => {
+        const next = { ...prev }
+        if (centerId) next[adminId] = centerId
+        else delete next[adminId]
+        return next
+      })
+      showToast(centerId ? 'Center assigned.' : 'Center cleared.')
+    } catch (e) {
+      showToast(e instanceof ApiError ? e.detail : 'Failed to assign center.')
+    }
+  }
 
   const showToast = (msg: string) => {
     setToast(msg)
@@ -166,6 +195,20 @@ export default function AdminSettings() {
                   </span>
                   <span className="text-[10px] text-outline">Since {formatDate(admin.created_at)}</span>
                 </div>
+
+                {isSuperAdmin && !admin.is_super_admin && (
+                  <select
+                    aria-label={`Report center for ${admin.name}`}
+                    className="field-input text-xs py-1.5 w-auto cursor-pointer"
+                    value={centerOf[admin.id] ?? ''}
+                    onChange={(e) => handleAssign(admin.id, e.target.value)}
+                  >
+                    <option value="">No report center</option>
+                    {centers.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                )}
 
                 {isSuperAdmin && !admin.is_super_admin && admin.id !== adminId && (
                   <button
