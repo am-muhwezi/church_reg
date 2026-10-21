@@ -33,7 +33,7 @@ const LABEL = 'text-[10px] font-extrabold uppercase tracking-[0.15em] text-on-su
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex flex-col gap-1 w-full sm:w-auto">
       <span className={LABEL}>{label}</span>
       {children}
     </label>
@@ -61,18 +61,18 @@ export default function ServiceReports() {
   const noCenter = !!me && locked && !me.center
 
   return (
-    <div className="p-6 md:p-10 space-y-8">
+    <div className="p-4 sm:p-6 md:p-10 space-y-6 md:space-y-8">
       <section className="print:hidden">
         <p className="section-label mb-1">Service Reporting</p>
-        <h1 className="text-4xl font-extrabold tracking-tight text-on-surface">Service Reports</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface">Service Reports</h1>
       </section>
 
-      <div className="flex gap-2 bg-surface-container rounded-lg p-1 w-fit max-w-full overflow-x-auto print:hidden">
+      <div className="grid grid-cols-4 sm:flex sm:w-fit gap-1 sm:gap-2 bg-surface-container rounded-lg p-1 print:hidden">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors flex items-center gap-1.5 whitespace-nowrap ${
+            className={`px-1 sm:px-3 py-2 sm:py-1.5 text-[11px] sm:text-xs font-bold rounded-md transition-colors flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 whitespace-nowrap ${
               tab === t.key ? 'bg-primary-container text-on-primary-fixed shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-high'
             }`}
           >
@@ -176,7 +176,7 @@ function EnterReport(p: CenterPick) {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-      <div className="xl:col-span-2 bg-surface-container-lowest rounded-md shadow-card p-6 space-y-6">
+      <div className="xl:col-span-2 bg-surface-container-lowest rounded-md shadow-card p-4 sm:p-6 space-y-6">
         <p className="section-label">New Service Report</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <CenterField {...p} />
@@ -204,7 +204,7 @@ function EnterReport(p: CenterPick) {
 
         <div>
           <p className={`${LABEL} mb-2`}>Demographics</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {NUM_FIELDS.slice(0, 3).map((n) => (
               <Field key={n.key} label={n.label}>
                 <input type="number" min={0} inputMode="numeric" className="field-input" value={form[n.key] || ''} placeholder="0" onChange={(e) => setNum(n.key, e.target.value)} />
@@ -216,7 +216,7 @@ function EnterReport(p: CenterPick) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {NUM_FIELDS.slice(3).map((n) => (
             <Field key={n.key} label={n.label}>
               <input type="number" min={0} inputMode="numeric" className="field-input" value={form[n.key] || ''} placeholder="0" onChange={(e) => setNum(n.key, e.target.value)} />
@@ -225,7 +225,7 @@ function EnterReport(p: CenterPick) {
         </div>
 
         {msg && <p className={`text-sm font-semibold ${msg.ok ? 'text-primary' : 'text-error'}`}>{msg.text}</p>}
-        <button onClick={submit} disabled={saving || !form.venue.trim() || !form.service_date || (p.me.is_super_admin && !p.centerId)} className="btn-primary text-sm px-5 py-2.5 flex items-center gap-2 disabled:opacity-50">
+        <button onClick={submit} disabled={saving || !form.venue.trim() || !form.service_date || (p.me.is_super_admin && !p.centerId)} className="btn-primary text-sm px-5 py-3 w-full sm:w-auto justify-center flex items-center gap-2 disabled:opacity-50">
           <span className="material-symbols-outlined text-[16px]">{saving ? 'progress_activity' : 'save'}</span>
           {saving ? 'Saving…' : 'Save Service Report'}
         </button>
@@ -238,7 +238,7 @@ function EnterReport(p: CenterPick) {
         ) : (
           <ul className="divide-y divide-surface-container-low">
             {recent.map((r) => (
-              <li key={r.id} className="px-6 py-3 flex items-center gap-3 group">
+              <li key={r.id} className="px-4 sm:px-6 py-3 flex items-center gap-3 group">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-on-surface truncate">{r.center_name} · Service {r.service_number} · {r.service_type === 'thursday' ? 'Thu' : 'Sun'}</p>
                   <p className="text-xs text-on-surface-variant">{longDate(r.service_date)} · {r.total_attendance} attended · {r.first_timers} first timers</p>
@@ -277,7 +277,7 @@ function useReport<T>(fetcher: () => Promise<T>, deps: unknown[]) {
 
 function DownloadButton({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
   return (
-    <button onClick={onClick} disabled={disabled} className="btn-primary text-sm px-4 py-2 flex items-center gap-2 disabled:opacity-50">
+    <button onClick={onClick} disabled={disabled} className="btn-primary text-sm px-4 py-3 sm:py-2 w-full sm:w-auto justify-center flex items-center gap-2 disabled:opacity-50">
       <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
       Download PDF
     </button>
@@ -303,7 +303,7 @@ function Weekly(p: CenterPick) {
       {loading && <div className="h-40 bg-surface-container-lowest rounded-md animate-pulse" />}
       {data && !loading && (
         <>
-          <div className="rounded-md shadow-card overflow-hidden max-w-3xl"><WeeklyDoc report={data} /></div>
+          <div className="rounded-md shadow-card overflow-x-auto max-w-3xl"><WeeklyDoc report={data} /></div>
           <PrintPortal pageCss={DOC_PAGE_CSS}><WeeklyDoc report={data} /></PrintPortal>
         </>
       )}
@@ -315,7 +315,7 @@ function Deck({ report, filename }: { report: PeriodReport | null; filename: str
   const slides = useMemo(() => (report && report.has_data ? buildSlides(report) : []), [report])
   return (
     <>
-      <div className="flex items-center gap-4 print:hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 print:hidden">
         <DownloadButton disabled={!slides.length} onClick={() => printAs(filename)} />
         <p className="text-xs text-on-surface-variant">{PDF_HINT}</p>
       </div>
@@ -342,7 +342,7 @@ function Monthly() {
   return (
     <div className="space-y-6">
       <div className="print:hidden">
-        <Field label="Month"><input type="month" className="field-input w-auto" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} /></Field>
+        <Field label="Month"><input type="month" className="field-input sm:w-auto" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} /></Field>
       </div>
       {error && <p className="text-sm text-error font-semibold">{error}</p>}
       {loading ? <div className="h-40 bg-surface-container-lowest rounded-md animate-pulse" /> : <Deck report={data} filename={`Manifest-Kenya-Monthly-Analysis-${month}`} />}
@@ -359,7 +359,7 @@ function Quarterly() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end gap-4 print:hidden">
-        <Field label="Year"><input type="number" min={2000} max={2100} className="field-input w-28" value={year} onChange={(e) => setYear(Math.floor(Number(e.target.value)) || now.year)} /></Field>
+        <Field label="Year"><input type="number" min={2000} max={2100} className="field-input sm:w-28" value={year} onChange={(e) => setYear(Math.floor(Number(e.target.value)) || now.year)} /></Field>
         <Field label="Quarter">
           <select className="field-input cursor-pointer" value={q} onChange={(e) => setQ(Number(e.target.value))}>
             {[1, 2, 3, 4].map((n) => <option key={n} value={n}>Q{n}</option>)}
