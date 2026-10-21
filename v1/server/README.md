@@ -50,6 +50,24 @@ main.py                 # App entry point, lifespan, middleware
 | `GET` | `/admin/stats` | Dashboard statistics | Admin |
 | `GET` | `/admin/report` | Attendance report | Admin |
 
+## Service Reports
+
+Per-service tallies (male, female, children, serving team, first timers, new converts) are filed per center and rolled up into three PDFs from the **Service Reports** tab (`/admin/service-reports`).
+
+| Output | Endpoint | Shape |
+|---|---|---|
+| Weekly service report | `GET /service-reports/weekly?week_start=YYYY-MM-DD` | One table per service, headed "Service N" |
+| Monthly analysis | `GET /service-reports/monthly?month=2026-09` | Slide deck matching `prep.pdf` |
+| Quarterly analysis | `GET /service-reports/quarterly?quarter=2026-Q3` | Same deck, months instead of weeks |
+
+Other endpoints: `POST/GET /service-reports`, `DELETE /service-reports/{id}`, `GET /service-reports/centers`, `GET /service-reports/me`, `PUT /service-reports/assignments/{admin_id}` (super admin).
+
+- **Centers** are seeded on startup (Nairobi is the main center; Kisumu, Mombasa, Eldoret residential; SEKU, MiNaP, Egerton, KCHS institutional). A super admin assigns each admin a center in **Admins**. Center admins are pinned to their center (name autofills, locked); super admins pick any.
+- **Rules**: attendance = male + female + children (serving team is a separate tally). One report per center, date and service number. A report with zero attendance does not count as a held service in the frequency table. Variance compares against the previous month or quarter. Expected frequency counts only Thursdays/Sundays that have already come due.
+- **All maths lives in `src/services/report_builder.py`** (pure functions, no DB). The client only draws it.
+- **PDFs** are produced by the browser: Download PDF opens the print dialog, choose "Save as PDF". Slides are 1440x810 SVG, one per page.
+- **Not built**: the sample's appendix slides (uploaded images). The monthly-history slide appears once two months of Nairobi data exist.
+
 ## Local Development
 
 ### Prerequisites

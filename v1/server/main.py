@@ -11,6 +11,7 @@ from src.db.setup import sqlalchemy_config
 from src.db.routes.saints import saints_router
 from src.db.routes.admin import admin_router
 from src.db.routes.auth import auth_router
+from src.db.routes.service_reports import service_reports_router
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
@@ -19,10 +20,18 @@ logger = logging.getLogger(__name__)
 import src.db.models.saints  # noqa: F401
 import src.db.models.attendance  # noqa: F401
 import src.db.models.admin  # noqa: F401
+import src.db.models.service_report  # noqa: F401
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from src.db.setup import get_session as _get_session
+    from src.services.service_report_service import seed_centers
+
+    async for db in _get_session():
+        added = await seed_centers(db)
+        if added:
+            print(f"[startup] Seeded {added} report centers")
     # Seed first super admin if credentials are configured and no admins exist
     if settings.SEED_ADMIN_EMAIL and settings.SEED_ADMIN_PASSWORD and settings.SEED_ADMIN_NAME:
         from src.db.setup import get_session
@@ -78,3 +87,4 @@ alchemy = AdvancedAlchemy(
 app.include_router(saints_router, prefix="/saints", tags=["saints"])
 app.include_router(admin_router)
 app.include_router(auth_router)
+app.include_router(service_reports_router)

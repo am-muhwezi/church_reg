@@ -15,6 +15,7 @@ import Dashboard from './pages/admin/Dashboard'
 import Saints from './pages/admin/Saints'
 import SaintDetail from './pages/admin/SaintDetail'
 import Reports from './pages/admin/Reports'
+import ServiceReports from './pages/admin/ServiceReports'
 import AdminSettings from './pages/admin/AdminSettings'
 import RequireAuth from './components/RequireAuth'
 import { AuthProvider } from './context/AuthContext'
@@ -43,6 +44,7 @@ export default function App() {
               <Route path="saints/:id" element={<SaintDetail />} />
               <Route path="checkin" element={<Navigate to="/" replace />} />
               <Route path="reports" element={<Reports />} />
+              <Route path="service-reports" element={<ServiceReports />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
           </Route>
