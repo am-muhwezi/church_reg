@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../components/Logo'
 import { eventRegisterSaint } from '../api/saints'
 import { ApiError } from '../api/client'
+import InstitutionInput from '../components/InstitutionInput'
 
 type FieldErrors = Record<string, string>
 
@@ -74,6 +75,8 @@ export default function EventRegister() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  // Bumped only when validation fails, so editing a field never steals focus.
+  const [focusTick, setFocusTick] = useState(0)
 
   useEffect(() => {
     if (!error) return
@@ -97,7 +100,7 @@ export default function EventRegister() {
         break
       }
     }
-  }, [fieldErrors])
+  }, [focusTick])
 
   const set = (key: keyof typeof form, val: string | boolean) =>
     setForm((prev) => ({ ...prev, [key]: val }))
@@ -109,9 +112,11 @@ export default function EventRegister() {
     const errs: FieldErrors = {}
     if (!form.first_name.trim()) errs.first_name = 'First name is required.'
     if (!form.last_name.trim()) errs.last_name = 'Last name is required.'
+    if (form.student === 'yes' && !form.institution_or_profession.trim()) errs.institution_or_profession = 'Please enter your institution.'
 
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs)
+      setFocusTick((t) => t + 1)
       setError(Object.values(errs)[0])
       return
     }
@@ -142,6 +147,7 @@ export default function EventRegister() {
         if (typeof detail === 'object' && detail !== null && 'field' in detail) {
           const sd = detail as { field: string; message: string }
           setFieldErrors({ [sd.field]: sd.message })
+          setFocusTick((t) => t + 1)
           setError(sd.message)
         } else if (typeof detail === 'object' && detail !== null) {
           const msg = (detail as Record<string, unknown>).message
@@ -241,15 +247,25 @@ export default function EventRegister() {
 
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">
-                {form.student === 'yes' ? 'Institution' : 'Occupation'}
+                {form.student === 'yes' ? <>Institution <span className="text-error">*</span></> : 'Occupation'}
               </label>
-              <input
-                ref={instOrProfRef}
-                className={inputClass('institution_or_profession')}
-                placeholder={form.student === 'yes' ? 'e.g. University of Nairobi' : 'e.g. Software Engineer'}
-                value={form.institution_or_profession}
-                onChange={(e) => { set('institution_or_profession', e.target.value); setFieldErrors((prev) => { const n = { ...prev }; delete n.institution_or_profession; return n }) }}
-              />
+              {form.student === 'yes' ? (
+                <InstitutionInput
+                  inputRef={instOrProfRef}
+                  className={inputClass('institution_or_profession')}
+                  placeholder="Start typing, e.g. UoN or Strathmore"
+                  value={form.institution_or_profession}
+                  onChange={(t) => { set('institution_or_profession', t); setFieldErrors((prev) => { const n = { ...prev }; delete n.institution_or_profession; return n }) }}
+                />
+              ) : (
+                <input
+                  ref={instOrProfRef}
+                  className={inputClass('institution_or_profession')}
+                  placeholder="e.g. Software Engineer"
+                  value={form.institution_or_profession}
+                  onChange={(e) => { set('institution_or_profession', e.target.value); setFieldErrors((prev) => { const n = { ...prev }; delete n.institution_or_profession; return n }) }}
+                />
+              )}
             </div>
 
             <div className="p-5 bg-surface-container-low rounded-md flex flex-col gap-3">

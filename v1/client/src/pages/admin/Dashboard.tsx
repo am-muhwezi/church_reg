@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAdminStats } from '../../api/saints'
 import type { AdminStats } from '../../api/types'
+import InstitutionTally from '../../components/InstitutionTally'
 
 function StatCard({
   icon,
@@ -88,6 +89,8 @@ export default function Dashboard() {
           </>
         ) : null}
       </section>
+
+      <InstitutionTally />
 
       {/* Attendance chart + new today */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

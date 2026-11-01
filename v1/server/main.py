@@ -12,6 +12,7 @@ from src.db.routes.saints import saints_router
 from src.db.routes.admin import admin_router
 from src.db.routes.auth import auth_router
 from src.db.routes.service_reports import service_reports_router
+from src.db.routes.institutions import institutions_router
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
@@ -88,3 +89,4 @@ app.include_router(saints_router, prefix="/saints", tags=["saints"])
 app.include_router(admin_router)
 app.include_router(auth_router)
 app.include_router(service_reports_router)
+app.include_router(institutions_router)

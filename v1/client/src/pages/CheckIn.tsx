@@ -62,7 +62,6 @@ export default function CheckIn() {
                 placeholder="e.g. John"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                autoFocus
                 autoComplete="given-name"
               />
             </div>
