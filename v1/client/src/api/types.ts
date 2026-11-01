@@ -139,3 +139,20 @@ export interface DateRangeReport {
   summary: ReportData
   attendance_details: AttendanceDetail[]
 }
+
+export interface Institution {
+  name: string
+  code: string
+  campus: string | null
+}
+
+export interface InstitutionTallyRow {
+  code: string
+  count: number
+}
+
+export interface InstitutionTally {
+  service_date: string
+  total_students: number
+  institutions: InstitutionTallyRow[]
+}

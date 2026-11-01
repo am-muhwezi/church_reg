@@ -4,6 +4,7 @@ import Logo from '../components/Logo'
 import { registerSaint, checkInSaint, selfUpdateSaint } from '../api/saints'
 import { ApiError } from '../api/client'
 import type { Saint } from '../api/types'
+import InstitutionInput from '../components/InstitutionInput'
 
 type RadioGroupProps = {
   name: string
@@ -87,6 +88,8 @@ export default function Register() {
   const [step1Error, setStep1Error] = useState('')
   const [step, setStep] = useState(1)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  // Bumped only when validation fails, so editing a field never steals focus.
+  const [focusTick, setFocusTick] = useState(0)
   const formRef = useRef<HTMLFormElement>(null)
 
   const set = (key: keyof typeof form, val: string | boolean) =>
@@ -94,6 +97,15 @@ export default function Register() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    if (form.student === 'yes' && (!form.university.trim() || !form.institution_location.trim())) {
+      setFocusTick((t) => t + 1)
+      setFieldErrors({
+        ...(!form.university.trim() && { university: 'Please enter your university or institution.' }),
+        ...(!form.institution_location.trim() && { institution_location: 'Please enter the institution location.' }),
+      })
+      setStep(2)
+      return
+    }
     setLoading(true)
     setSubmitError('')
     const payload = {
@@ -105,8 +117,8 @@ export default function Register() {
       student: form.student === 'yes',
       occupation: form.student === 'yes' ? null : (form.occupation || null),
       residence: form.residence || null,
-      university: form.student === 'yes' ? (form.university || null) : null,
-      institution_location: form.student === 'yes' ? (form.institution_location || null) : null,
+      university: form.student === 'yes' ? (form.university.trim() || null) : null,
+      institution_location: form.student === 'yes' ? (form.institution_location.trim() || null) : null,
       first_time: form.first_time === 'yes',
       whatsApp_group_consent: form.whatsApp_group_consent === 'yes',
       consent_to_share_info: form.consent_to_share_info,
@@ -158,7 +170,7 @@ export default function Register() {
         el?.focus()
       })
     }
-  }, [step, fieldErrors])
+  }, [focusTick])
 
   const TOTAL_STEPS = 3
 
@@ -286,22 +298,29 @@ export default function Register() {
                 {form.student === 'yes' ? (
                   <div className="flex flex-col gap-4 animate-fade-up">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">University / Institution</label>
-                      <input
-                        className="field-input"
-                        placeholder="e.g. University of Nairobi"
+                      <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">University / Institution <span className="text-error">*</span></label>
+                      <InstitutionInput
+                        dataField="university"
+                        className={`field-input ${fieldErrors.university ? 'border-error' : ''}`}
+                        placeholder="Start typing, e.g. UoN or Strathmore"
                         value={form.university}
-                        onChange={(e) => set('university', e.target.value)}
+                        onChange={(t) => { set('university', t); setFieldErrors((p) => ({ ...p, university: '' })) }}
+                        onPick={(inst) => {
+                          if (inst.campus) { set('institution_location', inst.campus); setFieldErrors((p) => ({ ...p, institution_location: '' })) }
+                        }}
                       />
+                      {fieldErrors.university && <p className="text-xs text-error font-semibold mt-1">{fieldErrors.university}</p>}
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Institution Location</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant ml-1">Institution Location <span className="text-error">*</span></label>
                       <input
-                        className="field-input"
+                        data-field="institution_location"
+                        className={`field-input ${fieldErrors.institution_location ? 'border-error' : ''}`}
                         placeholder="e.g. Nairobi, Westlands Campus"
                         value={form.institution_location}
-                        onChange={(e) => set('institution_location', e.target.value)}
+                        onChange={(e) => { set('institution_location', e.target.value); setFieldErrors((p) => ({ ...p, institution_location: '' })) }}
                       />
+                      {fieldErrors.institution_location && <p className="text-xs text-error font-semibold mt-1">{fieldErrors.institution_location}</p>}
                     </div>
                   </div>
                 ) : (
@@ -333,7 +352,15 @@ export default function Register() {
                   <button type="button" className="btn-secondary flex-1 text-sm" onClick={() => setStep(1)}>
                     Back
                   </button>
-                  <button type="button" className="btn-primary flex-1 flex items-center justify-center gap-1 text-sm" onClick={() => setStep(3)}>
+                  <button type="button" className="btn-primary flex-1 flex items-center justify-center gap-1 text-sm" onClick={() => {
+                    if (form.student === 'yes') {
+                      const errs: Record<string, string> = {}
+                      if (!form.university.trim()) errs.university = 'Please enter your university or institution.'
+                      if (!form.institution_location.trim()) errs.institution_location = 'Please enter the institution location.'
+                      if (Object.keys(errs).length > 0) { setFieldErrors(errs); setFocusTick((t) => t + 1); return }
+                    }
+                    setStep(3)
+                  }}>
                     Next <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                   </button>
                 </div>

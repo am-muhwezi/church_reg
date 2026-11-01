@@ -1,7 +1,11 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
+
+
+def _blank(v: str | None) -> bool:
+    return v is None or not v.strip()
 
 
 class SaintBase(BaseModel):
@@ -22,7 +26,15 @@ class SaintBase(BaseModel):
 
 class SaintCreate(SaintBase):
     """Data needed to create a new saint."""
-    pass
+
+    @model_validator(mode="after")
+    def students_need_institution(self):
+        if self.student:
+            if _blank(self.university):
+                raise ValueError("University / institution is required for students.")
+            if _blank(self.institution_location):
+                raise ValueError("Institution location is required for students.")
+        return self
 
 
 class SaintUpdate(BaseModel):
@@ -40,6 +52,15 @@ class SaintUpdate(BaseModel):
     whatsApp_group_consent: bool | None = None
     consent_to_share_info: bool | None = None
 
+    @model_validator(mode="after")
+    def students_need_institution(self):
+        if self.student is True:
+            if _blank(self.university):
+                raise ValueError("University / institution is required for students.")
+            if _blank(self.institution_location):
+                raise ValueError("Institution location is required for students.")
+        return self
+
 
 class EventRegistrationCreate(BaseModel):
     first_name: str
@@ -50,6 +71,12 @@ class EventRegistrationCreate(BaseModel):
     institution_or_profession: str | None = None
     first_time: bool
     consent: bool
+
+    @model_validator(mode="after")
+    def students_need_institution(self):
+        if self.student and _blank(self.institution_or_profession):
+            raise ValueError("Institution is required for students.")
+        return self
 
 
 class SaintRead(SaintBase):

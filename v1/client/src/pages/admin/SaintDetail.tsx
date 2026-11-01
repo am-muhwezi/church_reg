@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getSaint, deleteSaint, updateSaint } from '../../api/saints'
 import { ApiError } from '../../api/client'
 import type { SaintWithStats } from '../../api/types'
+import InstitutionInput from '../../components/InstitutionInput'
 
 type EditForm = {
   first_name: string
@@ -82,6 +83,10 @@ export default function SaintDetail() {
 
   const handleSave = async () => {
     if (!id || !editForm) return
+    if (editForm.student === 'yes' && (!editForm.university.trim() || !editForm.institution_location.trim())) {
+      setEditError('University / institution and institution location are required for students.')
+      return
+    }
     setSaving(true)
     setEditError('')
     try {
@@ -281,7 +286,16 @@ export default function SaintDetail() {
               <input className={inputCls} value={editForm.residence} onChange={(e) => set('residence', e.target.value)} />
             </Field>
             <Field label="University">
-              <input className={inputCls} value={editForm.university} onChange={(e) => set('university', e.target.value)} disabled={editForm.student === 'no'} />
+              {editForm.student === 'yes' ? (
+                <InstitutionInput
+                  className={inputCls}
+                  value={editForm.university}
+                  onChange={(t) => set('university', t)}
+                  onPick={(inst) => { if (inst.campus) set('institution_location', inst.campus) }}
+                />
+              ) : (
+                <input className={inputCls} value={editForm.university} disabled />
+              )}
             </Field>
             <Field label="Institution Location">
               <input className={inputCls} value={editForm.institution_location} onChange={(e) => set('institution_location', e.target.value)} disabled={editForm.student === 'no'} />

@@ -151,7 +151,6 @@ export default function EventCheckIn() {
                 placeholder="e.g. John"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                autoFocus
                 autoComplete="given-name"
               />
             </div>

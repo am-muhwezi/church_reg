@@ -8,6 +8,7 @@ from src.schemas.saints import EventRegistrationCreate, SaintCreate, SaintUpdate
 from src.db.repositories.saints_repo import SaintsRepository
 from src.db.models.saints import Saint
 from src.db.models.attendance import Attendance
+from src.institutions import canonical_name
 
 
 async def find_by_email_or_phone(
@@ -29,6 +30,8 @@ async def register_saint(db: AsyncSession, saint_create: SaintCreate) -> Saint:
     data = saint_create.model_dump()
     data['first_name'] = data['first_name'].strip().title()
     data['last_name'] = data['last_name'].strip().title()
+    data['university'] = canonical_name(data['university']) if data['student'] else None
+    data['institution_location'] = ((data['institution_location'] or '').strip() or None) if data['student'] else None
     saint = Saint(**data)
     result = await repo.add(saint)
     await db.commit()
@@ -44,6 +47,10 @@ async def update_saint(db: AsyncSession, saint_id: uuid.UUID, data: SaintUpdate)
     for field, value in data.model_dump(exclude_unset=True).items():
         if field in ('first_name', 'last_name') and isinstance(value, str):
             value = value.strip().title()
+        elif field == 'university':
+            value = canonical_name(value)
+        elif field == 'institution_location' and isinstance(value, str):
+            value = value.strip() or None
         setattr(saint, field, value)
     result = await repo.update(saint)
     await db.commit()
@@ -91,16 +98,16 @@ async def event_register_saint(
     last_name = data.last_name.strip().title()
     phone_number = data.phone_number.strip() if data.phone_number else None
     student = data.student
-    institution_or_profession = data.institution_or_profession.strip().title() if data.institution_or_profession else None
+    raw = data.institution_or_profession.strip() if data.institution_or_profession else None
 
     occupation = None
     university = None
-    if institution_or_profession:
-        if _looks_like_institution(institution_or_profession):
+    if raw:
+        if student or _looks_like_institution(raw):
             student = True
-            university = institution_or_profession
+            university = canonical_name(raw)
         else:
-            occupation = institution_or_profession
+            occupation = raw.title()
 
     existing = await search_saint(db, first_name, last_name)
     if not existing:
