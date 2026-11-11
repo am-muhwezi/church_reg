@@ -66,6 +66,7 @@ class AttendanceDetail(BaseModel):
     residence: str | None
     university: str | None
     institution_location: str | None
+    institution_code: str | None = None  # tally bucket for students; None for non-students
     first_time: bool
     whatsApp_group_consent: bool
     consent_to_share_info: bool

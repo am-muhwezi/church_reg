@@ -6,20 +6,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.models.attendance import Attendance
 from src.db.models.saints import Saint
-from src.institutions import tally_key
+from src.institutions import OTHERS, bucket_code
 from src.schemas.institutions import InstitutionTally, InstitutionTallyRow
 
 
 def build_tally(service_date: date, universities: list[str | None]) -> InstitutionTally:
     """One entry per student present that day. Pure: no I/O."""
-    counts: Counter[str] = Counter()
-    labels: dict[str, str] = {}
-    for u in universities:
-        key, label = tally_key(u)
-        counts[key] += 1
-        labels.setdefault(key, label)
-    rows = [InstitutionTallyRow(code=labels[k], count=n) for k, n in counts.items()]
-    rows.sort(key=lambda r: (-r.count, r.code.casefold()))
+    counts = Counter(bucket_code(u) for u in universities)
+    rows = [InstitutionTallyRow(code=k, count=n) for k, n in counts.items()]
+    rows.sort(key=lambda r: (r.code == OTHERS, -r.count, r.code.casefold()))  # OTHERS always last
     return InstitutionTally(service_date=service_date, total_students=len(universities), institutions=rows)
 
 

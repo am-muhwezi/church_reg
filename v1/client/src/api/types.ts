@@ -128,6 +128,7 @@ export interface AttendanceDetail {
   residence: string | null
   university: string | null
   institution_location: string | null
+  institution_code: string | null
   first_time: boolean
   whatsApp_group_consent: boolean
   consent_to_share_info: boolean

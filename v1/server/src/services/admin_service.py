@@ -7,6 +7,7 @@ from sqlalchemy.orm import aliased
 
 from src.db.models.attendance import Attendance
 from src.db.models.saints import Saint
+from src.institutions import bucket_code
 from src.schemas.admin import (
     AdminStats,
     AttendanceDetail,
@@ -271,6 +272,7 @@ async def get_attendance_details(
             residence=r.residence,
             university=r.university,
             institution_location=r.institution_location,
+            institution_code=bucket_code(r.university) if r.student else None,
             first_time=r._first_time,
             whatsApp_group_consent=r.whatsApp_group_consent,
             consent_to_share_info=r.consent_to_share_info,

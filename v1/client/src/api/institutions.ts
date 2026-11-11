@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { get } from './client'
-import type { Institution, InstitutionTally } from './types'
+import type { AttendanceDetail, Institution, InstitutionTally } from './types'
 
 let cache: Promise<Institution[]> | null = null
 
@@ -44,4 +44,19 @@ export function filterInstitutions(list: Institution[], query: string, limit = 8
   }
   scored.sort((a, b) => a[0] - b[0] || a[1].name.localeCompare(b[1].name))
   return scored.slice(0, limit).map(([, i]) => i)
+}
+
+export const OTHERS = 'OTHERS'
+
+/** Student check-ins grouped by the server-assigned institution_code. OTHERS always last. */
+export function tallyByInstitution(details: AttendanceDetail[]): { code: string; count: number }[] {
+  const counts = new Map<string, number>()
+  for (const d of details) {
+    if (!d.student) continue
+    const code = d.institution_code || OTHERS
+    counts.set(code, (counts.get(code) ?? 0) + 1)
+  }
+  return [...counts]
+    .map(([code, count]) => ({ code, count }))
+    .sort((a, b) => Number(a.code === OTHERS) - Number(b.code === OTHERS) || b.count - a.count || a.code.localeCompare(b.code))
 }

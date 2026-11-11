@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getReportData, getDetailedReport } from '../../api/saints'
+import { tallyByInstitution } from '../../api/institutions'
+import InstitutionTally from '../../components/InstitutionTally'
 import type { ReportData, DateRangeReport, AttendanceDetail } from '../../api/types'
 
 type Period = 'weekly' | 'monthly' | 'all'
@@ -71,7 +73,7 @@ export default function Reports() {
           const result = await getDetailedReport(selectedDate, selectedDate)
           setDetailedData(result)
           setData(result.summary)
-          setViewMode('details')
+          setViewMode('summary')
         } else if (mode === 'custom') {
           const result = await getDetailedReport(startDate, endDate)
           setDetailedData(result)
@@ -87,6 +89,18 @@ export default function Reports() {
     }
     fetchData()
   }, [mode, period, startDate, endDate, selectedDate])
+
+  // Day dashboard for today's service: re-pull the attendance rows so counts stream in.
+  useEffect(() => {
+    if (mode !== 'date-detail' || !selectedDate || selectedDate !== getTodayISO()) return
+    const timer = setInterval(() => {
+      if (document.hidden) return
+      getDetailedReport(selectedDate, selectedDate)
+        .then((r) => { setDetailedData(r); setData(r.summary) })
+        .catch(() => {})
+    }, 10_000)
+    return () => clearInterval(timer)
+  }, [mode, selectedDate])
 
   const getPeriodLabel = (): string => {
     if (mode === 'date-detail' && selectedDate) {
@@ -252,10 +266,13 @@ export default function Reports() {
     if (categoryFilter === 'all') return true
     if (categoryFilter === 'first_time') return p.first_time
     if (categoryFilter === 'student') return p.student
-    if (categoryFilter === 'institution') return p.student && !!p.university
+    if (categoryFilter === 'institution') return p.student
     if (categoryFilter === 'whatsapp') return p.whatsApp_group_consent
     return true
   }) || []
+
+  const institutionView = categoryFilter === 'institution'
+  const institutionRows = institutionView ? tallyByInstitution(filteredDetails) : []
 
   return (
     <div className="p-6 md:p-10 space-y-10 print:p-4 print:space-y-6" ref={printRef}>
@@ -420,7 +437,9 @@ export default function Reports() {
               Attendance List — {getPeriodLabel()}
             </p>
             <span className="text-xs text-on-surface-variant font-medium">
-              {filteredDetails.length} attendee{filteredDetails.length !== 1 ? 's' : ''}
+              {institutionView
+                ? `${filteredDetails.length} student${filteredDetails.length !== 1 ? 's' : ''} · ${institutionRows.length} institution${institutionRows.length !== 1 ? 's' : ''}`
+                : `${filteredDetails.length} attendee${filteredDetails.length !== 1 ? 's' : ''}`}
             </span>
           </div>
 
@@ -450,6 +469,8 @@ export default function Reports() {
                 </div>
               ))}
             </div>
+          ) : institutionView ? (
+            <InstitutionTallyTable rows={institutionRows} />
           ) : (
             <div className="overflow-x-auto">
               {/* Desktop table */}
@@ -484,6 +505,12 @@ export default function Reports() {
             </div>
           )}
         </section>
+      ) : mode === 'date-detail' && selectedDate && detailedData ? (
+        <DayDashboard
+          date={selectedDate}
+          details={detailedData.attendance_details}
+          onViewList={() => setViewMode('details')}
+        />
       ) : (
         /* Summary view */
         <>
@@ -775,5 +802,79 @@ function DetailRowMobile({ person }: { person: AttendanceDetail }) {
         </div>
       </div>
     </div>
+  )
+}
+
+function InstitutionTallyTable({ rows }: { rows: { code: string; count: number }[] }) {
+  const total = rows.reduce((n, r) => n + r.count, 0)
+  const max = Math.max(...rows.map((r) => r.count), 1)
+  if (rows.length === 0) {
+    return <p className="px-6 py-10 text-sm text-on-surface-variant text-center">No students in this period.</p>
+  }
+  return (
+    <div>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-surface-container text-[10px] font-extrabold uppercase tracking-[0.15em] text-on-surface-variant">
+            <th className="text-left px-6 py-3">Institution</th>
+            <th className="text-left px-4 py-3 w-1/2 hidden sm:table-cell" aria-hidden />
+            <th className="text-right px-6 py-3">Students</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-surface-container-low">
+          {rows.map((r) => (
+            <tr key={r.code} className="hover:bg-surface-container-low/50 transition-colors">
+              <td className="px-6 py-3 font-bold text-on-surface">{r.code}</td>
+              <td className="px-4 py-3 hidden sm:table-cell">
+                <div className="h-2.5 rounded-full bg-surface-container-high overflow-hidden">
+                  <div className="h-full rounded-full bg-primary-container" style={{ width: `${(r.count / max) * 100}%` }} />
+                </div>
+              </td>
+              <td className="px-6 py-3 text-right font-extrabold text-on-surface tabular-nums">{r.count}</td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr className="bg-surface-container text-xs font-extrabold uppercase tracking-wider text-on-surface-variant">
+            <td className="px-6 py-3">Total</td>
+            <td className="hidden sm:table-cell" />
+            <td className="px-6 py-3 text-right tabular-nums">{total}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  )
+}
+
+function DayDashboard({ date, details, onViewList }: { date: string; details: AttendanceDetail[]; onViewList: () => void }) {
+  const stats = [
+    { label: 'Attendance', value: details.length, icon: 'groups' },
+    { label: 'First-timers', value: details.filter((d) => d.first_time).length, icon: 'person_add' },
+    { label: 'Students', value: details.filter((d) => d.student).length, icon: 'school' },
+    { label: 'On WhatsApp', value: details.filter((d) => d.whatsApp_group_consent).length, icon: 'chat' },
+    { label: 'Male', value: details.filter((d) => d.gender).length, icon: 'man' },
+    { label: 'Female', value: details.filter((d) => !d.gender).length, icon: 'woman' },
+  ]
+  return (
+    <>
+      <section className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        {stats.map(({ label, value, icon }) => (
+          <div key={label} className="bg-surface-container-lowest rounded-md shadow-card p-5">
+            <span className="material-symbols-outlined text-primary-container text-[22px] mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>
+              {icon}
+            </span>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">{label}</p>
+            <p className="text-2xl font-extrabold text-on-surface tabular-nums">{value.toLocaleString()}</p>
+          </div>
+        ))}
+      </section>
+      <InstitutionTally serviceDate={date} />
+      <div className="print:hidden">
+        <button onClick={onViewList} className="btn-secondary text-sm px-4 py-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-[16px]">list</span>
+          View attendance list
+        </button>
+      </div>
+    </>
   )
 }
