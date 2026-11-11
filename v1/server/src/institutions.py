@@ -68,6 +68,7 @@ RAW_INSTITUTIONS = [
 ]
 
 UNSPECIFIED = "Unspecified"
+OTHERS = "OTHERS"  # tally bucket for anything not in the master list
 _ACRONYM = re.compile(r"\(([^)]+)\)\s*$")
 _SPACES = re.compile(r"\s+")
 
@@ -117,8 +118,12 @@ _BY_FULL = {_fold(i.name): i for i in INSTITUTIONS}
 # base / acronym lookups resolve to the first entry carrying that base (campus-less form preferred)
 _BY_BASE: dict[str, Institution] = {}
 for _i in INSTITUTIONS:
-    for _k in (_fold(_i.base), _fold(_i.code)):
-        _BY_BASE.setdefault(_k, _i)
+    _m = _ACRONYM.search(_i.base)
+    # also the name without its acronym: older records say "University of Nairobi", not "... (UoN)"
+    _bare = _fold(_i.base[: _m.start()]) if _m else None
+    for _k in (_fold(_i.base), _fold(_i.code), _bare):
+        if _k:
+            _BY_BASE.setdefault(_k, _i)
 
 
 def match(value: str | None) -> Institution | None:
@@ -157,3 +162,13 @@ def tally_key(value: str | None) -> tuple[str, str]:
         return hit.code.casefold(), hit.code
     text = _clean(value)
     return text.casefold(), text
+
+
+def bucket_code(value: str | None) -> str:
+    """Tally bucket for a student's institution: the listed code, else "OTHERS".
+
+    Blank and unlisted values both land in OTHERS (the master list is the only
+    source of named buckets).
+    """
+    hit = match(value)
+    return hit.code if hit else OTHERS

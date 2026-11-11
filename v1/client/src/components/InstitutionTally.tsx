@@ -4,22 +4,29 @@ import type { InstitutionTally as Tally } from '../api/types'
 
 const POLL_MS = 10_000
 
-export default function InstitutionTally() {
+function todayISO(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/** `serviceDate` omitted = today. Polls only while the date is today; past days are fixed. */
+export default function InstitutionTally({ serviceDate }: { serviceDate?: string }) {
+  const isToday = !serviceDate || serviceDate === todayISO()
   const [tally, setTally] = useState<Tally | null>(null)
   const [stale, setStale] = useState(false)
 
   useEffect(() => {
     let live = true
     const load = () =>
-      getInstitutionTally()
+      getInstitutionTally(serviceDate)
         .then((t) => { if (live) { setTally(t); setStale(false) } })
         .catch(() => { if (live) setStale(true) })
     load()
-    const timer = setInterval(() => { if (!document.hidden) load() }, POLL_MS)
-    const onVisible = () => { if (!document.hidden) load() }
+    const timer = isToday ? setInterval(() => { if (!document.hidden) load() }, POLL_MS) : undefined
+    const onVisible = () => { if (isToday && !document.hidden) load() }
     document.addEventListener('visibilitychange', onVisible)
-    return () => { live = false; clearInterval(timer); document.removeEventListener('visibilitychange', onVisible) }
-  }, [])
+    return () => { live = false; if (timer) clearInterval(timer); document.removeEventListener('visibilitychange', onVisible) }
+  }, [serviceDate, isToday])
 
   const max = tally ? Math.max(...tally.institutions.map((i) => i.count), 1) : 1
 
@@ -29,17 +36,19 @@ export default function InstitutionTally() {
         <div>
           <p className="section-label mb-0.5">Students by Institution</p>
           <p className="text-xs text-on-surface-variant">
-            {tally ? `${tally.total_students.toLocaleString()} students today` : 'Loading…'}
+            {tally ? `${tally.total_students.toLocaleString()} students ${isToday ? 'today' : 'that day'}` : 'Loading…'}
             {stale && ' · connection lost, retrying'}
           </p>
         </div>
-        <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
-          <span className="live-dot" /> Live
-        </span>
+        {isToday && (
+          <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
+            <span className="live-dot" /> Live
+          </span>
+        )}
       </div>
 
       {tally && tally.institutions.length === 0 && (
-        <p className="text-sm text-on-surface-variant py-4">No students checked in yet today.</p>
+        <p className="text-sm text-on-surface-variant py-4">No students checked in yet.</p>
       )}
 
       <ul className="space-y-2.5" aria-live="polite">
